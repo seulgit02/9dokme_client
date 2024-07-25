@@ -1,4 +1,4 @@
-package com.example.server_9dokme.Swagger;
+package com.example.server_9dokme.common.config;
 
 
 import io.swagger.v3.oas.annotations.info.Info;
