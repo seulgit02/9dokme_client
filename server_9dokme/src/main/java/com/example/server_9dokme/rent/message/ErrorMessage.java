@@ -1,4 +1,4 @@
-package com.example.server_9dokme.member.message;
+package com.example.server_9dokme.rent.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @AllArgsConstructor
 public enum ErrorMessage {
 
-    INVALID_MEMBER_ID(NOT_FOUND, "유효하지 않은 멤버 id입니다."),
+    INVALID_RENT_ID(NOT_FOUND, "유효하지 않은 대여 id 입니다."),
     ;
 
     private final HttpStatus httpStatus;
