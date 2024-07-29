@@ -23,7 +23,7 @@ public class MemberController {
     @GetMapping("/oauth")
     @Operation(summary = "카카오 로그인", description = "카카오 로그인 GET")
     public SuccessResponse<?> kakaoLogin(@RequestParam String code) {
-        String accessToken = kakaoService.getAccessToken(code);
+        String accessToken = kakaoService.getKakaoAccessToken(code).toString();
         HashMap<String, Object> userInfo = kakaoService.getUserInfo(accessToken);
 
         return SuccessResponse.success(String.valueOf(userInfo));
