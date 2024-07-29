@@ -2,6 +2,10 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      fontSize: {
+        "vw-1": "1vw",
+        "vw-2": "2vw",
+      },
       colors: {
         customColor: "#C5B5F7",
       },
@@ -11,5 +15,5 @@ module.exports = {
     },
   },
   variants: {},
-  plugins: [],
+  plugins: [require("@tailwindcss/aspect-ratio")],
 };
