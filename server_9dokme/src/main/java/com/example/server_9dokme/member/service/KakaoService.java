@@ -46,7 +46,7 @@ public class KakaoService {
     private final static String KAKAO_API = "https://kapi.kakao.com";
 
     @Transactional
-    public KakaoTokenResponseDto getKakaoAccessToken(String code) {
+    public String getKakaoAccessToken(String code) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -79,14 +79,16 @@ public class KakaoService {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        String AccessToken = kakaoTokenDto.getAccessToken();
 
         // 토큰 값 출력
         if (kakaoTokenDto != null) {
-            log.info("Received Access Token: {}", kakaoTokenDto.getAccessToken());
+            log.info("Received Access Token: {}", AccessToken);
         }
 
-        return kakaoTokenDto;
+        return AccessToken;
     }
+
 
     public HashMap<String, Object> getUserInfo(String accessToken) {
         HashMap<String, Object> userInfo = new HashMap<>();
