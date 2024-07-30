@@ -1,7 +1,9 @@
 package com.example.server_9dokme.member.service;
 
+import com.example.server_9dokme.member.dto.response.KakaoAccountDto;
 import com.example.server_9dokme.member.dto.response.KakaoTokenDto;
 import com.example.server_9dokme.member.dto.response.KakaoTokenResponseDto;
+import com.example.server_9dokme.member.entity.Account;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -30,6 +32,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Slf4j
@@ -93,8 +96,8 @@ public class KakaoService {
 
     public HashMap<String, Object> getUserInfo(String accessToken) {
         HashMap<String, Object> userInfo = new HashMap<>();
-        String reqUrl = KAKAO_API + "/v2/user/me";
-        try {
+        String reqUrl = "https://kapi.kakao.com/v2/user/me";
+        try{
             URL url = new URL(reqUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
@@ -102,34 +105,40 @@ public class KakaoService {
             conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
             int responseCode = conn.getResponseCode();
+            log.info("[KakaoApi.getUserInfo] responseCode : {}",  responseCode);
+
             BufferedReader br;
-            if (responseCode == 200) {
+            if (responseCode >= 200 && responseCode <= 300) {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             } else {
                 br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
             }
 
-            String line;
+            String line = "";
             StringBuilder responseSb = new StringBuilder();
-            while ((line = br.readLine()) != null) {
+            while((line = br.readLine()) != null){
                 responseSb.append(line);
             }
-
             String result = responseSb.toString();
+            log.info("responseBody = {}", result);
+
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
 
             JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
             JsonObject kakaoAccount = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
 
-            String nickname = properties.get("nickname").getAsString();
-            String email = kakaoAccount.get("email").getAsString();
+//            String nickname = properties.getAsJsonObject().get("nickname").getAsString();
+//            String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
+            String nickname = new String(properties.getAsJsonObject().get("nickname").getAsString().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+            String email = new String(kakaoAccount.getAsJsonObject().get("email").getAsString().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
 
             userInfo.put("nickname", nickname);
             userInfo.put("email", email);
 
             br.close();
-        } catch (Exception e) {
+
+        }catch (Exception e){
             e.printStackTrace();
         }
         return userInfo;
