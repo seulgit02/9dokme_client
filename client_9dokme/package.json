@@ -44,9 +44,11 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
-    ]
+    ],
+    "proxy": "http://localhost:8080"
   },
   "devDependencies": {
+    "@types/http-proxy-middleware": "^1.0.0",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.39",
     "tailwindcss": "^3.4.7"

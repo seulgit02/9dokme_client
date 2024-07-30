@@ -3,6 +3,8 @@ import Hashtag from "../components/Hashtag";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import KakaoButton from "../components/KakaoButton";
+import axios from 'axios'; // Axios import 추가
+
 const Main = () => {
   useEffect(() => {
     // localStorage에 저장된 값을 모두 콘솔에 출력
@@ -11,11 +13,28 @@ const Main = () => {
     console.log('Name:', name);
     console.log('Email:', email);
   }, []);
+
+  function kakaoLogout() {
+    axios.get('http://localhost:8080/api/kakao/logout', { withCredentials: true })
+        .then(response => {
+            if (response.data.success) {
+                console.log('로그아웃 성공:', response.data.message);
+                // 로그아웃 후 리디렉션
+                window.location.href = '/login'; // 로그인 페이지로 리디렉션
+            } else {
+                console.log('로그아웃 실패:', response.data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Axios error:', error);
+        });
+  }
   
   const navigate = useNavigate();
-  const handleButtonClick = () => {
+  const handleLoginButtonClick = () => {
     navigate(`/logintest`);
   };
+
   return (
     <div className="w-screen h-full bg-customColor bg-opacity-20">
       <SlidingBanner />
@@ -28,8 +47,10 @@ const Main = () => {
           <Hashtag />
         </div>
       </div>
-      <KakaoButton onClick={handleButtonClick} label="로그인 페이지 이동" />
+      <KakaoButton onClick={handleLoginButtonClick} label="로그인 페이지 이동" />
+      <KakaoButton onClick={kakaoLogout} label="로그아웃" /> {/* 로그아웃 버튼의 onClick 핸들러 수정 */}
     </div>
   );
 };
+
 export default Main;
