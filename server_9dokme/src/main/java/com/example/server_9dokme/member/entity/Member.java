@@ -21,7 +21,7 @@ public class Member extends BaseEntity {
 
     private String password;
 
-    private String socialId;
+    private String socialId;   //이메일
 
     @Enumerated(EnumType.STRING)
     private SocialType socialType;

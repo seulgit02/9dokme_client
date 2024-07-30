@@ -4,6 +4,7 @@ import com.example.server_9dokme.member.dto.response.KakaoTokenDto;
 import com.example.server_9dokme.member.dto.response.KakaoTokenResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nimbusds.jose.shaded.gson.JsonElement;
@@ -133,4 +134,32 @@ public class KakaoService {
         }
         return userInfo;
     }
+
+    public void kakaoDisconnect(String accessToken) throws JsonProcessingException {
+        // HTTP Header 생성
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + accessToken);
+        headers.add("Content-type", "application/x-www-form-urlencoded");
+
+        // HTTP 요청 보내기
+        HttpEntity<MultiValueMap<String, String>> kakaoLogoutRequest = new HttpEntity<>(headers);
+        RestTemplate rt = new RestTemplate();
+        ResponseEntity<String> response = rt.exchange(
+                "https://kapi.kakao.com/v1/user/logout",
+                HttpMethod.POST,
+                kakaoLogoutRequest,
+                String.class
+        );
+
+        // responseBody에 있는 정보를 꺼냄
+        String responseBody = response.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(responseBody);
+
+        Long id = jsonNode.get("id").asLong();
+        System.out.println("반환된 id: "+id);
+    }
+
+
+
 }
