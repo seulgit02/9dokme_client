@@ -27,7 +27,7 @@ public class MemberController {
 
     @GetMapping("/oauth")
     @Operation(summary = "카카오 로그인", description = "카카오 로그인 GET")
-    public SuccessResponse<?> kakaoLogin(@RequestParam String code) {
+    public SuccessResponse<?> kakaoLogin(@RequestParam String code,HttpSession session) {
         String accessToken = kakaoService.getKakaoAccessToken(code).toString();
         HashMap<String, Object> userInfo = kakaoService.getUserInfo(accessToken);
         //Service에서 로직구현 이메일 중복 체크 해서 만약 DB에 이메일이 있으면 저장 X 없으면 저장하는 로직으로 구현
