@@ -1,6 +1,7 @@
 package com.example.server_9dokme.member.controller;
 
 import com.example.server_9dokme.common.dto.SuccessResponse;
+import com.example.server_9dokme.member.entity.Account;
 import com.example.server_9dokme.member.service.KakaoService;
 import io.swagger.annotations.Tag;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,7 +24,7 @@ public class MemberController {
     @GetMapping("/oauth")
     @Operation(summary = "카카오 로그인", description = "카카오 로그인 GET")
     public SuccessResponse<?> kakaoLogin(@RequestParam String code) {
-        String accessToken = kakaoService.getKakaoAccessToken(code).toString();
+        String accessToken = kakaoService.getKakaoAccessToken(code);
         HashMap<String, Object> userInfo = kakaoService.getUserInfo(accessToken);
 
         return SuccessResponse.success(String.valueOf(userInfo));
