@@ -8,19 +8,20 @@ import axios from 'axios'; // Axios import 추가
 const Main = () => {
   useEffect(() => {
     // localStorage에 저장된 값을 모두 콘솔에 출력
-    const name = localStorage.getItem('name');
+    const accessToken = localStorage.getItem('accessToken');
     const email = localStorage.getItem('email');
-    console.log('Name:', name);
+    console.log('Token:', accessToken);
     console.log('Email:', email);
   }, []);
 
-  function kakaoLogout() {
-    axios.get('http://localhost:8080/api/kakao/logout', { withCredentials: true })
+  const kakaoLogout = () => {
+    axios.get('http://localhost:8080/api/logout'/* , { withCredentials: true } */)
         .then(response => {
             if (response.data.success) {
                 console.log('로그아웃 성공:', response.data.message);
                 // 로그아웃 후 리디렉션
-                window.location.href = '/login'; // 로그인 페이지로 리디렉션
+                window.location.href = '/home'; // 로그인 페이지로 리디렉션
+                
             } else {
                 console.log('로그아웃 실패:', response.data.message);
             }

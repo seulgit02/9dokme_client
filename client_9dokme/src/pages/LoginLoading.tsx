@@ -14,8 +14,8 @@ const LoginLoading = () => {
         
         console.log(res.data);
         // 계속 쓸 정보들
-        localStorage.setItem("name", res.data.nickname);
-        localStorage.setItem("email", res.data.email);
+        localStorage.setItem("name", res.data.message.nickname);
+        localStorage.setItem("email", res.data.message.email);
         // 로그인이 성공하면 이동할 페이지
         navigate("/");
       } catch (error) {
