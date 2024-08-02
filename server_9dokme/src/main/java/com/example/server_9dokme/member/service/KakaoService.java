@@ -4,6 +4,8 @@ import com.example.server_9dokme.member.dto.response.KakaoAccountDto;
 import com.example.server_9dokme.member.dto.response.KakaoTokenDto;
 import com.example.server_9dokme.member.dto.response.KakaoTokenResponseDto;
 import com.example.server_9dokme.member.entity.Account;
+import com.example.server_9dokme.member.entity.Member;
+import com.example.server_9dokme.member.repository.MemberRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,6 +19,7 @@ import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -41,10 +44,15 @@ import java.util.*;
 @Service
 public class KakaoService {
 
+    @Autowired
+    MemberRepository memberRepository;
+
     @Value("${kakao.client-id}")
     private String KAKAO_CLIENT_ID;
     @Value("${kakao.redirect-url}")
     private String KAKAO_REDIRECT_URL;
+    @Value("${kakao.client-secret}")
+    private String KAKAO_CLIENT_SECRET;
 
     private final static String KAKAO_AUTH_URI = "https://kauth.kakao.com";
     private final static String KAKAO_API = "https://kapi.kakao.com";
@@ -60,6 +68,7 @@ public class KakaoService {
         params.add("client_id", KAKAO_CLIENT_ID); // 카카오 Dev 앱 REST API 키
         params.add("redirect_uri", KAKAO_REDIRECT_URL); // 카카오 Dev redirect uri
         params.add("code", code); // 프론트에서 인가 코드 요청시 받은 인가 코드값
+        params.add("client_secret",KAKAO_CLIENT_SECRET); //client_secret 발급
 
         // 헤더와 바디 합치기 위해 Http Entity 객체 생성
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
@@ -144,11 +153,29 @@ public class KakaoService {
         return userInfo;
     }
 
+    public void registerMember(String email, String nickName){
+
+        Member duplicateMember = memberRepository.findBySocialId(email);
+
+        Member initMember = new Member();
+
+        if(duplicateMember==null){
+            initMember.setSocialId(email);
+            initMember.setNickName(nickName);
+
+            memberRepository.save(initMember);
+        }
+
+
+
+
+    }
     public void kakaoDisconnect(String accessToken) throws JsonProcessingException {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         headers.add("Authorization", "Bearer " + accessToken);
-        headers.add("Content-type", "application/x-www-form-urlencoded");
+
 
         // HTTP 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoLogoutRequest = new HttpEntity<>(headers);

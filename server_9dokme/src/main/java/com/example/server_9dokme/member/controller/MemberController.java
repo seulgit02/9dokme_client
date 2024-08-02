@@ -16,7 +16,7 @@ import java.util.HashMap;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api")
 public class MemberController {
 
@@ -27,21 +27,23 @@ public class MemberController {
     @GetMapping("/oauth")
     @Operation(summary = "카카오 로그인", description = "카카오 로그인 GET")
     public SuccessResponse<?> kakaoLogin(@RequestParam String code,HttpSession session) {
-        String accessToken = kakaoService.getKakaoAccessToken(code).toString();
+        String accessToken = kakaoService.getKakaoAccessToken(code);
         HashMap<String, Object> userInfo = kakaoService.getUserInfo(accessToken);
         //Service에서 로직구현 이메일 중복 체크 해서 만약 DB에 이메일이 있으면 저장 X 없으면 저장하는 로직으로 구현
 
-        if(userInfo != null){
-            session.setAttribute("email",userInfo.get("email"));
-            session.setAttribute("accessToken",accessToken);
-        }
+        session.setAttribute("email",userInfo.get("email"));
+        session.setAttribute("accessToken",accessToken);
+        session.setMaxInactiveInterval(60 * 60);
+
+        kakaoService.registerMember(String.valueOf(userInfo.get("email")),String.valueOf(userInfo.get("nickname")));
+
 
         return SuccessResponse.success(String.valueOf(userInfo));
     }
 
-    @GetMapping("/kakao/logout")
+    @GetMapping("/logout")
     public SuccessResponse<?> kakaoLogout(HttpSession session) {
-        String accessToken = (String) session.getAttribute("accessToken");
+        String accessToken = (String)session.getAttribute("accessToken");
 
         if(accessToken != null && !"".equals(accessToken)){
             try {
