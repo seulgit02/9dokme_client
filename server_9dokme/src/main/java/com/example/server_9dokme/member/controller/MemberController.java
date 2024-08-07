@@ -3,9 +3,10 @@ package com.example.server_9dokme.member.controller;
 import com.example.server_9dokme.common.dto.BaseResponse;
 import com.example.server_9dokme.common.dto.ErrorResponse;
 import com.example.server_9dokme.common.dto.SuccessResponse;
+import com.example.server_9dokme.member.dto.response.MainPageDto;
 import com.example.server_9dokme.member.service.KakaoService;
+import com.example.server_9dokme.member.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.swagger.annotations.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,9 @@ public class MemberController {
 
     @Autowired
     private KakaoService kakaoService;
+
+    @Autowired
+    private MemberService memberService;
 
     @GetMapping("/oauth")
     @Operation(summary = "카카오 로그인", description = "카카오 로그인 GET")
@@ -67,6 +71,15 @@ public class MemberController {
     }
 
 
+    @GetMapping("/mainPage")
+    public SuccessResponse<MainPageDto> mainPage(HttpSession session ,@RequestParam  String category){
+
+        String socialId = (String) session.getAttribute("email");
+
+        MainPageDto mainPageDto = memberService.getMainPage(socialId,category);
+
+        return SuccessResponse.success("로그인 성공",mainPageDto);
+    }
 
 
 

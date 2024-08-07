@@ -45,7 +45,7 @@ import java.util.*;
 public class KakaoService {
 
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
     @Value("${kakao.client-id}")
     private String KAKAO_CLIENT_ID;
