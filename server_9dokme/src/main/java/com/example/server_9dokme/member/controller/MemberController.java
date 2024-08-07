@@ -1,5 +1,7 @@
 package com.example.server_9dokme.member.controller;
 
+import com.example.server_9dokme.common.dto.BaseResponse;
+import com.example.server_9dokme.common.dto.ErrorResponse;
 import com.example.server_9dokme.common.dto.SuccessResponse;
 import com.example.server_9dokme.member.service.KakaoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,10 +28,14 @@ public class MemberController {
 
     @GetMapping("/oauth")
     @Operation(summary = "카카오 로그인", description = "카카오 로그인 GET")
-    public SuccessResponse<?> kakaoLogin(@RequestParam String code,HttpSession session) {
+    public BaseResponse kakaoLogin(@RequestParam String code, HttpSession session) {
         String accessToken = kakaoService.getKakaoAccessToken(code);
         HashMap<String, Object> userInfo = kakaoService.getUserInfo(accessToken);
         //Service에서 로직구현 이메일 중복 체크 해서 만약 DB에 이메일이 있으면 저장 X 없으면 저장하는 로직으로 구현
+
+        if(accessToken !=null){
+            return ErrorResponse.of("로그인 실패");
+        }
 
         session.setAttribute("email",userInfo.get("email"));
         session.setAttribute("accessToken",accessToken);
