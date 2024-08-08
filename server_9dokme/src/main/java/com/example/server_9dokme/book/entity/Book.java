@@ -20,8 +20,8 @@ public class Book extends BaseEntity {
     @Column(name = "book_id")
     private Long bookId;
 
-//    @Column(name = "last_viewed_date")
-//    private LocalDateTime lastViewedDate;
+    @Column(name = "last_viewed_date")
+    private LocalDateTime lastViewedDate;
 
     private String title;
 

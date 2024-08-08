@@ -23,7 +23,7 @@ public class BookController {
     public Page<BookDto> mypage(HttpSession session,
                                     int id,
                                     @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
-                                    @RequestParam(required = false, defaultValue = "createdAt", value = "criteria") String criteria){
+                                    @RequestParam(required = false, defaultValue = "lastViewedDate", value = "criteria") String criteria){
         return bookService.getMypageBookList(id, pageNo, criteria);
     }
 }
