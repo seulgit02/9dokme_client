@@ -5,6 +5,7 @@ import com.example.server_9dokme.book.entity.Advertisement;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -14,6 +15,6 @@ import java.util.List;
 public class MainPageDto {
 
     private List<Advertisement> advertisementList;
-    private List<BookDto> bookList;
+    private Page<BookDto> bookList;
 
 }

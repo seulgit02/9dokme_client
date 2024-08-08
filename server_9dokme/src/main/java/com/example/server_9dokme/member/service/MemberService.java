@@ -10,6 +10,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.filter.OrderedFormContentFilter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,42 +30,32 @@ public class MemberService {
     private BookRepository bookRepository;
     @Autowired
     private AdvertisementRepository advertisementRepository;
+    @Autowired
+    private OrderedFormContentFilter formContentFilter;
 
 
-    public MainPageDto getMainPage(String socialId, String category){
+    public MainPageDto getMainPage(String category, int pageNo){
 
-        List<Book> bookList = new ArrayList<>();
         List<Advertisement> advertisementDtoList = advertisementRepository.findAll();
 
+        Pageable pageable = PageRequest.of(pageNo,4);
 
-        if(category==null || category.equals("")){
-            bookList = bookRepository.findAll();
-        }else if(category=="공학"){
-            bookList = bookRepository.findAllByCategory("공학");
+        Page<Book> bookPage;
 
-        }else if(category=="자연"){
-            bookList = bookRepository.findAllByCategory("자연");
-        }else if(category=="예술"){
-            bookList = bookRepository.findAllByCategory("예술");
-        }else if(category=="인문/사화") {
-            bookList = bookRepository.findAllByCategory("인문/사회");
-        }else if(category=="체육"){
-            bookList = bookRepository.findAllByCategory("체육");
-        }else if(category=="경영/경제"){
-            bookList = bookRepository.findAllByCategory("경영/경제");
+        if (category == null || category.isEmpty()) {
+            bookPage = bookRepository.findAll(pageable);
+        } else {
+            bookPage = bookRepository.findAllByCategory(category, pageable);
         }
 
-        List<BookDto> bookDtoList = bookList.stream().map(book ->
-                BookDto.builder()
-                        .bookId(book.getBookId())
-                        .category(book.getCategory())
-                        .bookImage(book.getBookImage())
-                        .bookUrl(book.getBookURL())
-                        .build()
-        ).collect(Collectors.toList());
+        // Convert Page<Book> to Page<BookDto>
+        Page<BookDto> bookDtoPage = bookPage.map(book -> new BookDto(
+                book.getBookId(),
+                book.getCategory(),
+                book.getBookURL(),
+                book.getBookImage()));
 
 
-
-        return new MainPageDto(advertisementDtoList,bookDtoList);
+        return new MainPageDto(advertisementDtoList,bookDtoPage);
     }
 }

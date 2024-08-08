@@ -30,6 +30,7 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
+
     @GetMapping("/oauth")
     @Operation(summary = "카카오 로그인", description = "카카오 로그인 GET")
     public BaseResponse kakaoLogin(@RequestParam String code, HttpSession session) {
@@ -37,7 +38,7 @@ public class MemberController {
         HashMap<String, Object> userInfo = kakaoService.getUserInfo(accessToken);
         //Service에서 로직구현 이메일 중복 체크 해서 만약 DB에 이메일이 있으면 저장 X 없으면 저장하는 로직으로 구현
 
-        if(accessToken !=null){
+        if(accessToken ==null){
             return ErrorResponse.of("로그인 실패");
         }
 
@@ -52,6 +53,7 @@ public class MemberController {
     }
 
     @GetMapping("/logout")
+    @Operation(summary = "카카오 로그아웃", description = "카카오 로그아웃")
     public SuccessResponse<?> kakaoLogout(HttpSession session) {
         String accessToken = (String)session.getAttribute("accessToken");
 
@@ -72,13 +74,19 @@ public class MemberController {
 
 
     @GetMapping("/mainPage")
-    public SuccessResponse<MainPageDto> mainPage(HttpSession session ,@RequestParam  String category){
+    @Operation(summary = "메인 페이지", description = "메인페이지, 페이지 네이션 적용")
+    public SuccessResponse<MainPageDto> mainPage(HttpSession session ,
+                                                 @RequestParam(required = false, defaultValue = "", value = "category")  String category,
+                                                 @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
 
         String socialId = (String) session.getAttribute("email");
+        String accessToen = (String) session.getAttribute("accessToken");
 
-        MainPageDto mainPageDto = memberService.getMainPage(socialId,category);
 
-        return SuccessResponse.success("로그인 성공",mainPageDto);
+
+        MainPageDto mainPageDto = memberService.getMainPage(category,pageNo);
+
+        return SuccessResponse.success("메인 페이지",mainPageDto);
     }
 
 
