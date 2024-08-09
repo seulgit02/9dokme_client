@@ -1,6 +1,8 @@
 package com.example.server_9dokme.book.service;
 
 import com.example.server_9dokme.book.dto.response.BookListDto;
+import com.example.server_9dokme.book.dto.response.MyPageDto;
+import com.example.server_9dokme.book.dto.response.ProfileDto;
 import com.example.server_9dokme.book.entity.Book;
 import com.example.server_9dokme.book.repository.BookRepository;
 import com.example.server_9dokme.member.dto.response.BookDto;
@@ -28,10 +30,15 @@ public class BookService {
     @Autowired
     private MemberRepository memberRepository;
 
-    public Page<BookDto> getMypageBookList(int id, int pageNo, String criteria){
+    public MyPageDto getMypageBookList(int id, int pageNo, String criteria){
 
         Pageable pageable = PageRequest.of(pageNo, 8, Sort.Direction.DESC, criteria);
         Member member =memberRepository.findByMemberId(id);
+
+        ProfileDto profileDto = new ProfileDto(
+                member.getMemberId(),
+                member.getNickName()
+        );
 
         Page<Book> page = bookRepository.findAllByMember(member, pageable);
 
@@ -41,6 +48,7 @@ public class BookService {
                 book.getBookURL(),
                 book.getBookImage()));
 
-        return bookDtoPage;
+        return new MyPageDto(profileDto,bookDtoPage);
+//        return bookDtoPage;
     }
 }

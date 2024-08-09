@@ -1,6 +1,7 @@
 package com.example.server_9dokme.book.controller;
 
 import com.example.server_9dokme.book.dto.response.BookListDto;
+import com.example.server_9dokme.book.dto.response.MyPageDto;
 import com.example.server_9dokme.book.service.BookService;
 import com.example.server_9dokme.member.dto.response.BookDto;
 import jakarta.servlet.http.HttpSession;
@@ -20,10 +21,10 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping("/mypage")
-    public Page<BookDto> mypage(HttpSession session,
-                                    int id,
-                                    @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
-                                    @RequestParam(required = false, defaultValue = "lastViewedDate", value = "criteria") String criteria){
+    public MyPageDto mypage(HttpSession session,
+                            int id,
+                            @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+                            @RequestParam(required = false, defaultValue = "lastViewedDate", value = "criteria") String criteria){
         return bookService.getMypageBookList(id, pageNo, criteria);
     }
 }
