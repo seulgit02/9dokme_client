@@ -27,15 +27,26 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.nimbusds:nimbus-jose-jwt:9.37.2'
+    implementation 'io.netty:netty-all:4.1.75.Final'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-    implementation 'io.springfox:springfox-boot-starter:3.0.0'
-    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+    // SpringDoc OpenAPI
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0' // 버전 조정
+
+    // Swagger Core 버전을 명시적으로 추가
+    implementation 'io.swagger.core.v3:swagger-core:2.2.10'
+
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
+
+
+
 }
 
 tasks.named('test') {

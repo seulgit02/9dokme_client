@@ -1,39 +1,20 @@
 package com.example.server_9dokme.common.config;
 
 
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.OpenAPI;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+
 
 @Configuration
 public class SwaggerConfig {
 
     @Bean
-    public Docket api() {
-        return new Docket(DocumentationType.OAS_30) // open api spec 3.0
-                .groupName("groupName")
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("com.example.swagger"))
-                .paths(PathSelectors.ant("/api/**"))
-                //.apis(RequestHandlerSelectors.any())
-                //.paths(PathSelectors.any())
-                .build()
-                .apiInfo(this.apiInfo());
-    }
+    public OpenAPI openAPI() {
 
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-                .title("Hello Swagger")
-                .description("스웨거 기능 테스트")
-                .version("1.0")
-                .build();
+        Info info = new Info().title("9DokMe API Test").version("v0.0.1");
+        info.description("9DokMe 오픈 API 입니다.");
+        return new OpenAPI().info(info);
     }
 }

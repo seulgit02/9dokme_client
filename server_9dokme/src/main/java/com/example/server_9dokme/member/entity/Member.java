@@ -1,11 +1,13 @@
 package com.example.server_9dokme.member.entity;
 import com.example.server_9dokme.common.entity.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
+@Data
 @NoArgsConstructor
 public class Member extends BaseEntity {
 
@@ -21,7 +23,9 @@ public class Member extends BaseEntity {
 
     private String password;
 
-    private String socialId;
+    private String nickName;
+
+    private String socialId;   //이메일
 
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
