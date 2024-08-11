@@ -6,7 +6,9 @@ import com.example.server_9dokme.book.repository.AdvertisementRepository;
 import com.example.server_9dokme.book.repository.BookRepository;
 import com.example.server_9dokme.member.dto.response.BookDto;
 import com.example.server_9dokme.member.dto.response.MainPageDto;
+import com.example.server_9dokme.member.entity.Member;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.boot.web.servlet.filter.OrderedFormContentFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,6 +27,7 @@ import java.util.stream.Collectors;
 @Data
 @NoArgsConstructor
 @Service
+@Getter
 public class MemberService {
 
     @Autowired
@@ -57,5 +61,11 @@ public class MemberService {
 
 
         return new MainPageDto(advertisementDtoList,bookDtoPage);
+    }
+
+
+    // 현재 사용자 정보 가져오기
+    public Member getCurrentMember() {
+        return (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }
