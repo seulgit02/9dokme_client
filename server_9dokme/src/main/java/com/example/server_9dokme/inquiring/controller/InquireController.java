@@ -3,6 +3,7 @@ package com.example.server_9dokme.inquiring.controller;
 import com.example.server_9dokme.inquiring.dto.request.InquireRequestDto;
 import com.example.server_9dokme.inquiring.entity.Inquire;
 import com.example.server_9dokme.inquiring.service.InquireService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,12 @@ public class InquireController {
     @Autowired
     private InquireService inquireService;
 
+
+
     @PostMapping
-    public ResponseEntity<Inquire> createInquire(@RequestBody InquireRequestDto inquireRequest) {
-        Inquire createdInquire = inquireService.createInquire(inquireRequest);
+    public ResponseEntity<Inquire> createInquire(@RequestBody InquireRequestDto inquireRequest, HttpSession session) {
+
+        Inquire createdInquire = inquireService.createInquire(inquireRequest, (Long)session.getAttribute("memberId"));
         return new ResponseEntity<>(createdInquire, HttpStatus.CREATED);
     }
 }

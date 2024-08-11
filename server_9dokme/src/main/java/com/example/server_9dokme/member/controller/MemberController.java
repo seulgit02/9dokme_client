@@ -4,6 +4,8 @@ import com.example.server_9dokme.common.dto.BaseResponse;
 import com.example.server_9dokme.common.dto.ErrorResponse;
 import com.example.server_9dokme.common.dto.SuccessResponse;
 import com.example.server_9dokme.member.dto.response.MainPageDto;
+import com.example.server_9dokme.member.entity.Member;
+import com.example.server_9dokme.member.repository.MemberRepository;
 import com.example.server_9dokme.member.service.KakaoService;
 import com.example.server_9dokme.member.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,6 +32,8 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
+    @Autowired
+    private MemberRepository memberRepository;
 
     @GetMapping("/oauth")
     @Operation(summary = "카카오 로그인", description = "카카오 로그인 GET")
@@ -44,6 +48,8 @@ public class MemberController {
 
         session.setAttribute("email",userInfo.get("email"));
         session.setAttribute("accessToken",accessToken);
+        Member member = memberRepository.findBySocialId((String)userInfo.get("email"));
+        session.setAttribute("memberId",member.getMemberId());
         session.setMaxInactiveInterval(60 * 60);
 
         kakaoService.registerMember(String.valueOf(userInfo.get("email")),String.valueOf(userInfo.get("nickname")));

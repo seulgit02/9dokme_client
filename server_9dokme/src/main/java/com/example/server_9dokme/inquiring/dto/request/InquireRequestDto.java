@@ -8,5 +8,5 @@ import lombok.Data;
 public class InquireRequestDto {
     private String title;
     private String content;
-    private long userId;
+//    private long userId;
 }
