@@ -9,7 +9,7 @@ public class BookException extends RuntimeException {
     private final ErrorMessage errorMessage;
 
     public BookException(ErrorMessage errorMessage) {
-        super("[MemberException] : " + errorMessage.getMessage());
+        super("[BookException] : " + errorMessage.getMessage());
         this.errorMessage = errorMessage;
     }
 }
