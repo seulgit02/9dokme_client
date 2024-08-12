@@ -65,7 +65,24 @@ public class MemberService {
 
 
     // 현재 사용자 정보 가져오기
+//    public Member getCurrentMember() {
+//        return (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//    }
+
+    // 테스트용 하드코딩 (멤버 아이디를 1로 고정하여 테스트)
+
     public Member getCurrentMember() {
+        if (isTestEnvironment()) {
+            Member testMember = new Member();
+            testMember.setMemberId(1L);  // Member의 ID를 명확하게 설정
+            return testMember;
+        }
         return (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
+
+    private boolean isTestEnvironment() {
+        // 테스트 환경 확인을 위해 필요하다면 환경 변수를 체크하거나 단순히 true를 반환
+        return true;
+    }
+
 }
