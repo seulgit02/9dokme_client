@@ -1,15 +1,13 @@
 package com.example.server_9dokme.member.entity;
 import com.example.server_9dokme.common.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
 @NoArgsConstructor
 @Getter
+@Setter
 public class Member extends BaseEntity {
 
     @Id
