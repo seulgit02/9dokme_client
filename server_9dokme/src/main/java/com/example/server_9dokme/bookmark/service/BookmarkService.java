@@ -1,6 +1,7 @@
 package com.example.server_9dokme.bookmark.service;
 
 import com.example.server_9dokme.book.entity.Book;
+import com.example.server_9dokme.book.exception.BookException;
 import com.example.server_9dokme.book.service.BookService;
 import com.example.server_9dokme.bookmark.entity.Bookmark;
 import com.example.server_9dokme.bookmark.exception.BookmarkException;
@@ -45,11 +46,16 @@ public class BookmarkService {
 
     @Transactional
     public BookmarkResponse unmark(BookUnMarkRequest bookUnMarkRequest) {
-        Bookmark bookmark = bookmarkRepository.findById(bookUnMarkRequest.bookmarkId())
+        Member member = memberService.getCurrentMember();
+        Book book = bookService.findById(bookUnMarkRequest.bookId())
                 .orElseThrow(() -> new BookmarkException(ErrorMessage.NOT_FOUND_BOOKMARK));
+
+        Bookmark bookmark = bookmarkRepository.findByBookAndMember(book, member)
+                .orElseThrow(() -> new BookException(com.example.server_9dokme.book.message.ErrorMessage.NOT_FOUND_BOOK));
 
         bookmarkRepository.delete(bookmark);
 
         return new BookmarkResponse(bookmark.getBookmarkId());
     }
+
 }
