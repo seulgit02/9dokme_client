@@ -26,7 +26,7 @@ public class QuestionService {
     @Autowired
     private CommentRepository commentRepository;
 
-    public QuestionListDto getQuestionList(Long bookId, String chapter, int bookPage, int pageNo, String criteria){
+    public Page<QuestionDto> getQuestionList(Long bookId, String chapter, int bookPage, int pageNo, String criteria){
         Pageable pageable = PageRequest.of(pageNo, 8, Sort.Direction.DESC, criteria);
 
         Page<Question> page = questionRepository.findByBook_BookIdAndChapterAndBookPage(bookId, chapter, bookPage, pageable);
@@ -38,7 +38,7 @@ public class QuestionService {
                 commentRepository.countByQuestion_QuestionId(question.getQuestionId()),
                 question.getCreatedAt()
         ));
-        return (QuestionListDto)questionDtoPage;
+        return questionDtoPage;
 
     }
 }
