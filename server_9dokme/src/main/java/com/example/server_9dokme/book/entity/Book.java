@@ -1,5 +1,6 @@
 package com.example.server_9dokme.book.entity;
 import com.example.server_9dokme.common.entity.BaseEntity;
+import com.example.server_9dokme.question.entity.Question;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,11 +32,17 @@ public class Book extends BaseEntity {
 
     private String category;
 
-    private String bookImage;
+    private String description;
 
-    private String bookURL; // URL로 프론트에 넘겨주기로 했기 때문에 데이터타입 수정
+    private String bookImage;   //이미지 URL
+
+    private String bookURL; // URL로 프론트에 넘겨주기로 했기 때문에 데이터타입 수정 웹뷰 조회
 
     private Integer progress;
 
     private Integer rent;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    private List<Question> timetableList = new ArrayList<>();
+
 }

@@ -80,7 +80,7 @@ public class MemberController {
                                                  @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
 
         String socialId = (String) session.getAttribute("email");
-        String accessToen = (String) session.getAttribute("accessToken");
+        String accessToken = (String) session.getAttribute("accessToken");
 
 
 
