@@ -1,7 +1,10 @@
 package com.example.server_9dokme.question.entity;
 
 import com.example.server_9dokme.book.entity.Book;
+import com.example.server_9dokme.common.entity.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -13,8 +16,10 @@ import java.util.List;
 
 @Entity
 @Data
+@AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class Question {
+public class Question extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,14 +32,10 @@ public class Question {
 
     private String email;
 
-    @DateTimeFormat(pattern = "yyyy.MM.dd HH:mm:ss")
-    @Column(updatable = false)
-    @CreatedDate
-    private LocalDateTime createdAt;
 
-    private String chapter;
+    private int chapter;
 
-    private String bookPage;
+    private int bookPage;
 
     @ManyToOne
     private Book book;

@@ -2,6 +2,7 @@ package com.example.server_9dokme.book.controller;
 
 import com.example.server_9dokme.book.dto.response.BookCheckDto;
 import com.example.server_9dokme.book.dto.response.BookWebViewDto;
+import com.example.server_9dokme.book.entity.Book;
 import com.example.server_9dokme.book.message.ErrorMessage;
 import com.example.server_9dokme.book.repository.BookRepository;
 import com.example.server_9dokme.book.service.BookService;
@@ -10,13 +11,17 @@ import com.example.server_9dokme.common.dto.ErrorResponse;
 import com.example.server_9dokme.common.dto.SuccessResponse;
 import com.example.server_9dokme.member.dto.response.BookDto;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,42 +36,63 @@ public class BookController {
 
     @GetMapping("/bookdetail")
     @Operation(summary = "pdf 교재 상세조회", description = "pdf 교재 상세조회")
-    public BaseResponse getBookDetail(@RequestParam Long id) {
+    public ResponseEntity<BookCheckDto> getBookDetail(@RequestParam Long id,
+                                                      HttpSession session) {
 
+        Object currentMember = session.getAttribute("email");
+
+        if (currentMember == null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "로그인 후 이용해주세요.");
+        }
         if(bookRepository.existsById(id)==false){
-            return ErrorResponse.of(ErrorMessage.INVALID_BOOK_ID.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "찾을 수 없는 pdf 교재입니다.");
         }
 
         BookCheckDto dto = bookService.checkBook(id);
 
-        return SuccessResponse.success("pdf 상세조회", dto);
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/bookPDF")
     @Operation(summary = "pdf 교재 검색", description = "pdf 교재 검색 title 기반")
-    public BaseResponse searchBookPDF(@RequestParam String title,
-                                      @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo) {
+    public ResponseEntity<Page<BookDto>> searchBookPDF(@RequestParam String title,
+                                      @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+                                                       HttpSession session) {
 
         Page<BookDto> dto = bookService.searchBook(title,pageNo);
 
-        if(dto.isEmpty()){
-            SuccessResponse.success("검색하신 교재는 존재하지 않습니다.");
+        Object currentMember = session.getAttribute("email");
+
+        if (currentMember == null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "로그인 후 이용해주세요.");
+        }
+        if(dto.isEmpty()==false){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "찾을 수 없는 pdf 교재입니다.");
         }
 
-        return SuccessResponse.success("교재 검색", dto);
+
+
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/view")
     @Operation(summary = "pdf 교재 웹뷰 조회", description = "pdf 교재 웹뷰 조회")
-    public BaseResponse viewBookPDF(@RequestParam Long bookId) {
+    public ResponseEntity<BookWebViewDto> viewBookPDF(@RequestParam Long bookId,
+                                                      HttpSession session) {
+
+        Object currentMember = session.getAttribute("email");
+
+        if (currentMember == null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "로그인 후 이용해주세요.");
+        }
 
         if(bookRepository.existsById(bookId)==false){
-            return ErrorResponse.of("존재하지 않은 pdf교재입니다! 관리자에게 문의해주세요!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "찾을 수 없는 pdf 교재입니다.");
         }
 
         BookWebViewDto dto = bookService.bookWebView(bookId);
 
-        return SuccessResponse.success("pdf 교재", dto);
+        return ResponseEntity.ok(dto);
     }
 }
 
