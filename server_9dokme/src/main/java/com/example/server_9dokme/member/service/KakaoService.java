@@ -15,6 +15,7 @@ import com.nimbusds.jose.shaded.gson.JsonElement;
 import com.nimbusds.jose.shaded.gson.JsonObject;
 import com.nimbusds.jose.shaded.gson.JsonParser;
 import io.netty.handler.codec.http.HttpHeaderValues;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -46,6 +47,9 @@ public class KakaoService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private HttpSession session;
 
     @Value("${kakao.client-id}")
     private String KAKAO_CLIENT_ID;
@@ -166,10 +170,10 @@ public class KakaoService {
             memberRepository.save(initMember);
         }
 
-
-
-
+        session.setAttribute("email", email);
+        log.info("Email {} stored in session", email);
     }
+
     public void kakaoDisconnect(String accessToken) throws JsonProcessingException {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
