@@ -41,6 +41,8 @@ public class QuestionService {
                         .questionId(question.getQuestionId())
                         .title(question.getTitle())
                         .content(question.getContent())
+                        .chapter(question.getChapter())
+                        .bookPage(question.getBookPage())
                         .commentCount(commentRepository.countByQuestion_QuestionId(question.getQuestionId()))
                         .createdAt(question.getCreatedAt())
                         .build())
