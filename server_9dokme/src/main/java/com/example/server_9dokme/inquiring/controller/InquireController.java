@@ -22,7 +22,7 @@ public class InquireController {
 
 
 
-    @PostMapping
+    @PostMapping("/inquire")
     public ResponseEntity<Inquire> createInquire(@RequestBody InquireRequestDto inquireRequest, HttpSession session) {
 
         Inquire createdInquire = inquireService.createInquire(inquireRequest, (Long)session.getAttribute("memberId"));

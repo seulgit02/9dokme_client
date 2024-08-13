@@ -2,8 +2,11 @@ package com.example.server_9dokme.question.service;
 
 import com.example.server_9dokme.book.dto.response.BookListDto;
 import com.example.server_9dokme.question.dto.request.QuesitonRequestDto;
+import com.example.server_9dokme.question.dto.response.CommentDto;
+import com.example.server_9dokme.question.dto.response.QuestionDetailDto;
 import com.example.server_9dokme.question.dto.response.QuestionDto;
 import com.example.server_9dokme.question.dto.response.QuestionListDto;
+import com.example.server_9dokme.question.entity.Comment;
 import com.example.server_9dokme.question.entity.Question;
 import com.example.server_9dokme.question.repository.CommentRepository;
 import com.example.server_9dokme.question.repository.QuestionRepository;
@@ -46,5 +49,33 @@ public class QuestionService {
         return QuestionListDto.builder()
                 .questionList(questionDtoList)
                 .build();
+    }
+
+    public QuestionDetailDto getQuestionDetail(int questionId){
+        Question question = questionRepository.findByQuestionId(questionId);
+
+        if (question == null) {
+            throw new RuntimeException("Question not found with ID: " + questionId);
+        }
+
+        QuestionDto questionDto = QuestionDto.builder()
+                .questionId(question.getQuestionId())
+                .title(question.getTitle())
+                .content(question.getContent())
+                .commentCount(commentRepository.countByQuestion_QuestionId(question.getQuestionId()))
+                .createdAt(question.getCreatedAt())
+                .build();
+
+        List<Comment> commentList = commentRepository.findAllByQuestion_QuestionId(questionId);
+
+        List<CommentDto> commentDtoList = commentList.stream()
+                .map(comment -> CommentDto.builder()
+                        .commentId(comment.getCommentId())
+                        .content(comment.getContent())
+                        .createdAt(comment.getCreatedAt())
+                        .build())
+                .collect(Collectors.toList());
+
+        return new QuestionDetailDto(questionDto, commentDtoList);
     }
 }
