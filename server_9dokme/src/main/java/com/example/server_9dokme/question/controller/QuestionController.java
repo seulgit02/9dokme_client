@@ -1,5 +1,6 @@
 package com.example.server_9dokme.question.controller;
 
+import com.example.server_9dokme.question.dto.request.QuesitonRequestDto;
 import com.example.server_9dokme.question.dto.response.QuestionDto;
 import com.example.server_9dokme.question.dto.response.QuestionListDto;
 import com.example.server_9dokme.question.service.QuestionService;
@@ -18,13 +19,8 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
 
-    @GetMapping("/{bookId}/{chapter}/{bookPage}/{page}")
-    public Page<QuestionDto> getQuestionList (
-            @PathVariable Long bookId,
-            @PathVariable String chapter,
-            @PathVariable int bookPage,
-            @PathVariable int page,
-            @RequestParam(required = false, defaultValue = "lastViewedDate", value = "criteria") String criteria) {
-        return questionService.getQuestionList(bookId, chapter, bookPage, page, criteria);
+    @GetMapping("/questionlist/{bookId}/{page}")
+    public QuestionListDto getQuestionList (@PathVariable Long bookId ) {
+        return questionService.getQuestionList(bookId);
     }
 }

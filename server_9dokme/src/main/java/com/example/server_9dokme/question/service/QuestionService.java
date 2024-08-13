@@ -1,6 +1,7 @@
 package com.example.server_9dokme.question.service;
 
 import com.example.server_9dokme.book.dto.response.BookListDto;
+import com.example.server_9dokme.question.dto.request.QuesitonRequestDto;
 import com.example.server_9dokme.question.dto.response.QuestionDto;
 import com.example.server_9dokme.question.dto.response.QuestionListDto;
 import com.example.server_9dokme.question.entity.Question;
@@ -16,6 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Data
 @NoArgsConstructor
@@ -26,19 +30,21 @@ public class QuestionService {
     @Autowired
     private CommentRepository commentRepository;
 
-    public Page<QuestionDto> getQuestionList(Long bookId, String chapter, int bookPage, int pageNo, String criteria){
-        Pageable pageable = PageRequest.of(pageNo, 8, Sort.Direction.DESC, criteria);
+    public QuestionListDto getQuestionList(Long bookId){
+        List<Question> questions = questionRepository.findAllByBook_BookId(bookId);
 
-        Page<Question> page = questionRepository.findByBook_BookIdAndChapterAndBookPage(bookId, chapter, bookPage, pageable);
+        List<QuestionDto> questionDtoList = questions.stream()
+                .map(question -> QuestionDto.builder()
+                        .questionId(question.getQuestionId())
+                        .title(question.getTitle())
+                        .content(question.getContent())
+                        .commentCount(commentRepository.countByQuestion_QuestionId(question.getQuestionId()))
+                        .createdAt(question.getCreatedAt())
+                        .build())
+                .collect(Collectors.toList());
 
-        Page<QuestionDto> questionDtoPage = page.map(question -> new QuestionDto(
-                question.getQuestionId(),
-                question.getTitle(),
-                question.getContent(),
-                commentRepository.countByQuestion_QuestionId(question.getQuestionId()),
-                question.getCreatedAt()
-        ));
-        return questionDtoPage;
-
+        return QuestionListDto.builder()
+                .questionList(questionDtoList)
+                .build();
     }
 }

@@ -10,5 +10,5 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class QuestionListDto {
-    private List<QuestionDto> questionDtoList;
+    private List<QuestionDto> questionList;
 }
