@@ -7,16 +7,18 @@ import com.example.server_9dokme.book.repository.BookRepository;
 import com.example.server_9dokme.member.dto.response.BookDto;
 import com.example.server_9dokme.member.dto.response.MainPageDto;
 import com.example.server_9dokme.member.entity.Member;
+import com.example.server_9dokme.member.repository.MemberRepository;
+import jakarta.servlet.http.HttpSession;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.filter.OrderedFormContentFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,10 +27,13 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Data
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Service
 @Getter
 public class MemberService {
+
+    private final HttpSession session;
+    private final MemberRepository memberRepository;
 
     @Autowired
     private BookRepository bookRepository;
@@ -65,24 +70,21 @@ public class MemberService {
 
 
     // 현재 사용자 정보 가져오기
-//    public Member getCurrentMember() {
-//        return (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//    }
-
-    // 테스트용 하드코딩 (멤버 아이디를 1로 고정하여 테스트)
-
     public Member getCurrentMember() {
-        if (isTestEnvironment()) {
-            Member testMember = new Member();
-            testMember.setMemberId(1L);  // Member의 ID를 명확하게 설정
-            return testMember;
+        String email = (String) session.getAttribute("email");
+        if (email == null) {
+            log.error("User not logged in. Session attributes: {}", session.getAttributeNames());
+            throw new IllegalStateException("User not logged in.");
         }
-        return (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return findMemberByEmail(email);
     }
 
-    private boolean isTestEnvironment() {
-        // 테스트 환경 확인을 위해 필요하다면 환경 변수를 체크하거나 단순히 true를 반환
-        return true;
+    private Member findMemberByEmail(String email) {
+        Member member = memberRepository.findBySocialId(email);
+        if (member == null) {
+            log.error("No member found with email: {}", email);
+            throw new IllegalArgumentException("No member found with the provided email.");
+        }
+        return member;
     }
-
 }
