@@ -3,6 +3,12 @@ package com.example.server_9dokme.question.entity;
 import com.example.server_9dokme.book.entity.Book;
 import jakarta.persistence.*;
 import lombok.*;
+import com.example.server_9dokme.common.entity.BaseEntity;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -11,11 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Question {
+public class Question extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +39,7 @@ public class Question {
     @CreatedDate
     private LocalDateTime createdAt;
 
+    //chapter int? String?
     private String chapter;
 
     private int bookPage;

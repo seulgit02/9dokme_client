@@ -14,4 +14,5 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     //bookId, Chapter, bookPage로 조회 + 페이지네이션
     List<Question> findAllByBook_BookId(Long bookId);
     Question findByQuestionId(int questionId);
+    Question save(Question question);
 }

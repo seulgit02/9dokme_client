@@ -1,6 +1,7 @@
 package com.example.server_9dokme.question.service;
 
 import com.example.server_9dokme.book.dto.response.BookListDto;
+import com.example.server_9dokme.book.repository.BookRepository;
 import com.example.server_9dokme.question.dto.request.QuesitonRequestDto;
 import com.example.server_9dokme.question.dto.response.CommentDto;
 import com.example.server_9dokme.question.dto.response.QuestionDetailDto;
@@ -32,6 +33,8 @@ public class QuestionService {
     private QuestionRepository questionRepository;
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    BookRepository bookRepository;
 
     public QuestionListDto getQuestionList(Long bookId){
         List<Question> questions = questionRepository.findAllByBook_BookId(bookId);
@@ -79,5 +82,18 @@ public class QuestionService {
                 .collect(Collectors.toList());
 
         return new QuestionDetailDto(questionDto, commentDtoList);
+    }
+    public void createQuestion(Long bookId, CreateQuestionDto dto, Object user){
+
+
+        Question question = Question.builder()
+                .book(bookRepository.findByBookId(bookId))
+                .email(user.toString())
+                .chapter(dto.getBookChapter())
+                .bookPage(dto.getBookPage())
+                .title(dto.getTitle())
+                .content(dto.getContent()).build();
+
+        questionRepository.save(question);
     }
 }

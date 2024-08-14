@@ -56,6 +56,7 @@ public class MemberService {
         // Convert Page<Book> to Page<BookDto>
         Page<BookDto> bookDtoPage = bookPage.map(book -> new BookDto(
                 book.getBookId(),
+                book.getTitle(),
                 book.getCategory(),
                 book.getBookURL(),
                 book.getBookImage()));

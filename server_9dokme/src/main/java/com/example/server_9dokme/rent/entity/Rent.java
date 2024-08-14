@@ -20,6 +20,10 @@ public class Rent extends BaseEntity {
 
     private LocalDateTime returnDate;
 
+    private LocalDateTime readAt;
+
+    private Long progress;
+
     @Column(name = "member_id")
     private Long memberId;
 
