@@ -2,6 +2,7 @@ package com.example.server_9dokme.question.service;
 
 import com.example.server_9dokme.book.dto.response.BookListDto;
 import com.example.server_9dokme.book.repository.BookRepository;
+import com.example.server_9dokme.question.dto.request.CreateQuestionDto;
 import com.example.server_9dokme.question.dto.request.QuesitonRequestDto;
 import com.example.server_9dokme.question.dto.response.CommentDto;
 import com.example.server_9dokme.question.dto.response.QuestionDetailDto;

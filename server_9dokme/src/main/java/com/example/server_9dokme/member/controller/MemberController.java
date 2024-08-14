@@ -83,7 +83,6 @@ public class MemberController {
         return SuccessResponse.success("로그아웃 성공");
     }
 
-
     @GetMapping("/mainPage")
     @Operation(summary = "메인 페이지", description = "메인페이지, 페이지 네이션 적용")
     public SuccessResponse<MainPageDto> mainPage(HttpSession session ,

@@ -96,6 +96,7 @@ public class BookService {
 
         Page<BookDto> bookDtoPage = page.map(book -> new BookDto(
                 book.getBookId(),
+                book.getTitle(),
                 book.getCategory(),
                 book.getBookURL(),
                 book.getBookImage()));

@@ -45,9 +45,10 @@ public class Book extends BaseEntity {
 
     private Integer rent;
 
-//    @ManyToOne
-//    @JoinColumn(name = "member_id")
-//    private Member member;
+    //[merge] member 어떻게 join?
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private List<Question> timetableList = new ArrayList<>();
