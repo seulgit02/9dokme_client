@@ -6,6 +6,9 @@ import com.example.server_9dokme.book.repository.AdvertisementRepository;
 import com.example.server_9dokme.book.repository.BookRepository;
 import com.example.server_9dokme.member.dto.response.BookDto;
 import com.example.server_9dokme.member.dto.response.MainPageDto;
+import com.example.server_9dokme.member.dto.response.MemberDto;
+import com.example.server_9dokme.member.entity.Member;
+import com.example.server_9dokme.member.repository.MemberRepository;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +29,8 @@ import java.util.stream.Collectors;
 @Service
 public class MemberService {
 
+    @Autowired
+    private MemberRepository memberRepository;
     @Autowired
     private BookRepository bookRepository;
     @Autowired
@@ -57,5 +62,25 @@ public class MemberService {
 
 
         return new MainPageDto(advertisementDtoList,bookDtoPage);
+    }
+
+    public Page<MemberDto> getMemberList(int pageNo){
+        Pageable pageable = PageRequest.of(pageNo,10);
+        Page<Member> memberList = memberRepository.findAll(pageable);
+        //expireDate추가 필요!!
+        Page<MemberDto> MemberDtoPage = memberList.map(member -> new MemberDto(
+                member.getMemberId(),
+                member.getNickName(),
+                member.getSocialId()));
+
+        return MemberDtoPage;
+    }
+
+    public void deleteMember(Long memberId){
+        if (memberRepository.existsById(memberId)) {
+            memberRepository.deleteById(memberId);
+        } else {
+            throw new RuntimeException("Member with ID " + memberId + " not found");
+        }
     }
 }

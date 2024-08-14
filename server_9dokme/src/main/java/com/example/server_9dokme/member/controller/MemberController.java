@@ -3,7 +3,9 @@ package com.example.server_9dokme.member.controller;
 import com.example.server_9dokme.common.dto.BaseResponse;
 import com.example.server_9dokme.common.dto.ErrorResponse;
 import com.example.server_9dokme.common.dto.SuccessResponse;
+import com.example.server_9dokme.inquiring.dto.response.InquireDto;
 import com.example.server_9dokme.member.dto.response.MainPageDto;
+import com.example.server_9dokme.member.dto.response.MemberDto;
 import com.example.server_9dokme.member.entity.Member;
 import com.example.server_9dokme.member.repository.MemberRepository;
 import com.example.server_9dokme.member.service.KakaoService;
@@ -14,6 +16,9 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -95,6 +100,19 @@ public class MemberController {
         return SuccessResponse.success("메인 페이지",mainPageDto);
     }
 
+    @GetMapping("/admin/memberlist/{pageNo}")
+    public Page<MemberDto> getMemberList(@PathVariable int pageNo){
+        return memberService.getMemberList(pageNo);
+    }
 
-
+    @DeleteMapping("/admin/member/delete/{memberId}")
+    public ResponseEntity<Void> deleteInquire(@PathVariable Long memberId) {
+        try {
+            memberService.deleteMember(memberId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (RuntimeException e) {
+            log.error("Error deleting member with ID " + memberId, e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }
