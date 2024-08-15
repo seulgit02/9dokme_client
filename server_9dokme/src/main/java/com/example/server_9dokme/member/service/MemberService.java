@@ -11,6 +11,8 @@ import com.example.server_9dokme.member.entity.Member;
 import com.example.server_9dokme.member.repository.MemberRepository;
 import com.example.server_9dokme.rent.entity.Rent;
 import com.example.server_9dokme.rent.repository.RentRepository;
+import com.example.server_9dokme.subscribe.entity.Subscribe;
+import com.example.server_9dokme.subscribe.repository.SubscribeRepository;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +43,8 @@ public class MemberService {
     private OrderedFormContentFilter formContentFilter;
     @Autowired
     private RentRepository rentRepository;
+    @Autowired
+    private SubscribeRepository subscribeRepository;
 
 
     public MainPageDto getMainPage(String category, int pageNo){
@@ -72,13 +76,24 @@ public class MemberService {
     public Page<MemberDto> getMemberList(int pageNo){
         Pageable pageable = PageRequest.of(pageNo,10);
         Page<Member> memberList = memberRepository.findAll(pageable);
+
         //expireDate추가 필요!!
-        Page<MemberDto> MemberDtoPage = memberList.map(member -> new MemberDto(
-                member.getMemberId(),
-                member.getNickName(),
-                member.getSocialId(),
-                rentRepository.findByMemberId(member.getMemberId()).getReturnDate()
-                ));
+        Page<MemberDto> MemberDtoPage = memberList.map(member -> {
+            // Subscribe 객체를 가져옴
+            Subscribe subscribe = subscribeRepository.findByMember_MemberId(member.getMemberId());
+
+            // expiredAt이 null이면 "미구독"으로 설정
+            String expiredAt = (subscribe != null && subscribe.getExpiredAt() != null)
+                    ? subscribe.getExpiredAt().toString()
+                    : "미구독";
+
+            return new MemberDto(
+                    member.getMemberId(),
+                    member.getNickName(),
+                    member.getSocialId(),
+                    expiredAt
+            );
+        });
 
         return MemberDtoPage;
     }

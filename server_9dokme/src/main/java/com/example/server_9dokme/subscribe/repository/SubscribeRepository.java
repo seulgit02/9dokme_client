@@ -4,4 +4,5 @@ import com.example.server_9dokme.subscribe.entity.Subscribe;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
+    Subscribe findByMember_MemberId(Long memberId);
 }
