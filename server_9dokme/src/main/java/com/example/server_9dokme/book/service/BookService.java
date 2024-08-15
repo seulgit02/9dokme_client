@@ -11,6 +11,7 @@ import com.example.server_9dokme.rent.entity.Rent;
 import com.example.server_9dokme.rent.repository.RentRepository;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,7 @@ import java.util.List;
 @Service
 @Data
 @NoArgsConstructor
+@Slf4j
 public class BookService {
 
     @Autowired
@@ -123,7 +125,14 @@ public class BookService {
 
         Rent updateRent = rentRepository.findByBookIdAndMemberId(bookId,memberId);
 
-        Long progress = (lastPage/book.getBookFullPage() * 100L);
+        int fullPage = book.getBookFullPage();
+
+        float progress = ((float)lastPage /fullPage) * 100;
+
+        log.info("progress:{}",progress);
+        log.info("lastPage:{}",lastPage);
+        log.info("fullPage:{}",fullPage);
+
 
         updateRent.setProgress(progress);
         updateRent.setLastPage(lastPage);

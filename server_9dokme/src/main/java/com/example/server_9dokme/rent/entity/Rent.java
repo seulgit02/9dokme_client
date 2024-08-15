@@ -26,7 +26,7 @@ public class Rent extends BaseEntity {
     @DateTimeFormat(pattern = "yyyy.MM.dd HH:mm:ss")
     private LocalDateTime readAt;
 
-    private Long progress;
+    private float progress;
 
     private int lastPage;
 
