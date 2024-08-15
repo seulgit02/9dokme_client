@@ -84,7 +84,8 @@ public class BookService {
 
     public MyPageDto getMypageBookList(int id, int pageNo, String criteria){
 
-        Pageable pageable = PageRequest.of(pageNo, 8, Sort.Direction.DESC, criteria);
+//        Pageable pageable = PageRequest.of(pageNo, 8, Sort.Direction.DESC, criteria);
+        Pageable pageable = PageRequest.of(pageNo, 8, Sort.Direction.DESC, "r.readAt");
         Member member =memberRepository.findByMemberId(id);
 
         ProfileDto profileDto = new ProfileDto(
@@ -92,7 +93,7 @@ public class BookService {
                 member.getNickName()
         );
 
-        Page<Book> page = bookRepository.findAllByMember(member, pageable);
+        Page<Book> page = bookRepository.findBooksByMemberOrderByReadAtDesc(member.getMemberId(), pageable);
 
         Page<BookDto> bookDtoPage = page.map(book -> new BookDto(
                 book.getBookId(),

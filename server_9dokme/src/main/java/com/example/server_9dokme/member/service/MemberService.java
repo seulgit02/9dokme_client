@@ -9,6 +9,8 @@ import com.example.server_9dokme.member.dto.response.MainPageDto;
 import com.example.server_9dokme.member.dto.response.MemberDto;
 import com.example.server_9dokme.member.entity.Member;
 import com.example.server_9dokme.member.repository.MemberRepository;
+import com.example.server_9dokme.rent.entity.Rent;
+import com.example.server_9dokme.rent.repository.RentRepository;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +39,8 @@ public class MemberService {
     private AdvertisementRepository advertisementRepository;
     @Autowired
     private OrderedFormContentFilter formContentFilter;
+    @Autowired
+    private RentRepository rentRepository;
 
 
     public MainPageDto getMainPage(String category, int pageNo){
@@ -72,7 +76,9 @@ public class MemberService {
         Page<MemberDto> MemberDtoPage = memberList.map(member -> new MemberDto(
                 member.getMemberId(),
                 member.getNickName(),
-                member.getSocialId()));
+                member.getSocialId(),
+                rentRepository.findByMemberId(member.getMemberId()).getReturnDate()
+                ));
 
         return MemberDtoPage;
     }

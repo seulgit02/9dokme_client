@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+//pdf 웹 뷰 조회시 갱신되는 엔티티
 @Entity
 @Getter
 @NoArgsConstructor
@@ -20,6 +21,7 @@ public class Rent extends BaseEntity {
 
     private LocalDateTime returnDate;
 
+    //최근 본 순으로 정렬
     private LocalDateTime readAt;
 
     private Long progress;
