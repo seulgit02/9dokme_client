@@ -38,7 +38,9 @@ public class Book extends BaseEntity {
 
     private String bookURL; // URL로 프론트에 넘겨주기로 했기 때문에 데이터타입 수정 웹뷰 조회
 
-    private Integer progress;
+    private int bookChapter;
+
+    private int bookFullPage;
 
     private Integer rent;
 

@@ -13,14 +13,24 @@ import java.util.List;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
-    List<Book> findAllByCategory(String category);
+
     Page<Book> findByTitleContaining(String Title,Pageable pageable);
 
     Page<Book> findAll(Pageable pageable);
 
+    List<Book> findAll();
+
     Page<Book> findAllByCategory(String category, Pageable pageable);
 
+    Boolean existsByTitle(String Title);
+
+    Boolean existsByAuthor(String author);
+
+    List<Book> findByAuthorContaining(String author);
+
+    List<Book> findByTitleContaining(String Title);
 
     Book findByBookId(Long bookId);
+
 
 }

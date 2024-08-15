@@ -9,16 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateQuestionDto {
-
-    private String userEmail;
-
-    private int bookChapter;
-
-    private int bookPage;
-
-    private String title;
+public class CreateCommentDto {
 
     private String content;
-
 }

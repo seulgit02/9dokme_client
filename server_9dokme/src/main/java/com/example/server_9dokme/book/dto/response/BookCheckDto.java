@@ -24,5 +24,7 @@ public class BookCheckDto {
 
     private String description;
 
+    private int lastPage;
+
 
 }

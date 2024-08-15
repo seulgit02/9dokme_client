@@ -1,5 +1,6 @@
 package com.example.server_9dokme.question.controller;
 
+import com.example.server_9dokme.question.dto.request.CreateCommentDto;
 import com.example.server_9dokme.question.dto.request.CreateQuestionDto;
 import com.example.server_9dokme.question.service.QuestionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,5 +40,22 @@ public class QuestionController {
         questionService.createQuestion(bookId, dto,currentMember);
 
         return ResponseEntity.ok("질문 업로드 성공");
+    }
+
+    @PostMapping("/community/comment/{questionId}")
+    @Operation(summary = "댓글 올리기", description = "댓글 작성")
+    public ResponseEntity<String> createComment(@RequestBody CreateCommentDto dto,
+                                                @PathVariable("questionId") Integer questionId,
+                                                HttpSession session){
+
+        Object currentMember = session.getAttribute("email");
+
+        if (currentMember == null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "로그인을 진행해주세요!");
+        }
+
+        questionService.createComment(questionId,currentMember,dto);
+
+        return ResponseEntity.ok("댓글 업로드 성공");
     }
 }

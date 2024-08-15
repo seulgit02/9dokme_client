@@ -30,8 +30,7 @@ public class Question extends BaseEntity {
 
     private String content;
 
-    private String email;
-
+    private String nickName;
 
     private int chapter;
 
