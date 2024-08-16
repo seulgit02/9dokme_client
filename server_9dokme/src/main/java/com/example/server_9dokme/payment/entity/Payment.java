@@ -1,4 +1,4 @@
-package com.example.server_9dokme.payment;
+package com.example.server_9dokme.payment.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -1,4 +1,4 @@
-package com.example.server_9dokme.payment;
+package com.example.server_9dokme.payment.dto;
 
 import lombok.Builder;
 import lombok.Data;
