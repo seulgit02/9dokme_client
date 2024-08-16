@@ -37,8 +37,18 @@ public class QuestionService {
     @Autowired
     BookRepository bookRepository;
 
-    public QuestionListDto getQuestionList(Long bookId){
-        List<Question> questions = questionRepository.findAllByBook_BookId(bookId);
+    public QuestionListDto getQuestionList(Long bookId, String chapter, Integer bookPage){
+        List<Question> questions;
+
+        if (chapter != null && bookPage != null) {
+            questions = questionRepository.findAllByBook_BookIdAndChapterAndBookPage(bookId, chapter, bookPage);
+        } else if (chapter != null) {
+            questions = questionRepository.findAllByBook_BookIdAndChapter(bookId, chapter);
+        } else if (bookPage != null) {
+            questions = questionRepository.findAllByBook_BookIdAndBookPage(bookId, bookPage);
+        } else {
+            questions = questionRepository.findAllByBook_BookId(bookId);
+        }
 
         List<QuestionDto> questionDtoList = questions.stream()
                 .map(question -> QuestionDto.builder()

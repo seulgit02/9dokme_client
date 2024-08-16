@@ -26,9 +26,11 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
 
-    @GetMapping("/questionlist/{bookId}/{page}")
-    public QuestionListDto getQuestionList (@PathVariable Long bookId ) {
-        return questionService.getQuestionList(bookId);
+    @GetMapping("/questionlist/{bookId}")
+    public QuestionListDto getQuestionList (@PathVariable Long bookId,
+                                            @RequestParam(required = false) String chapter,
+                                            @RequestParam(required = false) Integer bookPage) {
+        return questionService.getQuestionList(bookId, chapter, bookPage);
     }
 
     @GetMapping("/questiondetail/{questionId}")
