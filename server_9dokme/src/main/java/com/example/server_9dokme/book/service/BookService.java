@@ -129,11 +129,6 @@ public class BookService {
 
         float progress = ((float)lastPage /fullPage) * 100;
 
-        log.info("progress:{}",progress);
-        log.info("lastPage:{}",lastPage);
-        log.info("fullPage:{}",fullPage);
-
-
         updateRent.setProgress(progress);
         updateRent.setLastPage(lastPage);
 
