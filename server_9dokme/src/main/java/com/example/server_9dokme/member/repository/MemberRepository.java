@@ -4,6 +4,7 @@ import com.example.server_9dokme.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
-
     Member findBySocialId(String email);
+    Member findByMemberId(int id);
+    Member findByCustomerKey(String customerKey);
 }
