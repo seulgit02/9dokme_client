@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Page</title>
+    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+    <script>
+        function requestPay() {
+            var IMP = window.IMP;
+            IMP.init("imp20450277"); // 상점 식별코드
+
+            IMP.request_pay({
+                pg: "kakaopay.TCSUBSCRIP", // KakaoPay 상점 ID
+                pay_method: "card",
+                merchant_uid: "order_no_" + new Date().getTime(), // 고유 주문번호
+                name: "테스트 결제",
+                amount: 1000, // 결제 금액
+                buyer_email: "test@example.com",
+                buyer_name: "테스트 사용자",
+                buyer_tel: "010-1234-5678",
+                buyer_addr: "서울특별시 강남구 삼성동",
+                buyer_postcode: "123-456"
+            }, function (response) {
+                console.log("결제 요청 응답:", response); // 응답 확인
+
+                const { status, err_msg, imp_uid } = response;
+                if (err_msg) {
+                    alert(`결제에 실패하였습니다. 에러 내용: ${err_msg}`);
+                }
+
+                if (status === "paid") {
+                    console.log("결제 성공, imp_uid:", imp_uid); // 디버깅용 로그
+                    alert(`결제가 성공적으로 완료되었습니다! 결제 고유 ID: ${imp_uid}`);
+                    verifyPayment(imp_uid);
+                }
+            });
+        }
+
+        function verifyPayment(imp_uid) {
+            // 결제 검증 로직
+            fetch('http://localhost:8080/payments/complete?imp_uid=' + imp_uid, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    pgProvider: "kakaopay",
+                    payMethod: "card",
+                    merchantUid: "order_no_" + new Date().getTime(), // 고유 주문번호를 서버로 보냅니다.
+                    name: "테스트 결제",
+                    amount: 1000,
+                    buyerEmail: "test@example.com",
+                    buyerName: "테스트 사용자",
+                    buyerTel: "010-1234-5678",
+                    buyerAddr: "서울특별시 강남구 삼성동",
+                    buyerPostcode: "123-456"
+                })
+            })
+                .then(response => response.text()) // 서버로부터 반환된 메시지를 텍스트로 처리
+                .then(data => {
+                    alert('서버 응답: ' + data); // 서버 응답을 출력
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('결제 검증 중 오류가 발생했습니다.');
+                });
+        }
+
+    </script>
+</head>
+<body>
+<h2>결제 페이지</h2>
+<form id="payment-form" th:action="@{/payments/complete}" method="post">
+    <input type="hidden" name="pgProvider" th:value="${paymentRequest.pgProvider}" />
+    <input type="hidden" name="payMethod" th:value="${paymentRequest.payMethod}" />
+    <input type="hidden" name="merchantUid" th:value="${paymentRequest.merchantUid}" />
+    <input type="hidden" name="name" th:value="${paymentRequest.name}" />
+    <input type="hidden" name="amount" th:value="${paymentRequest.amount}" />
+    <input type="hidden" name="buyerEmail" th:value="${paymentRequest.buyerEmail}" />
+    <input type="hidden" name="buyerName" th:value="${paymentRequest.buyerName}" />
+    <input type="hidden" name="buyerTel" th:value="${paymentRequest.buyerTel}" />
+    <input type="hidden" name="buyerAddr" th:value="${paymentRequest.buyerAddr}" />
+    <input type="hidden" name="buyerPostcode" th:value="${paymentRequest.buyerPostcode}" />
+    <button type="button" onclick="requestPay()">결제하기</button>
+</form>
+</body>
+</html>

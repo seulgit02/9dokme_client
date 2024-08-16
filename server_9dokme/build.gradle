@@ -45,11 +45,10 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
 
-    //batch
+
+    // SpringBatch 사용을 위해 추가
     implementation 'org.springframework.boot:spring-boot-starter-batch'
-
-
-
+    implementation 'org.springframework:spring-context-support'
 }
 
 tasks.named('test') {
