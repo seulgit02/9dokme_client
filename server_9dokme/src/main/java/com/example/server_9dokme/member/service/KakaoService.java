@@ -15,6 +15,7 @@ import com.nimbusds.jose.shaded.gson.JsonElement;
 import com.nimbusds.jose.shaded.gson.JsonObject;
 import com.nimbusds.jose.shaded.gson.JsonParser;
 import io.netty.handler.codec.http.HttpHeaderValues;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,6 +45,8 @@ import java.util.*;
 @Service
 public class KakaoService {
 
+    @Autowired
+    private HttpSession session;
     @Autowired
     private MemberRepository memberRepository;
 
@@ -166,7 +169,8 @@ public class KakaoService {
             memberRepository.save(initMember);
         }
 
-
+        session.setAttribute("email", email);
+        log.info("Email {} stored in session", email);
 
 
     }

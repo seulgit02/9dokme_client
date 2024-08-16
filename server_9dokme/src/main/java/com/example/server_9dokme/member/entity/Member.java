@@ -1,14 +1,13 @@
 package com.example.server_9dokme.member.entity;
 import com.example.server_9dokme.common.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
 @NoArgsConstructor
+@Getter
+@Setter
 public class Member extends BaseEntity {
 
     @Id
@@ -30,7 +29,26 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
 
-    public enum SocialType { // 수정 가능성 있음
+    public enum SocialType {
         KAKAO
+    }
+
+    // 결제 검증용 키
+    private String customerKey;
+    private String authKey;
+
+    private String billingKey;
+
+    @Builder
+    public Member(Long subscribeId, Integer userRole, String password, String nickName, String socialId, SocialType socialType, String customerKey, String authKey, String billingKey) {
+        this.subscribeId = subscribeId;
+        this.userRole = userRole;
+        this.password = password;
+        this.nickName = nickName;
+        this.socialId = socialId;
+        this.socialType = socialType;
+        this.customerKey = customerKey;
+        this.authKey = authKey;
+        this.billingKey = billingKey;
     }
 }
