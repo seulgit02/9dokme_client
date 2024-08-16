@@ -21,20 +21,23 @@
                 buyer_addr: "서울특별시 강남구 삼성동",
                 buyer_postcode: "123-456"
             }, function (response) {
-                const { status, err_msg } = response;
+                console.log("결제 요청 응답:", response); // 응답 확인
+
+                const { status, err_msg, imp_uid } = response;
                 if (err_msg) {
                     alert(`결제에 실패하였습니다. 에러 내용: ${err_msg}`);
                 }
 
                 if (status === "paid") {
-                    const { imp_uid } = response;
+                    console.log("결제 성공, imp_uid:", imp_uid); // 디버깅용 로그
+                    alert(`결제가 성공적으로 완료되었습니다! 결제 고유 ID: ${imp_uid}`);
                     verifyPayment(imp_uid);
                 }
             });
         }
 
         function verifyPayment(imp_uid) {
-            // 결제 검증 로직을 추가합니다.
+            // 결제 검증 로직
             fetch('http://localhost:8080/payments/complete?imp_uid=' + imp_uid, {
                 method: 'POST',
                 headers: {

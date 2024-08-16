@@ -2,6 +2,7 @@ package com.example.server_9dokme.payment.service;
 
 import com.example.server_9dokme.payment.dto.PaymentRequest;
 import com.example.server_9dokme.payment.entity.Payment;
+import com.example.server_9dokme.payment.entity.PaymentStatus;
 import com.example.server_9dokme.payment.repository.PaymentRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -97,26 +98,40 @@ public class PaymentService {
 
     // 3. 결제 금액 검증 및 결제 내역 저장
     public void verifyAndSavePayment(PaymentRequest paymentRequest, String impUid) throws Exception {
+
+        // 1) test for UNPAID - 임의로 예외 발생
+        //throw new Exception("Intentionally failing payment verification for testing.");
+
+        // 2) 정상 동작에 대한 코드
         JsonNode paymentData = getPaymentData(impUid);
 
         // 결제 금액 검증
-        int amountFromRequest = paymentRequest.getAmount();
+        int amountFromRequest = paymentRequest.amount(); // 수정된 부분
         int amountFromIamport = paymentData.path("amount").asInt();
 
         if (amountFromRequest != amountFromIamport) {
             throw new Exception("Payment amount mismatch");
         }
 
-        // 결제 내역 저장
-        Payment payment = new Payment();
-        payment.setImpUid(impUid);
-        payment.setMerchantUid(paymentRequest.getMerchantUid());
+        // 결제 내역 저장 또는 업데이트
+        Payment payment = paymentRepository.findByImpUid(impUid);
+        if (payment == null) {
+            payment = new Payment();
+            payment.setImpUid(impUid);
+        }
+
+        payment.setMerchantUid(paymentRequest.merchantUid()); // 수정된 부분
         payment.setAmount(amountFromIamport);
         payment.setBuyerEmail(paymentData.path("buyer_email").asText());
         payment.setBuyerName(paymentData.path("buyer_name").asText());
         payment.setBuyerTel(paymentData.path("buyer_tel").asText());
         payment.setStatus(paymentData.path("status").asText());
 
+        paymentRepository.save(payment);
+    }
+
+    public void markPaymentAsFailed(Payment payment) {
+        payment.setStatus(PaymentStatus.UNPAID.name());
         paymentRepository.save(payment);
     }
 }

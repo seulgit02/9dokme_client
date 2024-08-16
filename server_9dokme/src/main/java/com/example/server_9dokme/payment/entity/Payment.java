@@ -1,9 +1,8 @@
 package com.example.server_9dokme.payment.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.server_9dokme.common.entity.BaseEntity;
+import com.fasterxml.jackson.databind.ser.Serializers;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,17 +11,25 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Payment {
+public class Payment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "payment_id")
     private Long id;
 
-    private String impUid;
+    private String pgProvider;
+    private String payMethod;
     private String merchantUid;
+    private String name;
     private int amount;
     private String buyerEmail;
     private String buyerName;
     private String buyerTel;
-    private String status;  // 'READY', 'PAID', 'FAILED', etc.
+    private String buyerAddr;
+    private String buyerPostcode;
+    private String impUid;
+
+    private String status;
+    private int retryCount; // 새로운 필드 추가
 }
 
