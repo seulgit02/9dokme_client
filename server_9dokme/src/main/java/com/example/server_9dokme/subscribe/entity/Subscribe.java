@@ -35,4 +35,6 @@ public class Subscribe extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+
 }

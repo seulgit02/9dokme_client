@@ -15,6 +15,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findBySocialId(String email);
     Member findByMemberId(int id);
 
+    List<Member> findAll();
+
     Page<Member> findAll(Pageable pageable);
 
     //구독 결제일이 지난 member 조회
