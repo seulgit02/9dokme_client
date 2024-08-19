@@ -12,6 +12,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+//member 연결 필요!!
 @Entity
 @Data
 @NoArgsConstructor
@@ -23,6 +24,8 @@ public class Comment extends BaseEntity {
     private int commentId;
 
     private String content;
+
+    private String nickName;
 
     @DateTimeFormat(pattern = "yyyy.MM.dd HH:mm:ss")
     @Column(updatable = false)

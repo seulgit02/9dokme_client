@@ -89,6 +89,7 @@ public class QuestionService {
                         .commentId(comment.getCommentId())
                         .content(comment.getContent())
                         .createdAt(comment.getCreatedAt())
+                        .nickName(comment.getNickName())
                         .build())
                 .collect(Collectors.toList());
 
