@@ -17,7 +17,7 @@ const LoginLoading = () => {
         localStorage.setItem("name", res.data.message.nickname);
         localStorage.setItem("email", res.data.message.email);
         // 로그인이 성공하면 이동할 페이지
-        navigate("/");
+        navigate("/mainPage");
       } catch (error) {
         console.error("Login failed:", error);
       }
