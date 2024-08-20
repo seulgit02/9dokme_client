@@ -67,13 +67,13 @@ const Sidebanner = () => {
           </MenuContainer>
           <BtnComponent>
             <NavBarBtn
-              text="메인페이지"
+              text="메인 페이지"
               icon={book}
               isActive={activeBtn === "mainpage"}
               onClick={() => handleNavigate("/mainpage", "mainpage")}
             />
             <NavBarBtn
-              text="나의책갈피"
+              text="나의 책갈피"
               icon={bookmark}
               isActive={activeBtn === "/mypage"}
               onClick={() => handleNavigate("/mypage", "mypage")}
@@ -120,7 +120,7 @@ const NavBarBtn: React.FC<NavBarBtnProps> = ({
         <img
           src={icon}
           alt={text}
-          style={{ marginRight: "10px", width: "18%" }}
+          style={{ marginRight: "20px", width: "18%" }}
         />
       )}
       {text}
@@ -151,12 +151,12 @@ const StyledBannerContainer = styled.div`
   height: 50vw;
   background-color: white;
   border-radius: 0 0 0 2vw;
-  padding: 1vw;
   text-align: left;
   font-size: 1.5vw;
   position: fixed;
   right: 0;
   animation: ${slideIn} 0.3s forwards;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
 
   &.slide-out {
     animation: ${slideOut} 0.3s forwards;
@@ -171,15 +171,20 @@ const NavBarBtnStyle = styled.button<NavBarBtnStyleProps>`
   font-size: 1vw;
   display: flex;
   align-items: center;
-  width: 16vw;
+  width: 15vw;
   height: 2.3vw;
-  padding: 1.7vw;
+  padding: 1.5vw;
   border-radius: 0.5vw;
   border-style: none;
   margin: 1vw 0;
+
   &:hover {
     background-color: #5a4bff;
     color: white;
+
+    & img {
+      filter: brightness(0) invert(1);
+    }
   }
 `;
 
@@ -191,10 +196,10 @@ const BtnComponent = styled.div`
 `;
 
 const MenuContainer = styled.div`
+padding: 2vw;
 display: flex;
     flex-direction: row;
 justify-content: space-between;
-margin-bottom: 2vw;
 `
 
 const MenuTypo = styled(Typography)`

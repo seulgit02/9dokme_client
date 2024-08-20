@@ -29,7 +29,7 @@ const images: { [key: string]: string } = {
 const Main = () => {
   const navigate = useNavigate();
   const handleImgClick = (bookId: number) => {
-    navigate(`/api/bookdetail/${bookId}`);
+    navigate(`/bookdetail/${bookId}`);
   };
   const [category, setCategory] = useState<string>("전체보기");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -90,23 +90,22 @@ const Main = () => {
                 selectedCategory={category}
               />
             </div>
-            <div className='flex justify-center '>
-              <div className='grid grid-cols-4 gap-4 m-4'>
-                {filterBooks
-                  .filter(
-                    (book: Book) =>
-                      category === "전체보기" || book.bookCategory === category
-                  )
-                  .map((book: Book) => (
-                    <BookCard
-                      key={book.bookId}
-                      cover={images[book.bookUrl]}
-                      title={book.bookTitle}
-                      onClick={() => handleImgClick(book.bookId)} 
-                    />
-                  ))}
-              </div>
-            </div>
+            <div className="flex justify-center">
+      {filterBooks.length === 0 ? (
+        <NoneBook>검색 결과가 없습니다.</NoneBook>
+      ) : (
+        <div className="grid grid-cols-4 gap-4 m-4">
+          {filterBooks.map((book) => (
+            <BookCard
+              key={book.bookId}
+              cover={images[book.bookUrl]}
+              title={book.bookTitle}
+              onClick={() => handleImgClick(book.bookId)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
           </BookContainer>
         </Container>
       </Root>
@@ -128,6 +127,10 @@ const Container = styled.div`
   background-color: ${PRIMARY.LiGHT};
 `;
 
+const NoneBook = styled.div`
+ width: 100%;
+ margin: 10vw 0;
+`
 const BookContainer = styled.div`
   width: 70%;
   display: flex;
@@ -181,7 +184,7 @@ interface BookCardProps {
 
 const StyledCard = styled(Card)`
   width: 13vw;
-  height: 19vw;
+  height: 20vw;
   margin: 2vw;
   overflow: hidden;
   border-radius: 10px;
@@ -190,11 +193,26 @@ const StyledCard = styled(Card)`
     border-radius: 10px;
     height: 16vw;
   }
-  
+
   .ant-card-meta-title {
     text-align: center;
-    font-size: 0.9vw;
+    font-size: 1.1vw;
+    margin-bottom: 0.2vw;
     font-weight: bold;
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: ${PRIMARY.DEFAULT};
+    border-radius: 10px;
+    opacity: 0.1;
+    z-index: -1;
+    filter: blur(8px);
   }
 `;
 
@@ -205,13 +223,7 @@ const BookCard: React.FC<BookCardProps> = ({ cover, title, onClick }) => {
       cover={<img alt={title} src={cover} />}
       onClick={onClick}
     >
-      <Meta
-        title={
-          title.length > 11
-            ? `${title.slice(0, 11)}...`
-            : title
-        }
-      />
+      <Meta title={title.length > 11 ? `${title.slice(0, 11)}...` : title} />
     </StyledCard>
   );
 };

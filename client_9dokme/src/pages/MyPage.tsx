@@ -8,7 +8,7 @@ import Sidebanner from "../components/Sidebanner";
 const MyPage = () => {
   const navigate = useNavigate();
   const handleClictSubscribeBtn = () => {
-    navigate("/api/subscribe");
+    navigate("/subscribe");
   };
   return (
     <div className="w-screen h-[130vh] bg-customColor bg-opacity-20">

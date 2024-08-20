@@ -10,7 +10,7 @@ const BookDetail = () => {
     const book = books.books.find(
       (b: BookDetailType) => String(b.bookId) === String(bookId)
     );
-    navigate(`/api/view/${bookId}`, { state: { book } });
+    navigate(`/view/${bookId}`, { state: { book } });
   };
   const { bookId } = useParams<{ bookId: string }>();
   const book = books.books.find(
