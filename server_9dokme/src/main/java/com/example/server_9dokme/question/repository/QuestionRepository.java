@@ -23,5 +23,7 @@ public interface QuestionRepository extends JpaRepository<Question,Integer> {
     List<Question> findAllByBook_BookIdAndChapterAndBookPage(Long bookId, int chapter, Integer bookPage);
 
     Question findByQuestionId(int questionId);
+
+    Page<Question> findAllByEmail(String email,Pageable pageable);
     Question save(Question question);
 }

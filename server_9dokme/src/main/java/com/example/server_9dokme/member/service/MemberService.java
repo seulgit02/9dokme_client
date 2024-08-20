@@ -6,8 +6,13 @@ import com.example.server_9dokme.book.repository.AdvertisementRepository;
 import com.example.server_9dokme.book.repository.BookRepository;
 import com.example.server_9dokme.member.dto.response.BookDto;
 import com.example.server_9dokme.member.dto.response.MainPageDto;
+import com.example.server_9dokme.member.dto.response.PostWrittenDto;
 import com.example.server_9dokme.member.entity.Member;
 import com.example.server_9dokme.member.repository.MemberRepository;
+import com.example.server_9dokme.question.dto.response.CommentDto;
+import com.example.server_9dokme.question.entity.Question;
+import com.example.server_9dokme.question.repository.CommentRepository;
+import com.example.server_9dokme.question.repository.QuestionRepository;
 import jakarta.servlet.http.HttpSession;
 import com.example.server_9dokme.member.dto.response.MemberDto;
 import com.example.server_9dokme.member.repository.MemberRepository;
@@ -22,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.filter.OrderedFormContentFilter;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -51,6 +57,10 @@ public class MemberService {
     private RentRepository rentRepository;
     @Autowired
     private SubscribeRepository subscribeRepository;
+    @Autowired
+    private QuestionRepository questionRepository;
+    @Autowired
+    private CommentRepository commentRepository;
 
 
     public MainPageDto getMainPage(String category, int pageNo){
@@ -138,4 +148,30 @@ public class MemberService {
             throw new RuntimeException("Member with ID " + memberId + " not found");
         }
     }
+
+
+    public Page<PostWrittenDto> getPostWrittenList(Object socialId, int pageNo){
+        String email = socialId.toString();
+
+        Pageable pageable = PageRequest.of(pageNo,6);
+
+        Page<Question> myQuestionList = questionRepository.findAllByEmail(email, pageable);
+
+        List<PostWrittenDto> myPostWrittenList = myQuestionList.stream()
+                .map(question -> PostWrittenDto.builder()
+                        .questionId(question.getQuestionId())
+                        .bookId(question.getBook() != null ? question.getBook().getBookId() : null)  // Null 체크
+                        .title(question.getTitle())
+                        .content(question.getContent())
+                        .chapter(question.getChapter())
+                        .commentCount(commentRepository.countByQuestion_QuestionId(question.getQuestionId()))
+                        .build())
+                .collect(Collectors.toList());
+
+        // PageImpl을 사용하여 변환된 리스트와 페이지 정보를 함께 반환
+        return new PageImpl<>(myPostWrittenList, pageable, myQuestionList.getTotalElements());
+    }
+
+
+
 }

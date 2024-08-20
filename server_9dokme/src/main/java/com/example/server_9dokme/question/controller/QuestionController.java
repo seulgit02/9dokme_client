@@ -71,4 +71,13 @@ public class QuestionController {
 
         return ResponseEntity.ok("댓글 업로드 성공");
     }
+
+    @DeleteMapping("/community/comment/{questionNo}")
+    @Operation(summary = "댓글 삭제")
+    public ResponseEntity<String> deleteComment(@PathVariable("questionNo") int questionNo,
+                                                @RequestParam Integer commentId){
+        questionService.deleteComment(questionNo,commentId);
+
+        return ResponseEntity.ok("댓글 삭제 성공");
+    }
 }
