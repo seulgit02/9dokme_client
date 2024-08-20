@@ -11,6 +11,7 @@ import com.example.server_9dokme.rent.entity.Rent;
 import com.example.server_9dokme.rent.repository.RentRepository;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,10 +22,12 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Data
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class BookService {
 
@@ -146,5 +149,8 @@ public class BookService {
         rentRepository.save(updateRent);
     }
 
+    public Optional<Book> findById(Long bookId) {
+        return bookRepository.findById(bookId);
+    }
 
 }

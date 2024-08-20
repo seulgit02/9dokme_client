@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -39,7 +40,7 @@ public class MemberController {
         //Service에서 로직구현 이메일 중복 체크 해서 만약 DB에 이메일이 있으면 저장 X 없으면 저장하는 로직으로 구현
 
         if(accessToken ==null){
-            return ErrorResponse.of("로그인 실패");
+            return ErrorResponse.of("로그인 실패", HttpStatus.UNAUTHORIZED);
         }
 
         session.setAttribute("email",userInfo.get("email"));

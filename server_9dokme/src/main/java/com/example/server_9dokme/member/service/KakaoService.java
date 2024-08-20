@@ -171,9 +171,8 @@ public class KakaoService {
 
         session.setAttribute("email", email);
         log.info("Email {} stored in session", email);
-
-
     }
+
     public void kakaoDisconnect(String accessToken) throws JsonProcessingException {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
