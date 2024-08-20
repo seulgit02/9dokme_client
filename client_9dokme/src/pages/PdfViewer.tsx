@@ -3,6 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import * as pdfjsLib from "pdfjs-dist";
 import CommunityTab from "../components/CommunityTab";
+import BookmarkSuccess from "../components/BookmarkSuccess";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
@@ -23,6 +24,16 @@ const PdfViewer: React.FC = () => {
   const location = useLocation();
   const { book }: { book?: Book } = location.state || {};
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  //모달창
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const handleModalOn = () => {
+    setIsOpen(true);
+  };
+  const handleModalOff = () => {
+    setIsOpen(false);
+  };
+
 
   useEffect(() => {
     const loadPdf = async () => {
@@ -101,7 +112,9 @@ const PdfViewer: React.FC = () => {
 
   return (
     <Frame className="bg-customGradient w-full h-[150vh]">
-      <CommunityTab />
+
+      <CommunityTab book={book} />
+
       <div className="flex flex-col items-center justify-center">
         <div className="text-center mt-20 mb-5">
           <div className="font-bold text-[1.5vw]">[{book?.bookTitle}]</div>

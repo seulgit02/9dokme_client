@@ -5,6 +5,8 @@ import user from "../images/adminBanner/user.png";
 import qboard from "../images/adminBanner/qboard.png";
 import logout from "../images/banner/logout.png";
 import { useState, useEffect } from "react";
+import API from "../api/axios";
+
 import { useNavigate, useLocation } from "react-router-dom";
 const AdminBanner = () => {
   const navigate = useNavigate();
@@ -32,6 +34,20 @@ const AdminBanner = () => {
     setActiveBtn(btnKey);
     navigate(path);
   };
+  const onLogoutClick = async () => {
+    try {
+      const response = await API.get("/api/user/logout");
+      if (response.status === 200) {
+        alert("성공적으로 로그아웃되었습니다.");
+      } else {
+        alert("로그아웃에 실패했습니다.");
+      }
+    } catch (error) {
+      console.log("로그아웃 오류: ", error);
+      alert("오류가 발생했습니다. 나중에 다시 시도해주세요.");
+    }
+  };
+
   return (
     <div className="fixed top-0 right-0 z-50">
       {!isClicked ? (
@@ -78,7 +94,7 @@ const AdminBanner = () => {
               text="로그아웃 (관리자)"
               icon={logout}
               isActive={activeBtn === "logout"}
-              onClick={() => handleNavigate("/api/queryBoard", "logout")}
+              onClick={onLogoutClick}
             />
           </BtnComponent>
         </div>
@@ -116,6 +132,7 @@ const NavBarBtn: React.FC<NavBarBtnProps> = ({
 };
 
 const NavBarBtnStyle = styled.button<NavBarBtnStyleProps>`
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   color: ${(props) => (props.isActive ? "white" : "black")};
   background-color: ${(props) => (props.isActive ? "#5A4BFF" : "#FFFFFF")};
   text-align: left;

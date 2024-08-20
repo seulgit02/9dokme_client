@@ -8,23 +8,26 @@ import MyPage from "./pages/MyPage";
 import AdminPDF from "./pages/AdminPDF";
 import AdminUser from "./pages/AdminUser";
 import AdminQboard from "./pages/AdminQboard";
-import LoginLoading from "./pages/LoginLoading";
+import MyArticle from "./pages/MyArticle";
+import { RecoilRoot } from "recoil";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Landing />} />
-      <Route path="/mainPage/" element={<Main />} />
-      <Route path="/bookdetail/:bookId/" element={<BookDiscription />} />
-      <Route path="/view/:bookId/" element={<PdfViewer />} />
-      <Route path="/queryboard/" element={<QueryBoard />} />
-      <Route path="/mypage/" element={<MyPage />} />
-      <Route path="/admin/adminPdf/" element={<AdminPDF />} />
-      <Route path="/admin/adminUser/" element={<AdminUser />} />
-      <Route path="/admin/adminQboard/" element={<AdminQboard />} />
-      <Route path="/login/oauth2/callback/kakao" element={<LoginLoading />} />
+    <RecoilRoot>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/api/mainPage/" element={<Main />} />
+        <Route path="/api/bookdetail/:bookId/" element={<BookDiscription />} />
+        <Route path="api/view/:bookId/" element={<PdfViewer />} />
+        <Route path="api/queryboard/" element={<QueryBoard />} />
+        <Route path="api/mypage/" element={<MyPage />} />
+        <Route path="api/myarticle/" element={<MyArticle />} />
+        <Route path="api/admin/adminPdf/" element={<AdminPDF />} />
+        <Route path="api/admin/adminUser/" element={<AdminUser />} />
+        <Route path="api/admin/adminQboard/" element={<AdminQboard />} />
+      </Routes>
+    </RecoilRoot>
 
-    </Routes>
   );
 }
 

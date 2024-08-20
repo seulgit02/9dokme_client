@@ -1,6 +1,6 @@
-import React from 'react';
-import { KAKAO_AUTH_URL } from '../auth/Auth';
-import { Button } from 'antd';
+import React from "react";
+import { KAKAO_AUTH_URL } from "../auth/Auth";
+import { Button } from "antd";
 
 //필요없음
 const LoginPage = () => {

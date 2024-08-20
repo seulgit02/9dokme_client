@@ -1,7 +1,8 @@
+"use client";
+import * as React from "react";
 import community from "../images/community.png";
 import communitytalk from "../images/communitytalk.png";
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
 import { QuestionList, Question } from "../json/Community";
 import questionData from "../json/Community.json";
 import styled from "styled-components";
@@ -10,54 +11,83 @@ import CreatePost from "./CreatePost";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 
-const Sidebanner = () => {
+import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+
+type Checked = DropdownMenuCheckboxItemProps["checked"];
+
+interface Book {
+  bookTitle: string;
+  author: string;
+  bookCategory: string;
+  bookURL: string;
+}
+
+interface CommunityTabProps {
+  book?: Book;
+}
+
+const CommunityTab: React.FC<CommunityTabProps> = ({ book }) => {
   const questions: QuestionList = questionData;
-  // const navigate = useNavigate();
-  // const location = useLocation();
   const [selectedQuestionId, setSelectedQuestionId] = useState<number | null>(
     null
   );
+
   const [isClicked, setIsClicked] = useState(false);
   const [createPostBtn, setCreatePostBtn] = useState(false);
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchTitle, setSearchTitle] = useState<string>("");
+  const [searchChapter, setSearchChapter] = useState<string>("");
+  const [searchPage, setSearchPage] = useState<string>("");
+
   const [filterPost, setFilterPost] = useState<Question[]>(
     questions.questionList
   );
+
   const handlePostClick = (questionId: number) => {
     setSelectedQuestionId(questionId);
   };
+
   const handleBannerClickOn = () => {
     if (!isClicked) setIsClicked(true);
   };
+
   const handleBannerClickOff = () => {
     if (isClicked) setIsClicked(false);
   };
+
   const handleCreatePostBtnClick = () => {
     setCreatePostBtn(true);
   };
+
   const handleBackFromWriting = () => {
     setCreatePostBtn(false); // 글 작성 상태 비활성화`
+  };
+
+  const handleSearch = () => {
+    const filtered = questions.questionList.filter((post) => {
+      const matchTitle =
+        searchTitle === "" ||
+        post.title.toLowerCase().includes(searchTitle.toLowerCase());
+      const matchChapter =
+        searchChapter === "" ||
+        post.chapter.toLowerCase() === searchChapter.toLowerCase();
+      const matchPage =
+        searchPage === "" ||
+        post.content.toLowerCase().includes(searchPage.toLowerCase());
+      return matchTitle && matchChapter && matchPage;
+    });
+
+    setFilterPost(filtered.length > 0 ? filtered : questions.questionList);
   };
 
   const selectedPost = filterPost.find(
     (post) => post.questionId === selectedQuestionId
   );
-  // const handleSearchInputChange = (
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   setSearchQuery(event.target.value);
-  // };
-
-  // const handleSearchBtnClick = () => {
-  //   const filtered = questions.questionList.filter((post: Question) => {
-  //     const matchSearchQuery = post.title
-  //       .toLowerCase()
-  //       .includes(searchQuery.toLowerCase());
-  //     return matchSearchQuery;
-  //   });
-  //   setFilterPost(filtered);
-  // };
-  // console.log(questions);
 
   return (
     <div className="fixed top-0 right-0 z-50">
@@ -89,26 +119,83 @@ const Sidebanner = () => {
             <>
               {selectedQuestionId === null ? (
                 <>
-                  <div className="font-bold ml-[1vw] text-[1.2vw]">
+                  <div className="font-bold text-[1.2vw] ml-[1vw]">
                     커뮤니티 게시판
                   </div>
-                  <div className="flex justify-center items-center m-[1vw]">
-                    <Input
-                      className="m-[1vw]"
-                      placeholder="게시글 제목을 통해 검색해보세요."
-                    />
-                    <Button variant="outline">검색</Button>
-                  </div>
-                  <div className="h-[100%] overflow-y-auto">
-                    {filterPost.slice(0, 4).map((post) => (
-                      <CommunityBox
-                        title={post.title}
-                        content={post.content}
-                        commentsCount={post.commentCount}
-                        chapter={post.chapter}
-                        onClick={() => handlePostClick(post.questionId)}
+                  <div className="flex flex-col justify-center items-center m-[1vw]">
+                    <div className="flex w-full mb-[1vw]">
+                      <Input
+                        className="flex-grow m-[0.5vw]"
+                        placeholder="게시글 제목을 통해 검색해보세요."
+                        value={searchTitle}
+                        onChange={(e) => setSearchTitle(e.target.value)}
                       />
-                    ))}
+                    </div>
+                    <div className="flex w-full">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="border border-[#C5B5F7] rounded-[0.5vw] bg-white p-[0.4vw] w-full text-[1vw] flex-grow m-[0.5vw]">
+                          {searchChapter === ""
+                            ? "전체챕터 ▼"
+                            : `${searchChapter} ▼`}
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="bg-[#ffffff]">
+                          <DropdownMenuItem
+                            onClick={() => setSearchChapter("")}
+                          >
+                            전체챕터
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => setSearchChapter("ch1")}
+                          >
+                            ch1
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => setSearchChapter("ch2")}
+                          >
+                            ch2
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => setSearchChapter("ch5")}
+                          >
+                            ch5
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => setSearchChapter("ch6")}
+                          >
+                            ch6
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                      <Input
+                        className="flex-grow m-[0.5vw]"
+                        placeholder="페이지를 검색하세요."
+                        value={searchPage}
+                        onChange={(e) => setSearchPage(e.target.value)}
+                      />
+                      <Button
+                        variant="outline"
+                        className="border-[#C5B5F7] text-[1vw] hover:bg-[#C5B5F7] m-[0.5vw]"
+                        onClick={handleSearch}
+                      >
+                        검색
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="h-full flex flex-col overflow-y-auto">
+                    <div className="flex-grow overflow-y-auto">
+                      {filterPost.map((post) => (
+                        <CommunityBox
+                          key={post.questionId} // map 함수 사용 시 key 값을 설정하는 것이 좋습니다.
+                          title={post.title}
+                          content={post.content}
+                          commentsCount={post.commentCount}
+                          chapter={post.chapter}
+                          onClick={() => handlePostClick(post.questionId)}
+                        />
+                      ))}
+                    </div>
+
                     <WritingBtn
                       onClick={handleCreatePostBtnClick}
                       className="cursor-pointer"
@@ -147,6 +234,7 @@ const WritingBtn = styled.div`
   color: white;
   font-size: 1.5vw;
 `;
+
 interface CommunityPost {
   title: string;
   content: string;
@@ -154,6 +242,7 @@ interface CommunityPost {
   chapter: string;
   onClick: () => void;
 }
+
 const CommunityBox: React.FC<CommunityPost> = ({
   title,
   content,
@@ -180,4 +269,5 @@ const CommunityBox: React.FC<CommunityPost> = ({
     </div>
   );
 };
-export default Sidebanner;
+
+export default CommunityTab;

@@ -3,6 +3,7 @@ export interface Question {
   title: string;
   content: string;
   chapter: string;
+  page: number;
   commentCount: number;
   nickname?: string;
   createdAt: string;

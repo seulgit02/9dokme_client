@@ -1,10 +1,22 @@
+import { useState } from "react";
 import styled from "styled-components";
 import { useParams, useNavigate } from "react-router-dom";
 import book1 from "../images/books/book1.png";
 import books from "../json/BookDetail.json";
 import { BookDetailType, Books } from "../json/BookDetailType";
 import Sidebanner from "../components/Sidebanner";
+
+import BookmarkSucces from "../components/BookmarkSuccess";
 const BookDetail = () => {
+  const handleBookmarkBtn = () => {
+    setIsOpen(true);
+  };
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleModalClose = () => {
+    setIsOpen(false);
+  };
+
   const navigate = useNavigate();
   const handleImgClick = (bookId: string | undefined) => {
     const book = books.books.find(
@@ -20,7 +32,6 @@ const BookDetail = () => {
   return (
     <div className="w-screen h-screen bg-customColor bg-opacity-20">
       <Sidebanner />
-      <div>Book ID: {bookId}</div>
 
       <div className="w-screen h-[65%]">
         <div className="grid grid-cols-3by5 h-screen">
@@ -52,10 +63,19 @@ const BookDetail = () => {
         >
           PDF 보러가기
         </button>
-        <GradientDiv className="border-xl bg-customGradient w-[29vw] h-[4vw] rounded-lg text-white font-semibold text-[1.5vw] mr-20 box-border">
+        <GradientDiv
+          onClick={handleBookmarkBtn}
+          className="border-xl bg-customGradient w-[29vw] h-[4vw] rounded-lg text-white font-semibold text-[1.5vw] mr-20 box-border"
+        >
           나의 책갈피에 추가하기
         </GradientDiv>
       </div>
+      <BookmarkSucces
+        isOpen={isOpen}
+        handleModalClose={handleModalClose}
+        bookId={bookId}
+      />
+
     </div>
   );
 };
