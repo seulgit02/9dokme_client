@@ -5,7 +5,10 @@ import com.example.server_9dokme.book.repository.BookRepository;
 import com.example.server_9dokme.member.repository.MemberRepository;
 import com.example.server_9dokme.question.dto.request.CreateCommentDto;
 import com.example.server_9dokme.question.dto.request.CreateQuestionDto;
+import com.example.server_9dokme.question.dto.response.CommentDto;
+import com.example.server_9dokme.question.dto.response.QuestionDetailDto;
 import com.example.server_9dokme.question.dto.response.QuestionDto;
+import com.example.server_9dokme.question.dto.response.QuestionListDto;
 import com.example.server_9dokme.question.entity.Comment;
 import com.example.server_9dokme.question.entity.Question;
 import com.example.server_9dokme.question.repository.CommentRepository;
@@ -39,7 +42,7 @@ public class QuestionService{
     @Autowired
     BookRepository bookRepository;
 
-    public QuestionListDto getQuestionList(Long bookId, String chapter, Integer bookPage){
+    public QuestionListDto getQuestionList(Long bookId, Integer chapter, Integer bookPage){
         List<Question> questions;
 
         if (chapter != null && bookPage != null) {

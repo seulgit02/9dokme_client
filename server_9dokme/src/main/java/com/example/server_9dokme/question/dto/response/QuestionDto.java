@@ -13,7 +13,7 @@ public class QuestionDto {
     private int questionId;
     private String title;
     private String content;
-    private String chapter;
+    private int chapter;
     private int bookPage;
     private int commentCount;
     private LocalDateTime createdAt;

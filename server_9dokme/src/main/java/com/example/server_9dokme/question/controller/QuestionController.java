@@ -19,17 +19,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequiredArgsConstructor
 @Slf4j
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api")
 public class QuestionController {
+
     @Autowired
     private QuestionService questionService;
 
     @GetMapping("/questionlist/{bookId}")
     public QuestionListDto getQuestionList (@PathVariable Long bookId,
-                                            @RequestParam(required = false) String chapter,
+                                            @RequestParam(required = false) Integer chapter,
                                             @RequestParam(required = false) Integer bookPage) {
         return questionService.getQuestionList(bookId, chapter, bookPage);
     }

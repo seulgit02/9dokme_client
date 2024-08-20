@@ -152,9 +152,8 @@ public class BookService {
     }
 
 
-    public MyPageDto getMypageBookList(int id, int pageNo, String criteria){
+    public MyPageDto getMypageBookList(Long id, int pageNo){
 
-//        Pageable pageable = PageRequest.of(pageNo, 8, Sort.Direction.DESC, criteria);
         Pageable pageable = PageRequest.of(pageNo, 8, Sort.Direction.DESC, "r.readAt");
         Member member =memberRepository.findByMemberId(id);
 
@@ -173,6 +172,6 @@ public class BookService {
                 book.getBookImage()));
 
         return new MyPageDto(profileDto,bookDtoPage);
-//        return bookDtoPage;
+
     }
 }

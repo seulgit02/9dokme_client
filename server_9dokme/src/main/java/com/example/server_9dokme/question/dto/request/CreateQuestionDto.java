@@ -14,7 +14,7 @@ public class CreateQuestionDto {
     private String userEmail;
 
     // [merge] chapter String으로 변경
-    private String bookChapter;
+    private int bookChapter;
 
     private int bookPage;
 

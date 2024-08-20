@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findBySocialId(String email);
-    Member findByMemberId(int id);
+    Member findByMemberId(Long id);
     Member findByCustomerKey(String customerKey);
     List<Member> findAll();
     Page<Member> findAll(Pageable pageable);
