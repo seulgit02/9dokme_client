@@ -62,8 +62,7 @@ public class PaymentRetryJobConfig {
                             payment.getBuyerName(),
                             payment.getBuyerTel(),
                             payment.getBuyerAddr(),
-                            payment.getBuyerPostcode(),
-                            payment.getMember().getAuthKey()
+                            payment.getBuyerPostcode()
                     );
                     paymentService.verifyAndSavePayment(paymentRequest, payment.getImpUid());
                     System.out.println("Payment verified and saved successfully for imp_uid: " + payment.getImpUid());
