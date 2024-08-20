@@ -1,5 +1,6 @@
 package com.example.server_9dokme.member.entity;
 import com.example.server_9dokme.common.entity.BaseEntity;
+import com.example.server_9dokme.subscribe.entity.Subscribe;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +18,9 @@ public class Member extends BaseEntity {
 
     @Column(name = "subscribe_id")
     private Long subscribeId;
+
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
+    private Subscribe subscribe;
 
     private Integer userRole;
 

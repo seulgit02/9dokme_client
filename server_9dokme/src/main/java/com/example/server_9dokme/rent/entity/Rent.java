@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
+//pdf 웹 뷰 조회시 갱신되는 엔티티
 @Entity
 @Data
 @NoArgsConstructor

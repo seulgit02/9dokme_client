@@ -9,6 +9,12 @@ import com.example.server_9dokme.member.dto.response.MainPageDto;
 import com.example.server_9dokme.member.entity.Member;
 import com.example.server_9dokme.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpSession;
+import com.example.server_9dokme.member.dto.response.MemberDto;
+import com.example.server_9dokme.member.repository.MemberRepository;
+import com.example.server_9dokme.rent.entity.Rent;
+import com.example.server_9dokme.rent.repository.RentRepository;
+import com.example.server_9dokme.subscribe.entity.Subscribe;
+import com.example.server_9dokme.subscribe.repository.SubscribeRepository;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -32,15 +38,19 @@ import java.util.stream.Collectors;
 public class MemberService {
 
     @Autowired
-    private final HttpSession session;
+    private HttpSession session;
     @Autowired
-    private final MemberRepository memberRepository;
+    private MemberRepository memberRepository;
     @Autowired
     private BookRepository bookRepository;
     @Autowired
     private AdvertisementRepository advertisementRepository;
     @Autowired
     private OrderedFormContentFilter formContentFilter;
+    @Autowired
+    private RentRepository rentRepository;
+    @Autowired
+    private SubscribeRepository subscribeRepository;
 
 
     public MainPageDto getMainPage(String category, int pageNo){
@@ -94,5 +104,38 @@ public class MemberService {
             throw new IllegalArgumentException("No member found with the provided email.");
         }
         return member;
+    }
+
+    public Page<MemberDto> getMemberList(int pageNo){
+        Pageable pageable = PageRequest.of(pageNo,10);
+        Page<Member> memberList = memberRepository.findAll(pageable);
+
+        //expireDate추가 필요!!
+        Page<MemberDto> MemberDtoPage = memberList.map(member -> {
+            // Subscribe 객체를 가져옴
+            Subscribe subscribe = subscribeRepository.findByMember_MemberId(member.getMemberId());
+
+            // expiredAt이 null이면 "미구독"으로 설정
+            String expiredAt = (subscribe != null && subscribe.getExpiredAt() != null)
+                    ? subscribe.getExpiredAt().toString()
+                    : "미구독";
+
+            return new MemberDto(
+                    member.getMemberId(),
+                    member.getNickName(),
+                    member.getSocialId(),
+                    expiredAt
+            );
+        });
+
+        return MemberDtoPage;
+    }
+
+    public void deleteMember(Long memberId){
+        if (memberRepository.existsById(memberId)) {
+            memberRepository.deleteById(memberId);
+        } else {
+            throw new RuntimeException("Member with ID " + memberId + " not found");
+        }
     }
 }

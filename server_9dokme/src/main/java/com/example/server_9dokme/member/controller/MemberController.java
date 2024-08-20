@@ -3,7 +3,11 @@ package com.example.server_9dokme.member.controller;
 import com.example.server_9dokme.common.dto.BaseResponse;
 import com.example.server_9dokme.common.dto.ErrorResponse;
 import com.example.server_9dokme.common.dto.SuccessResponse;
+import com.example.server_9dokme.inquiring.dto.response.InquireDto;
 import com.example.server_9dokme.member.dto.response.MainPageDto;
+import com.example.server_9dokme.member.dto.response.MemberDto;
+import com.example.server_9dokme.member.entity.Member;
+import com.example.server_9dokme.member.repository.MemberRepository;
 import com.example.server_9dokme.member.service.KakaoService;
 import com.example.server_9dokme.member.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,7 +16,9 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -31,6 +37,8 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
+    @Autowired
+    private MemberRepository memberRepository;
 
     @GetMapping("/oauth")
     @Operation(summary = "카카오 로그인", description = "카카오 로그인 GET")
@@ -45,6 +53,8 @@ public class MemberController {
 
         session.setAttribute("email",userInfo.get("email"));
         session.setAttribute("accessToken",accessToken);
+        Member member = memberRepository.findBySocialId((String)userInfo.get("email"));
+        session.setAttribute("memberId",member.getMemberId());
         session.setMaxInactiveInterval(60 * 60);
 
         kakaoService.registerMember(String.valueOf(userInfo.get("email")),String.valueOf(userInfo.get("nickname")));
@@ -73,7 +83,6 @@ public class MemberController {
         return SuccessResponse.success("로그아웃 성공");
     }
 
-
     @GetMapping("/mainPage")
     @Operation(summary = "메인 페이지", description = "메인페이지, 페이지 네이션 적용")
     public SuccessResponse<MainPageDto> mainPage(HttpSession session ,
@@ -90,6 +99,19 @@ public class MemberController {
         return SuccessResponse.success("메인 페이지",mainPageDto);
     }
 
+    @GetMapping("/admin/memberlist/{pageNo}")
+    public Page<MemberDto> getMemberList(@PathVariable int pageNo){
+        return memberService.getMemberList(pageNo);
+    }
 
-
+    @DeleteMapping("/admin/member/delete/{memberId}")
+    public ResponseEntity<Void> deleteInquire(@PathVariable Long memberId) {
+        try {
+            memberService.deleteMember(memberId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (RuntimeException e) {
+            log.error("Error deleting member with ID " + memberId, e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

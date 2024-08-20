@@ -1,6 +1,8 @@
 package com.example.server_9dokme.question.entity;
 
 import com.example.server_9dokme.book.entity.Book;
+import jakarta.persistence.*;
+import lombok.*;
 import com.example.server_9dokme.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,6 +39,7 @@ public class Question extends BaseEntity {
     private int bookPage;
 
     @ManyToOne
+    @JoinColumn(name = "book_id")
     private Book book;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)

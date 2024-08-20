@@ -2,6 +2,7 @@ package com.example.server_9dokme.book.controller;
 
 import com.example.server_9dokme.book.dto.response.BookCheckDto;
 import com.example.server_9dokme.book.dto.response.BookWebViewDto;
+import com.example.server_9dokme.book.dto.response.MyPageDto;
 import com.example.server_9dokme.book.entity.Book;
 import com.example.server_9dokme.book.message.ErrorMessage;
 import com.example.server_9dokme.book.repository.BookRepository;
@@ -113,5 +114,14 @@ public class BookController {
 
         return ResponseEntity.ok("웹 뷰 종료");
     }
+
+    @GetMapping("/mypage")
+    public MyPageDto mypage(HttpSession session,
+                            int id,
+                            @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+                            @RequestParam(required = false, defaultValue = "readAt", value = "criteria") String criteria){
+        return bookService.getMypageBookList(id, pageNo, criteria);
+    }
+
 }
 

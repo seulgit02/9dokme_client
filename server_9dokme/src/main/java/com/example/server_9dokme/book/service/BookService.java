@@ -1,5 +1,10 @@
 package com.example.server_9dokme.book.service;
 
+import com.example.server_9dokme.book.dto.response.BookListDto;
+import com.example.server_9dokme.book.dto.response.MyPageDto;
+import com.example.server_9dokme.book.dto.response.ProfileDto;
+import com.example.server_9dokme.member.entity.Member;
+import com.example.server_9dokme.member.repository.MemberRepository;
 import com.example.server_9dokme.book.dto.response.BookCheckDto;
 import com.example.server_9dokme.book.dto.response.BookWebViewDto;
 import com.example.server_9dokme.book.entity.Book;
@@ -11,12 +16,9 @@ import com.example.server_9dokme.rent.entity.Rent;
 import com.example.server_9dokme.rent.repository.RentRepository;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -93,8 +95,6 @@ public class BookService {
         Book book = bookRepository.findByBookId(bookId);
 
 
-
-
         return BookWebViewDto.builder().
                 title(book.getTitle()).
                 category(book.getCategory()).
@@ -151,4 +151,28 @@ public class BookService {
         return bookRepository.findById(bookId);
     }
 
+
+    public MyPageDto getMypageBookList(int id, int pageNo, String criteria){
+
+//        Pageable pageable = PageRequest.of(pageNo, 8, Sort.Direction.DESC, criteria);
+        Pageable pageable = PageRequest.of(pageNo, 8, Sort.Direction.DESC, "r.readAt");
+        Member member =memberRepository.findByMemberId(id);
+
+        ProfileDto profileDto = new ProfileDto(
+                member.getMemberId(),
+                member.getNickName()
+        );
+
+        Page<Book> page = bookRepository.findBooksByMemberOrderByReadAtDesc(member.getMemberId(), pageable);
+
+        Page<BookDto> bookDtoPage = page.map(book -> new BookDto(
+                book.getBookId(),
+                book.getTitle(),
+                book.getCategory(),
+                book.getBookURL(),
+                book.getBookImage()));
+
+        return new MyPageDto(profileDto,bookDtoPage);
+//        return bookDtoPage;
+    }
 }

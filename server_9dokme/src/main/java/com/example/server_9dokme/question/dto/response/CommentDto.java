@@ -6,15 +6,13 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+//닉네임 추가 필요!!
 @Data
 @Builder
 @AllArgsConstructor
-public class QuestionDto {
-    private int questionId;
-    private String title;
-    private String content;
-    private String chapter;
-    private int bookPage;
-    private int commentCount;
+public class CommentDto {
+    int commentId;
+    String content;
     private LocalDateTime createdAt;
+    String nickName;
 }

@@ -18,4 +18,5 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
     @Query("SELECT s FROM Subscribe s WHERE s.expiredAt <= :date AND s.paymentStatus = :status")
     Page<Subscribe> findExpiredSubscriptions(@Param("date") LocalDate date, @Param("status") PaymentStatus status, Pageable pageable);
 
+    Subscribe findByMember_MemberId(Long memberId);
 }

@@ -1,5 +1,6 @@
 package com.example.server_9dokme.book.entity;
 import com.example.server_9dokme.common.entity.BaseEntity;
+import com.example.server_9dokme.member.entity.Member;
 import com.example.server_9dokme.question.entity.Question;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,8 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Getter
@@ -21,6 +21,9 @@ public class Book extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_id")
     private Long bookId;
+
+//    @Column(name = "last_viewed_date")
+//    private LocalDateTime lastViewedDate;
 
     private String title;
 
@@ -43,6 +46,11 @@ public class Book extends BaseEntity {
     private int bookFullPage;
 
     private Integer rent;
+
+    //[merge] member 어떻게 join?
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private List<Question> timetableList = new ArrayList<>();
