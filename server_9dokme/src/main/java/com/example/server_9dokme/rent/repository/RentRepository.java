@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RentRepository extends JpaRepository<Rent, Long> {
 
-    Boolean existsByBookId(Long bookId);
+    Boolean existsByBookIdAndMemberId(Long bookId, Long memberId);
 
     Rent findByBookId(Long bookId);
 

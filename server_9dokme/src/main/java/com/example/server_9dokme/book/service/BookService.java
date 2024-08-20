@@ -40,7 +40,12 @@ public class BookService {
 
         Long memberId = memberRepository.findBySocialId(email).getMemberId();
         Book book = bookRepository.findByBookId(bookId);
-        Rent rent = rentRepository.findByBookIdAndMemberId(bookId,memberId);
+        int lastPage;
+        if(rentRepository.existsByBookIdAndMemberId(bookId,memberId)){
+            lastPage = rentRepository.findByBookIdAndMemberId(bookId,memberId).getLastPage();
+        }else{
+            lastPage = 1;
+        }
 
 
         BookCheckDto dto = BookCheckDto.builder().
@@ -51,7 +56,7 @@ public class BookService {
                 publisher(book.getPublisher()).
                 category(book.getCategory()).
                 pdfImage(book.getBookImage()).
-                lastPage(rent.getLastPage()).
+                lastPage(lastPage).
                 category(book.getCategory()).build();
 
 
@@ -62,8 +67,13 @@ public class BookService {
     public Page<BookDto> searchBook(String title, int pageNo){
 
         Pageable pageable = PageRequest.of(pageNo,4);
+        Page<Book> bookPage;
 
-        Page<Book> bookPage = bookRepository.findByTitleContaining(title,pageable);
+        if(title.equals("")){
+            bookPage = bookRepository.findAll(pageable);
+        }else{
+            bookPage = bookRepository.findByTitleContaining(title, pageable);
+        }
 
         Page<BookDto> bookDtoPage = bookPage.map(book -> new BookDto(
                 book.getBookId(),
@@ -99,10 +109,11 @@ public class BookService {
         Member member = memberRepository.findBySocialId(socialId);
 
 
-        if(!rentRepository.existsByBookId(bookId)){
+        if(!rentRepository.existsByBookIdAndMemberId(bookId,member.getMemberId())){
             Rent initRent = new Rent();
             initRent.setBookId(bookId);
-            initRent.setProgress(0L);
+            initRent.setProgress(Float.valueOf(0L));
+            initRent.setLastPage(0);
             initRent.setRentDate(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
             initRent.setMemberId(member.getMemberId());
             initRent.setReadAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
