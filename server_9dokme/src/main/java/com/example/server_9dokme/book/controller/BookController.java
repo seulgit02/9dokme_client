@@ -53,7 +53,7 @@ public class BookController {
 
     @GetMapping("/bookPDF")
     @Operation(summary = "pdf 교재 검색", description = "pdf 교재 검색 title 기반")
-    public ResponseEntity<Page<BookDto>> searchBookPDF(@RequestParam String title,
+    public ResponseEntity<Page<BookDto>> searchBookPDF(@RequestParam(defaultValue = "") String title,
                                       @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
                                                        HttpSession session) {
 
@@ -64,7 +64,7 @@ public class BookController {
         if (currentMember == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "로그인 후 이용해주세요.");
         }
-        if(dto.isEmpty()==false){
+        if(dto.isEmpty()==true){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "찾을 수 없는 pdf 교재입니다.");
         }
 
