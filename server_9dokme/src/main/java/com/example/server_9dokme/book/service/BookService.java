@@ -27,13 +27,11 @@ import java.util.Optional;
 @Service
 @Data
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Slf4j
 public class BookService {
 
     @Autowired
     private BookRepository bookRepository;
-
     @Autowired
     private RentRepository rentRepository;
     @Autowired
