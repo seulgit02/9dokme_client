@@ -111,7 +111,7 @@ public class BookController {
 
         bookService.updateProgress(bookId,currentMember.toString(),lastPage);
 
-        return ResponseEntity.ok("웹 뷰 종류");
+        return ResponseEntity.ok("웹 뷰 종료");
     }
 }
 
