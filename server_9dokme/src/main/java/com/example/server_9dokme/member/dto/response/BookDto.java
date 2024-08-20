@@ -9,6 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class BookDto {
     private Long bookId;
+    private String title;
     private String category;
     private String bookImage;
     private String bookUrl;

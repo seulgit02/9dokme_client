@@ -11,6 +11,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public enum ErrorMessage {
 
     INVALID_BOOK_ID(NOT_FOUND, "유효하지 않은 책 id 입니다."),
+    NOT_FOUND_BOOK(NOT_FOUND, "해당하는 책이 존재하지 않습니다.")
     ;
 
     private final HttpStatus httpStatus;

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>결제하기</title>
+    <link rel="stylesheet" href="payment.css">
+    <script src="https://js.tosspayments.com/v1/payment"></script>
+    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+</head>
+<body>
+
+<h2>결제 페이지</h2>
+
+<div class="payment-options">
+    <!-- 신용/체크 결제 -->
+    <div class="payment-option">
+        <h3>신용/체크 결제</h3>
+        <button onclick="billing('카드', jsons.card);">자동결제</button>
+    </div>
+
+    <!-- 카카오페이 결제 -->
+    <div class="payment-option">
+        <h3>카카오페이</h3>
+        <button onclick="requestPay()">결제하기</button>
+    </div>
+</div>
+
+<!-- 결제 완료 모달 -->
+<div id="paymentModal" class="modal">
+    <div class="modal-content">
+        <h3>결제가 완료되었습니다.</h3>
+        <p>구독 만료일은 2025-01-31입니다.</p>
+        <button onclick="closeModal()">확인</button>
+    </div>
+</div>
+
+<!-- 결제 실패 모달 -->
+<div id="failureModal" class="modal">
+    <div class="modal-content">
+        <h3>정기결제 등록에 실패했습니다.</h3>
+        <button onclick="closeFailureModal()">확인</button>
+    </div>
+</div>
+
+<script>
+    var baseURL = "http://localhost:8080/payments";
+
+    // Toss Payments 설정
+    var clientKey = "test_ck_d46qopOB89xLAkMQnk0YrZmM75y0";
+    var tossPayments = TossPayments(clientKey);
+    var jsons = {
+        card: {
+            customerKey: "test_customer_key",
+            successUrl: "http://localhost:8080/success",
+            failUrl: "http://localhost:8080/fail"
+        }
+    };
+
+    function billing(method, requestJson) {
+        tossPayments.requestBillingAuth(method, requestJson)
+            .then(function(response) {
+                // 결제가 성공하면 성공 모달창 표시
+                showSuccessModal();
+            })
+            .catch(function (error) {
+                // 결제가 실패하면 실패 모달창 표시
+                showFailureModal();
+            });
+    }
+
+    // 카카오페이 결제 설정
+    function requestPay() {
+        var IMP = window.IMP;
+        IMP.init("imp20450277");
+
+        IMP.request_pay({
+            pg: "kakaopay.TCSUBSCRIP",
+            pay_method: "card",
+            merchant_uid: "order_no_" + new Date().getTime(),
+            name: "테스트 결제",
+            amount: 1000,
+            buyer_email: "test@example.com",
+            buyer_name: "홍길동",
+            buyer_tel: "010-1234-5678",
+            buyer_addr: "서울특별시 강남구",
+            buyer_postcode: "123-456"
+        }, function (response) {
+            if (response.success) {
+                showSuccessModal();
+            } else {
+                showFailureModal();
+            }
+        });
+    }
+
+    function showSuccessModal() {
+        document.getElementById('paymentModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('paymentModal').style.display = 'none';
+    }
+
+    function showFailureModal() {
+        document.getElementById('failureModal').style.display = 'flex';
+    }
+
+    function closeFailureModal() {
+        document.getElementById('failureModal').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>

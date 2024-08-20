@@ -6,8 +6,18 @@ import com.example.server_9dokme.book.repository.AdvertisementRepository;
 import com.example.server_9dokme.book.repository.BookRepository;
 import com.example.server_9dokme.member.dto.response.BookDto;
 import com.example.server_9dokme.member.dto.response.MainPageDto;
+import com.example.server_9dokme.member.entity.Member;
+import com.example.server_9dokme.member.repository.MemberRepository;
+import jakarta.servlet.http.HttpSession;
+import com.example.server_9dokme.member.dto.response.MemberDto;
+import com.example.server_9dokme.member.repository.MemberRepository;
+import com.example.server_9dokme.rent.entity.Rent;
+import com.example.server_9dokme.rent.repository.RentRepository;
+import com.example.server_9dokme.subscribe.entity.Subscribe;
+import com.example.server_9dokme.subscribe.repository.SubscribeRepository;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.filter.OrderedFormContentFilter;
@@ -18,20 +28,29 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Data
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class MemberService {
 
+    @Autowired
+    private HttpSession session;
+    @Autowired
+    private MemberRepository memberRepository;
     @Autowired
     private BookRepository bookRepository;
     @Autowired
     private AdvertisementRepository advertisementRepository;
     @Autowired
     private OrderedFormContentFilter formContentFilter;
+    @Autowired
+    private RentRepository rentRepository;
+    @Autowired
+    private SubscribeRepository subscribeRepository;
 
 
     public MainPageDto getMainPage(String category, int pageNo){
@@ -51,11 +70,72 @@ public class MemberService {
         // Convert Page<Book> to Page<BookDto>
         Page<BookDto> bookDtoPage = bookPage.map(book -> new BookDto(
                 book.getBookId(),
+                book.getTitle(),
                 book.getCategory(),
                 book.getBookURL(),
                 book.getBookImage()));
 
 
         return new MainPageDto(advertisementDtoList,bookDtoPage);
+    }
+
+    public Optional<Member> getMemberById(Long id) {
+        return memberRepository.findById(id);
+    }
+
+//    public Member saveMember(Member member) {
+//        return memberRepository.save(member);
+//    }
+
+    // 현재 사용자 정보 가져오기
+    public Member getCurrentMember() {
+        String email = (String) session.getAttribute("email");
+        if (email == null) {
+            log.error("User not logged in. Session attributes: {}", session.getAttributeNames());
+            throw new IllegalStateException("User not logged in.");
+        }
+        return findMemberByEmail(email);
+    }
+
+    private Member findMemberByEmail(String email) {
+        Member member = memberRepository.findBySocialId(email);
+        if (member == null) {
+            log.error("No member found with email: {}", email);
+            throw new IllegalArgumentException("No member found with the provided email.");
+        }
+        return member;
+    }
+
+    public Page<MemberDto> getMemberList(int pageNo){
+        Pageable pageable = PageRequest.of(pageNo,10);
+        Page<Member> memberList = memberRepository.findAll(pageable);
+
+        //expireDate추가 필요!!
+        Page<MemberDto> MemberDtoPage = memberList.map(member -> {
+            // Subscribe 객체를 가져옴
+            Subscribe subscribe = subscribeRepository.findByMember_MemberId(member.getMemberId());
+
+            // expiredAt이 null이면 "미구독"으로 설정
+            String expiredAt = (subscribe != null && subscribe.getExpiredAt() != null)
+                    ? subscribe.getExpiredAt().toString()
+                    : "미구독";
+
+            return new MemberDto(
+                    member.getMemberId(),
+                    member.getNickName(),
+                    member.getSocialId(),
+                    expiredAt
+            );
+        });
+
+        return MemberDtoPage;
+    }
+
+    public void deleteMember(Long memberId){
+        if (memberRepository.existsById(memberId)) {
+            memberRepository.deleteById(memberId);
+        } else {
+            throw new RuntimeException("Member with ID " + memberId + " not found");
+        }
     }
 }
