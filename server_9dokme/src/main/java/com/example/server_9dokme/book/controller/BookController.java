@@ -33,7 +33,7 @@ public class BookController {
     @Autowired
     private BookRepository bookRepository;
 
-    @GetMapping("/bookdetail")
+    @GetMapping("/books")
     @Operation(summary = "pdf 교재 상세조회", description = "pdf 교재 상세조회")
     public ResponseEntity<BookCheckDto> getBookDetail(@RequestParam Long id,
                                                       HttpSession session) {
@@ -52,7 +52,7 @@ public class BookController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/bookPDF")
+    @GetMapping("/mainpage/search")
     @Operation(summary = "pdf 교재 검색", description = "pdf 교재 검색 title 기반")
     public ResponseEntity<Page<BookDto>> searchBookPDF(@RequestParam(defaultValue = "") String title,
                                       @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,

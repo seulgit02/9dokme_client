@@ -33,12 +33,12 @@ public class InquireController {
         return new ResponseEntity<>(createdInquire, HttpStatus.CREATED);
     }
 
-    @GetMapping("/admin/inquirelist/{pageNo}")
+    @GetMapping("/admin/inquiries/{pageNo}")
     public Page<InquireDto> getInquireList(@PathVariable int pageNo){
         return inquireService.getInquireList(pageNo);
     }
 
-    @DeleteMapping("/admin/inquire/delete/{inquireId}")
+    @DeleteMapping("/admin/inquiries/{inquireId}")
     public ResponseEntity<Void> deleteInquire(@PathVariable Long inquireId) {
         try {
             inquireService.deleteInquire(inquireId);

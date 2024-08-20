@@ -85,7 +85,7 @@ public class MemberController {
         return SuccessResponse.success("로그아웃 성공");
     }
 
-    @GetMapping("/mainPage")
+    @GetMapping("/mainpage")
     @Operation(summary = "메인 페이지", description = "메인페이지, 페이지 네이션 적용")
     public SuccessResponse<MainPageDto> mainPage(HttpSession session ,
                                                  @RequestParam(required = false, defaultValue = "", value = "category")  String category,
@@ -101,13 +101,13 @@ public class MemberController {
         return SuccessResponse.success("메인 페이지",mainPageDto);
     }
 
-    @GetMapping("/admin/memberlist/{pageNo}")
+    @GetMapping("/admin/members/{pageNo}")
     public Page<MemberDto> getMemberList(@RequestParam(defaultValue = "0") int pageNo){
         return memberService.getMemberList(pageNo);
     }
 
-    @DeleteMapping("/admin/member/delete/{memberId}")
-    @Operation(summary = "문의글 삭제")
+    @DeleteMapping("/admin/members/{memberId}")
+    @Operation(summary = "멤버 삭제")
     public ResponseEntity<Void> deleteInquire(@PathVariable Long memberId) {
         try {
             memberService.deleteMember(memberId);
