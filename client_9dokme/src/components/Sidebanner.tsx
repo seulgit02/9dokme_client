@@ -25,9 +25,9 @@ const Sidebanner = () => {
 
   useEffect(() => {
     const pathToKeyMap: { [key: string]: string | undefined } = {
-      "/api/mainpage": "mainpage",
+      "/mainpage": "mainpage",
       "/": "landing",
-      "/api/queryBoard": "queryboard",
+      "/queryBoard": "queryboard",
     };
     const currentKey = pathToKeyMap[location.pathname];
     if (currentKey) {
@@ -70,25 +70,25 @@ const Sidebanner = () => {
               text="메인페이지"
               icon={book}
               isActive={activeBtn === "mainpage"}
-              onClick={() => handleNavigate("/api/mainpage", "mainpage")}
+              onClick={() => handleNavigate("/mainpage", "mainpage")}
             />
             <NavBarBtn
               text="나의책갈피"
               icon={bookmark}
-              isActive={activeBtn === "/api/mypage"}
-              onClick={() => handleNavigate("/api/mypage", "mypage")}
+              isActive={activeBtn === "/mypage"}
+              onClick={() => handleNavigate("/mypage", "mypage")}
             />
             <NavBarBtn
               text="나의 작성글"
               icon={chat}
               isActive={activeBtn === "query"}
-              onClick={() => handleNavigate("/api/queryBoard", "query")}
+              onClick={() => handleNavigate("/queryBoard", "query")}
             />
             <NavBarBtn
               text="문의글 작성"
               icon={query}
               isActive={activeBtn === "query"}
-              onClick={() => handleNavigate("/api/queryBoard", "query")}
+              onClick={() => handleNavigate("/queryBoard", "query")}
             />
           </BtnComponent>
         </StyledBannerContainer>
