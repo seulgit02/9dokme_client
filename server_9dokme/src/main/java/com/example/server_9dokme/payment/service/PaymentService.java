@@ -1,11 +1,9 @@
 package com.example.server_9dokme.payment.service;
 
 import com.example.server_9dokme.payment.dto.PaymentRequest;
-import com.example.server_9dokme.payment.dto.PaymentResponse;
 import com.example.server_9dokme.payment.entity.Payment;
 import com.example.server_9dokme.payment.entity.PaymentStatus;
 import com.example.server_9dokme.payment.repository.PaymentRepository;
-import com.example.server_9dokme.subscribe.entity.Subscribe;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -122,12 +120,13 @@ public class PaymentService {
             payment.setImpUid(impUid);
         }
 
-        payment.setMerchantUid(paymentRequest.merchantUid()); // 수정된 부분
+        payment.setMerchantUid(paymentRequest.merchantUid());
         payment.setAmount(amountFromIamport);
         payment.setBuyerEmail(paymentData.path("buyer_email").asText());
         payment.setBuyerName(paymentData.path("buyer_name").asText());
         payment.setBuyerTel(paymentData.path("buyer_tel").asText());
         payment.setStatus(paymentData.path("status").asText());
+        payment.setPaymentType(paymentRequest.paymentType());
 
         paymentRepository.save(payment);
     }
@@ -136,49 +135,4 @@ public class PaymentService {
         payment.setStatus(PaymentStatus.UNPAID.name());
         paymentRepository.save(payment);
     }
-
-
-    public PaymentResponse requestPayment(PaymentRequest paymentRequest) throws Exception {
-        String accessToken = getAccessToken();
-
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(accessToken);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        ObjectNode paymentBody = objectMapper.createObjectNode();
-        paymentBody.put("merchant_uid", paymentRequest.merchantUid());
-        paymentBody.put("amount", paymentRequest.amount());
-        paymentBody.put("name", paymentRequest.name());
-        paymentBody.put("buyer_email", paymentRequest.buyerEmail());
-        paymentBody.put("buyer_name", paymentRequest.buyerName());
-        paymentBody.put("buyer_tel", paymentRequest.buyerTel());
-        paymentBody.put("buyer_addr", paymentRequest.buyerAddr());
-        paymentBody.put("buyer_postcode", paymentRequest.buyerPostcode());
-
-        HttpEntity<String> request = new HttpEntity<>(paymentBody.toString(), headers);
-
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                "https://api.iamport.kr/payments/prepare",
-                request,
-                String.class
-        );
-
-        if (response.getStatusCode() == HttpStatus.OK) {
-            JsonNode root = objectMapper.readTree(response.getBody());
-            String responseStatus = root.path("code").asText();
-            if ("0".equals(responseStatus)) {
-                JsonNode paymentData = root.path("response");
-                boolean success = "paid".equals(paymentData.path("status").asText());
-                return new PaymentResponse(paymentRequest.merchantUid(), paymentRequest.merchantUid(), paymentRequest.amount(), success);
-            } else {
-                throw new Exception("Failed to request payment: " + root.path("message").asText());
-            }
-        } else {
-            throw new Exception("Failed to request payment: HTTP error code " + response.getStatusCode());
-        }
-    }
-
-
-
 }

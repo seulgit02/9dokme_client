@@ -1,5 +1,7 @@
 package com.example.server_9dokme.payment.dto;
 
+import com.example.server_9dokme.payment.entity.PaymentType;
+
 public record PaymentRequest(
         String pgProvider,
         String payMethod,
@@ -11,5 +13,6 @@ public record PaymentRequest(
         String buyerTel,
         String buyerAddr,
         String buyerPostcode,
-        String authKey
+        String authKey,
+        PaymentType paymentType
 ) {}
