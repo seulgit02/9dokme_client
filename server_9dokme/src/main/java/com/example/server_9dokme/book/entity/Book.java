@@ -22,12 +22,9 @@ public class Book extends BaseEntity {
     @Column(name = "book_id")
     private Long bookId;
 
-//    @Column(name = "last_viewed_date")
-//    private LocalDateTime lastViewedDate;
-
     private String title;
 
-    private LocalDateTime publishDate; // 출판일자는 따로 기입해줘야하기 때문에 BaseEntity 사용 x
+    private LocalDateTime publishDate;
 
     private String author;
 
@@ -39,7 +36,7 @@ public class Book extends BaseEntity {
 
     private String bookImage;   //이미지 URL
 
-    private String bookURL; // URL로 프론트에 넘겨주기로 했기 때문에 데이터타입 수정 웹뷰 조회
+    private String bookURL; // URL로 프론트에 넘겨주기로 했기 때문에 데이터타입 수정
 
     private int bookChapter;
 
@@ -55,4 +52,39 @@ public class Book extends BaseEntity {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private List<Question> timetableList = new ArrayList<>();
 
+
+    public static Book create(String title, LocalDateTime publishDate, String author, String publisher,
+                              String category, String description, String bookImage, String bookURL,
+                              int bookChapter, int bookFullPage, Integer rent) {
+        return Book.builder()
+                .title(title)
+                .publishDate(publishDate)
+                .author(author)
+                .publisher(publisher)
+                .category(category)
+                .description(description)
+                .bookImage(bookImage)
+                .bookURL(bookURL)
+                .bookChapter(bookChapter)
+                .bookFullPage(bookFullPage)
+                .rent(rent)
+                .build();
+    }
+
+    public void update(String title, LocalDateTime publishDate, String author, String publisher,
+                       String category, String description, String bookImage, String bookURL,
+                       int bookChapter, int bookFullPage, Integer rent) {
+        this.title = title;
+        this.publishDate = publishDate;
+        this.author = author;
+        this.publisher = publisher;
+        this.category = category;
+        this.description = description;
+        this.bookImage = bookImage;
+        this.bookURL = bookURL;
+        this.bookChapter = bookChapter;
+        this.bookFullPage = bookFullPage;
+        this.rent = rent;
+    }
 }
+
