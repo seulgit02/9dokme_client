@@ -10,5 +10,6 @@ public record PaymentRequest(
         String buyerName,
         String buyerTel,
         String buyerAddr,
-        String buyerPostcode
+        String buyerPostcode,
+        String authKey
 ) {}
