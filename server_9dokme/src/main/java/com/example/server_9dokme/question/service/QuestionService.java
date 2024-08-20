@@ -95,6 +95,7 @@ public class QuestionService{
                         .content(comment.getContent())
                         .createdAt(comment.getCreatedAt())
                         .nickName(comment.getNickName())
+                        .memberId(memberRepository.findBySocialId(comment.getEmail()).getMemberId())
                         .build())
                 .collect(Collectors.toList());
 
@@ -108,6 +109,7 @@ public class QuestionService{
         Question question = Question.builder()
                 .book(bookRepository.findByBookId(bookId))
                 .nickName(memberRepository.findBySocialId(user.toString()).getNickName())
+                .email(user.toString())
                 .chapter(dto.getBookChapter())
                 .bookPage(dto.getBookPage())
                 .title(dto.getTitle())
@@ -129,7 +131,14 @@ public class QuestionService{
         comment.setQuestion(question);
         comment.setContent(dto.getContent());
         comment.setNickName(memberRepository.findBySocialId(user.toString()).getNickName());
+        comment.setEmail(user.toString());
 
         commentRepository.save(comment);
+    }
+
+    @Transactional
+    public void deleteComment(Integer questionId, Integer commentId){
+
+        commentRepository.deleteCommentByQuestion_QuestionIdAndCommentId(questionId,commentId);
     }
 }

@@ -34,6 +34,8 @@ public class Question extends BaseEntity {
 
     private String nickName;
 
+    private String email;
+
     private int chapter;
 
     private int bookPage;

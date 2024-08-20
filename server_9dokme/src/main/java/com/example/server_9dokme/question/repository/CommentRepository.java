@@ -6,8 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CommentRepository extends JpaRepository<Comment, Long> {
+public interface CommentRepository extends JpaRepository<Comment, Integer> {
     //commentcount 리턴
     int countByQuestion_QuestionId(int questionId);
     List<Comment> findAllByQuestion_QuestionId(int questionId);
+
+    Boolean existsByQuestionAndCommentId(Question question, Long commentId);
+
+    void deleteCommentByQuestion_QuestionIdAndCommentId(Integer question, Integer commentId);
 }

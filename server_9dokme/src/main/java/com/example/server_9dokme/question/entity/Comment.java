@@ -29,6 +29,8 @@ public class Comment extends BaseEntity {
 
     private String nickName;
 
+    private String email;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private Question question;

@@ -6,6 +6,7 @@ import com.example.server_9dokme.common.dto.SuccessResponse;
 import com.example.server_9dokme.inquiring.dto.response.InquireDto;
 import com.example.server_9dokme.member.dto.response.MainPageDto;
 import com.example.server_9dokme.member.dto.response.MemberDto;
+import com.example.server_9dokme.member.dto.response.PostWrittenDto;
 import com.example.server_9dokme.member.entity.Member;
 import com.example.server_9dokme.member.repository.MemberRepository;
 import com.example.server_9dokme.member.service.KakaoService;
@@ -22,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -100,11 +102,12 @@ public class MemberController {
     }
 
     @GetMapping("/admin/memberlist/{pageNo}")
-    public Page<MemberDto> getMemberList(@PathVariable int pageNo){
+    public Page<MemberDto> getMemberList(@RequestParam(defaultValue = "0") int pageNo){
         return memberService.getMemberList(pageNo);
     }
 
     @DeleteMapping("/admin/member/delete/{memberId}")
+    @Operation(summary = "문의글 삭제")
     public ResponseEntity<Void> deleteInquire(@PathVariable Long memberId) {
         try {
             memberService.deleteMember(memberId);
@@ -113,5 +116,20 @@ public class MemberController {
             log.error("Error deleting member with ID " + memberId, e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/myHistory")
+    @Operation(summary = "나의 작성글")
+    public ResponseEntity<Page<PostWrittenDto>> getPostWritten(HttpSession session,
+                                                               @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
+        Object currentUser = session.getAttribute("email");
+
+        Page<PostWrittenDto> listdto = memberService.getPostWrittenList(currentUser,pageNo);
+
+        if(listdto.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(listdto);
     }
 }

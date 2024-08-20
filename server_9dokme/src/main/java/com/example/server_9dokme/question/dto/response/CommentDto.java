@@ -15,4 +15,5 @@ public class CommentDto {
     String content;
     private LocalDateTime createdAt;
     String nickName;
+    Long memberId;
 }

@@ -11,5 +11,5 @@ public class MemberDto {
     private Long MemberId;
     private String nickname;
     private String socialId;
-    private String returnDate;
+    private String expiredDate;
 }
