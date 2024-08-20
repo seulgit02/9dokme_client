@@ -1,8 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import User from "../json/User.json";
 import profile from "../images/profile.png";
 import Sidebanner from "../components/Sidebanner";
+import API from "../api/axios";
 const QueryBoard = () => {
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      const response = await API.post("/api/inquire", {
+        title: title,
+        userId: User.userId,
+        content: content,
+      });
+      if (response.status === 200 || response.status === 201) {
+        alert("문의글이 관리자에게 성공적으로 제출되었습니다:)");
+        setTitle("");
+        setContent("");
+      } else {
+        alert("문의글 제출에 실패했습니다.");
+      }
+    } catch (error) {
+      console.log("문의글 제출 오류: ", error);
+      alert("오류가 발생했습니다. 나중에 다시 시도해주세요.");
+    }
+  };
+
   return (
     <div className="w-screen h-[100vh] bg-customColor bg-opacity-20 p-[5vw]">
       <Sidebanner />
@@ -21,15 +45,27 @@ const QueryBoard = () => {
             <div className="grid grid-cols-10 grid-rows-5 h-full">
               <div className="col-span-1 row-span-1 font-bold">제목</div>
               <div className="col-span-9 row-span-1">
-                <input className="w-[100%] h-[80%] border-slate-400 border-solid border-[0.1vw] pl-[1vw]" />
+                <input
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                  className="w-[100%] h-[80%] border-slate-400 border-solid border-[0.1vw] pl-[1vw]"
+                />
               </div>
               <div className="col-span-1 row-span-4 font-bold">문의글</div>
               <div className="col-span-9 row-span-4">
-                <input className="w-[100%] h-[100%] border-slate-400 border-solid border-[0.1vw] pl-[1vw]" />
+                <input
+                  onChange={(e) => setContent(e.target.value)}
+                  required
+                  className="w-[100%] h-[100%] border-slate-400 border-solid border-[0.1vw] pl-[1vw]"
+                />
               </div>
             </div>
             <div className="flex justify-end">
-              <button className="bg-btncolor w-[9vw] text-center text-white py-[0.5vw] px-[1vw] bg-btncolor rounded-sm mt-[2vw]">
+              <button
+                onClick={handleSubmit}
+                className="bg-btncolor w-[9vw] text-center text-white py-[0.5vw] px-[1vw] bg-btncolor rounded-sm mt-[2vw]"
+              >
+
                 제출하기
               </button>
             </div>

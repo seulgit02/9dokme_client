@@ -1,4 +1,5 @@
 export interface user {
+  userId: number;
   username: string;
-  expirationDate: Date;
+  expirationDate: string;
 }

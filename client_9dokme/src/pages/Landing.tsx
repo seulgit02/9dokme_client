@@ -1,6 +1,7 @@
 import landingPage from "../images/landingPage.png";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+
 import { KAKAO_AUTH_URL } from "../auth/Auth";
 const Landing = () => {
   const navigate = useNavigate();
