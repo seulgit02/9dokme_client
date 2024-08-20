@@ -2,26 +2,31 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>결제하기</title>
-    <link rel="stylesheet" href="payment.css">
+    <title>9dokme 정기결제 등록</title>
+    <link rel="stylesheet" href="/css/payment.css">
     <script src="https://js.tosspayments.com/v1/payment"></script>
     <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 </head>
 <body>
 
-<h2>결제 페이지</h2>
-
-<div class="payment-options">
-    <!-- 신용/체크 결제 -->
-    <div class="payment-option">
-        <h3>신용/체크 결제</h3>
-        <button onclick="billing('카드', jsons.card);">자동결제</button>
-    </div>
-
-    <!-- 카카오페이 결제 -->
-    <div class="payment-option">
-        <h3>카카오페이</h3>
-        <button onclick="requestPay()">결제하기</button>
+<div class="container">
+    <h1>9dokme 정기결제 등록</h1>
+    <p class="price">월 9,900원</p>
+    <hr>
+    <ul class="features">
+        <li>전공책 pdf 대여 가능</li>
+        <li>필기 기능 사용 가능</li>
+        <li>질의응답 커뮤니티 사용 가능</li>
+    </ul>
+    <hr>
+    <p class="choose-text">결제 수단을 선택하세요.</p>
+    <div class="button-group">
+        <!-- 신용/체크 결제 버튼 -->
+        <button class="payment-button" onclick="billing('카드', jsons.card)" style="padding: 12px 25px;">
+            <span>신용 / 체크</span>
+        </button>
+        <!-- 카카오페이 이미지 -->
+        <img src="/images/kakaoPaymentImg.png" alt="kakao pay" id="kakaoPayImg" class="kakao-pay-img">
     </div>
 </div>
 
@@ -29,8 +34,8 @@
 <div id="paymentModal" class="modal">
     <div class="modal-content">
         <h3>결제가 완료되었습니다.</h3>
-        <p>구독 만료일은 2025-01-31입니다.</p>
-        <button onclick="closeModal()">확인</button>
+        <p>구독 만료일은 2024-09-22입니다.</p>
+        <button onclick="goToMainPage()">홈으로 돌아가기</button>
     </div>
 </div>
 
@@ -42,72 +47,137 @@
     </div>
 </div>
 
-<script>
-    var baseURL = "http://localhost:8080/payments";
+<!-- 유저 정보를 HTML에 미리 설정 -->
+<input type="hidden" id="userEmail" th:value="${userEmail}">
+<input type="hidden" id="userName" th:value="${userName}">
 
-    // Toss Payments 설정
-    var clientKey = "test_ck_d46qopOB89xLAkMQnk0YrZmM75y0";
-    var tossPayments = TossPayments(clientKey);
-    var jsons = {
-        card: {
-            customerKey: "test_customer_key",
-            successUrl: "http://localhost:8080/success",
-            failUrl: "http://localhost:8080/fail"
-        }
-    };
+<script type="text/javascript">
 
-    function billing(method, requestJson) {
-        tossPayments.requestBillingAuth(method, requestJson)
-            .then(function(response) {
-                // 결제가 성공하면 성공 모달창 표시
-                showSuccessModal();
-            })
-            .catch(function (error) {
-                // 결제가 실패하면 실패 모달창 표시
-                showFailureModal();
-            });
-    }
+    var jsons; // 전역에 변수 선언
 
-    // 카카오페이 결제 설정
-    function requestPay() {
-        var IMP = window.IMP;
-        IMP.init("imp20450277");
+    document.addEventListener("DOMContentLoaded", function() {
+        var userEmail = document.getElementById('userEmail').value;
+        var userName = document.getElementById('userName').value;
 
-        IMP.request_pay({
-            pg: "kakaopay.TCSUBSCRIP",
-            pay_method: "card",
-            merchant_uid: "order_no_" + new Date().getTime(),
-            name: "테스트 결제",
-            amount: 1000,
-            buyer_email: "test@example.com",
-            buyer_name: "홍길동",
-            buyer_tel: "010-1234-5678",
-            buyer_addr: "서울특별시 강남구",
-            buyer_postcode: "123-456"
-        }, function (response) {
-            if (response.success) {
-                showSuccessModal();
-            } else {
-                showFailureModal();
+        var baseURL = window.location.origin + "/";
+
+        var clientKey = "test_ck_d46qopOB89xLAkMQnk0YrZmM75y0";
+        var tossPayments = TossPayments(clientKey);
+
+        jsons = {
+            card: {
+                customerKey: "test_customer_key",
+                successUrl: window.location.origin + "/success",
+                failUrl: window.location.origin + "/fail"
             }
-        });
-    }
+        };
 
-    function showSuccessModal() {
-        document.getElementById('paymentModal').style.display = 'flex';
-    }
+        function billing(method, requestJson) {
+            tossPayments.requestBillingAuth(method, requestJson)
+                .then(function(response) {
+                    verifyPayment(response.imp_uid, "TOSS");
+                    showSuccessModal();
+                })
+                .catch(function (error) {
+                    showFailureModal();
+                });
+        }
 
-    function closeModal() {
-        document.getElementById('paymentModal').style.display = 'none';
-    }
+        function requestPay(paymentType) {
+            var IMP = window.IMP;
+            IMP.init("imp20450277");
 
-    function showFailureModal() {
-        document.getElementById('failureModal').style.display = 'flex';
-    }
+            IMP.request_pay({
+                pg: "kakaopay.TCSUBSCRIP",
+                pay_method: "card",
+                merchant_uid: "order_no_" + new Date().getTime(),
+                name: "9dokme 정기결제 등록",
+                amount: 15000,
+                buyer_email: userEmail,
+                buyer_name: userName,
+                buyer_tel: "010-1234-5678",
+                buyer_addr: "서울특별시 강남구",
+                buyer_postcode: "123-456"
+            }, function (response) {
+                if (response.success) {
+                    showSuccessModal();
+                    verifyPayment(response.imp_uid, paymentType);
+                } else {
+                    showFailureModal();
+                }
+            });
+        }
 
-    function closeFailureModal() {
-        document.getElementById('failureModal').style.display = 'none';
-    }
+        function verifyPayment(imp_uid, paymentType) {
+            fetch(`${baseURL}payments/complete?imp_uid=${imp_uid}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    pgProvider: paymentType === "KAKAO" ? "kakaopay" : "toss",
+                    payMethod: "card",
+                    merchantUid: "order_no_" + new Date().getTime(),
+                    name: "구독결제",
+                    amount: 15000,
+                    buyerEmail: userEmail,
+                    buyerName: userName,
+                    buyerTel: "010-1234-5678",
+                    buyerAddr: "서울특별시 강남구",
+                    buyerPostcode: "123-456",
+                    paymentType: paymentType
+                })
+            })
+                .then(response => response.text())
+                .then(data => {
+                    console.log("서버 응답:", data);
+                })
+                .catch(error => {
+                    console.error("결제 검증 중 오류 발생:", error);
+                });
+        }
+
+        function showSuccessModal() {
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        function showFailureModal() {
+            document.getElementById('failureModal').style.display = 'flex';
+        }
+
+        function closeFailureModal() {
+            document.getElementById('failureModal').style.display = 'none';
+        }
+
+        function goToMainPage() {
+            window.location.href = baseURL + "api/mainPage";
+        }
+
+        window.requestPay = requestPay;
+        window.billing = billing;
+        window.closeModal = closeModal;
+        window.closeFailureModal = closeFailureModal;
+        window.goToMainPage = goToMainPage;
+
+        var billingBtn = document.getElementById('billingBtn');
+        if (billingBtn) {
+            billingBtn.addEventListener('click', function() {
+                billing('카드', jsons.card);
+            });
+        }
+
+        // 카카오페이 이미지 클릭 이벤트 추가
+        var kakaoPayImg = document.getElementById('kakaoPayImg');
+        if (kakaoPayImg) {
+            kakaoPayImg.addEventListener('click', function() {
+                requestPay('KAKAO');
+            });
+        }
+    });
 </script>
 
 </body>
