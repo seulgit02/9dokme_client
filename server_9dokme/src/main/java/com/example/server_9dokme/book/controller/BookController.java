@@ -11,6 +11,8 @@ import com.example.server_9dokme.common.dto.BaseResponse;
 import com.example.server_9dokme.common.dto.ErrorResponse;
 import com.example.server_9dokme.common.dto.SuccessResponse;
 import com.example.server_9dokme.member.dto.response.BookDto;
+import com.example.server_9dokme.member.entity.Member;
+import com.example.server_9dokme.member.repository.MemberRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -32,6 +34,9 @@ public class BookController {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     @GetMapping("/books")
     @Operation(summary = "pdf 교재 상세조회", description = "pdf 교재 상세조회")
@@ -78,9 +83,9 @@ public class BookController {
     @GetMapping("/view")
     @Operation(summary = "pdf 교재 웹뷰 조회", description = "pdf 교재 웹뷰 조회")
     public ResponseEntity<BookWebViewDto> viewBookPDF(@RequestParam Long bookId,
-                                                      HttpSession session) {
+                                                      Long memberId) {
 
-        Object currentMember = session.getAttribute("email");
+        Object currentMember = memberRepository.findByMemberId(memberId);
 
         if (currentMember == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "로그인 후 이용해주세요.");
