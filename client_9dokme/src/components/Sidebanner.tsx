@@ -1,28 +1,28 @@
 import { useRecoilState } from "recoil";
-import { activeButtonState } from "../recoil/atom";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import styled from "styled-components";
 import banner from "../images/banner.png";
 import styled, { keyframes } from "styled-components";
 import chat from "../images/banner/chat.png";
 import book from "../images/banner/book.png";
 import bookmark from "../images/banner/bookmark.png";
 import query from "../images/banner/query.png";
+import { Typography } from "antd";
 import logout from "../images/adminBanner/logout.png";
 
 const Sidebanner = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isClicked, setIsClicked] = useState(false);
-  const [activeBtn, setActiveBtn] = useRecoilState(activeButtonState);
+
+  const [activeBtn, setActiveBtn] = useState("bookmark");
 
   const handleBannerClickOn = () => {
     if (!isClicked) setIsClicked(true);
   };
 
   const handleBannerClickOff = () => {
-    if (isClicked) setIsClicked(false);
+    setIsClicked(false);
   };
 
   useEffect(() => {
@@ -30,11 +30,6 @@ const Sidebanner = () => {
       "/mainpage": "mainpage",
       "/": "landing",
       "/queryBoard": "queryboard",
-      "/api/mainpage": "mainpage",
-      "/api/mypage": "mypage",
-      "/api/myarticle": "myarticle",
-
-      "/api/queryBoard": "queryboard",
     };
     const currentKey = pathToKeyMap[location.pathname];
     if (currentKey) {
@@ -56,8 +51,14 @@ const Sidebanner = () => {
           onClick={handleBannerClickOn}
         />
       ) : (
-        <div className="pointer w-[20vw] h-[50vw] bg-white rounded-bl-[2vw] p-[1vw] text-[1.5vw]">
-
+        <StyledBannerContainer
+          className={!isClicked ? "slide-out" : ""}
+          onAnimationEnd={() => {
+            if (!isClicked) setIsClicked(false);
+          }}
+        >
+          <MenuContainer>
+          <MenuTypo>Menu</MenuTypo>
           <div
             onClick={handleBannerClickOff}
             className="text-right font-bold cursor-pointer"
@@ -65,10 +66,7 @@ const Sidebanner = () => {
             x
           </div>
 
-          <div style={{ textAlign: "left", width: "100%" }}>
-            <p style={{ fontSize: "1vw" }}>Menu</p>
-          </div>
-
+          </MenuContainer>
           <BtnComponent>
             <NavBarBtn
               text="메인 페이지"
@@ -95,8 +93,7 @@ const Sidebanner = () => {
               onClick={() => handleNavigate("/queryBoard", "query")}
             />
           </BtnComponent>
-        </div>
-
+        </StyledBannerContainer>
       )}
     </div>
   );
@@ -176,7 +173,7 @@ const NavBarBtnStyle = styled.button<NavBarBtnStyleProps>`
   font-size: 1vw;
   display: flex;
   align-items: center;
-  width: 16vw;
+  width: 15vw;
   height: 2.3vw;
   padding: 1.5vw;
   border-radius: 0.5vw;

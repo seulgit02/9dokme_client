@@ -12,6 +12,9 @@ import book5 from "../images/books/book5.png";
 import book6 from "../images/books/book6.png";
 import book7 from "../images/books/book7.png";
 import Sidebanner from "../components/Sidebanner";
+import { PRIMARY } from "../utils/colors";
+import { Button, Card, Input } from "antd";
+import styled from "styled-components";
 
 
 const images: { [key: string]: string } = {
