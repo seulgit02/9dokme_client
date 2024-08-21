@@ -9,6 +9,7 @@ import AdminPDF from "./pages/AdminPDF";
 import AdminUser from "./pages/AdminUser";
 import AdminQboard from "./pages/AdminQboard";
 import LoginLoading from "./pages/LoginLoading";
+import MyArticle from "./pages/MyArticle";
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
       <Route path="/admin/adminUser/" element={<AdminUser />} />
       <Route path="/admin/adminQboard/" element={<AdminQboard />} />
       <Route path="/login/oauth2/callback/kakao" element={<LoginLoading />} />
-
+      <Route path="/myarticle/" element={<MyArticle />} />
     </Routes>
   );
 }

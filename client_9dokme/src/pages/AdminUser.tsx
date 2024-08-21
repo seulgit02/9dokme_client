@@ -79,7 +79,6 @@ const AdminUser = () => {
           ))}
         </TableBody>
       </Table>
-
     </div>
   );
 };
