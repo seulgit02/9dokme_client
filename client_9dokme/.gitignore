@@ -21,8 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-<<<<<<< HEAD
-=======
 
 src/env.tsx
->>>>>>> e1cff540920b2691f7a7d64acc23806b88aedca8
+
