@@ -41,7 +41,7 @@ const MyPage = () => {
           });
 
           const { profileDto, bookList } = response.data;
-          setBooks(bookList.content); // bookList.content를 books 상태에 저장
+          setBooks(bookList.content);
           setExpiredAt(profileDto.expirationDate);
           console.log("Profile Data:", profileDto);
           console.log("Book List Data:", bookList);

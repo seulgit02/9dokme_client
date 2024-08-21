@@ -64,7 +64,7 @@ const Main = () => {
       handleSearchBtnClick();
     }
   }, [category]);
-  const bookList: Book[] = bookData.bookData;
+  
   return (
     <>
       <Root>

@@ -15,6 +15,7 @@ interface BookCardProps {
 const BookCard: React.FC<BookCardProps> = ({ cover, title, onClick }) => {
   
 
+  //커버 이미지 연결 필요
   return (
     <StyledCard
       hoverable
