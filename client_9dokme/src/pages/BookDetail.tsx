@@ -7,13 +7,15 @@ import { BookDetailType, Books } from "../json/BookDetailType";
 import books from "../json/BookDetail.json";
 import { Divider } from "antd";
 import { PRIMARY } from "../utils/colors";
+import { BASE_URL } from "../env";
+import { message } from "antd";
 
 const BookDetail = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const handleBookmarkBtn = () => {
-    setIsOpen(true);
-  };
+  // const handleBookmarkBtn = () => {
+  //   setIsOpen(true);
+  // };
   const handleModalClose = () => {
     setIsOpen(false);
   };
@@ -28,6 +30,19 @@ const BookDetail = () => {
   const book = books.books.find(
     (b: BookDetailType) => String(b.bookId) === String(bookId)
   );
+  const memberId = localStorage.getItem("memberId");
+
+  const handleBookmarkBtn = async () => {
+    try {
+      console.log(bookId);
+      await axios.post(`${BASE_URL}/api/bookmark?BookId=${bookId}&memberId=${memberId}`);
+      message.success("북마크에 추가되었습니다!");
+    } catch (error) {
+      console.error('Error bookmarking the book:', error);
+      message.error("이미 북마크에 등록되었습니다.");
+    }
+    setIsOpen(true);
+  };
 
   return (
     <Root>
