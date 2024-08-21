@@ -5,11 +5,25 @@ import { useNavigate } from "react-router-dom";
 import bg from "../images/bg.png";
 import BookList from "../components/BookList";
 import Sidebanner from "../components/Sidebanner";
+import { useEffect } from "react";
+import axios from "axios";
 const MyPage = () => {
   const navigate = useNavigate();
   const handleClictSubscribeBtn = () => {
     navigate("/subscribe");
   };
+
+  useEffect(() => {
+    // API 호출
+    axios.get("http://localhost:8080/api/mypage")
+      .then((response) => {
+        console.log("Mypage data:", response.data); 
+      })
+      .catch((error) => {
+        console.error("Error fetching mypage data:", error); 
+      });
+  }, []);
+  
   return (
     <div className="w-screen h-[130vh] bg-customColor bg-opacity-20">
       <Sidebanner />
