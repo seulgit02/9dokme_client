@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import MyPostDetail from "../components/MyPosttDetail"; // MyPostDetail 컴포넌트 임포트
-
+import Sidebanner from "../components/Sidebanner";
 // 목데이터를 가져옵니다.
 import myPostsData from "../json/MyWrittenText.json";
 import myPostDetailData from "../json/MyPostDetail.json"; // 상세조회 목데이터 임포트
@@ -46,6 +46,7 @@ const MyArticle: React.FC = () => {
 
   return (
     <div className="w-screen h-[100vh] bg-customColor bg-opacity-20 p-[2vw] relative">
+      <Sidebanner />
       <div className="max-w-[800px] mx-auto bg-white p-[2vw] rounded-lg shadow-lg">
         {isDetailView && selectedQuestion ? (
           <MyPostDetail postDetail={postDetail} onBack={handleBack} />

@@ -6,7 +6,6 @@ import qboard from "../images/adminBanner/qboard.png";
 import logout from "../images/banner/logout.png";
 import { useState, useEffect } from "react";
 import API from "../api/axios";
-
 import { useNavigate, useLocation } from "react-router-dom";
 const AdminBanner = () => {
   const navigate = useNavigate();
@@ -21,9 +20,9 @@ const AdminBanner = () => {
   };
   useEffect(() => {
     const pathToKeyMap: { [key: string]: string | undefined } = {
-      "/api/admin/adminPdf": "adminpdf",
-      "/api/admin/adminUser": "adminuser",
-      "/api/admin/adminQboard": "adminqboard",
+      "/admin/adminPdf": "adminpdf",
+      "/admin/adminUser": "adminuser",
+      "/admin/adminQboard": "adminqboard",
     };
     const currentKey = pathToKeyMap[location.pathname];
     if (currentKey) {
@@ -36,7 +35,7 @@ const AdminBanner = () => {
   };
   const onLogoutClick = async () => {
     try {
-      const response = await API.get("/api/user/logout");
+      const response = await API.get("/user/logout");
       if (response.status === 200) {
         alert("성공적으로 로그아웃되었습니다.");
       } else {
@@ -47,7 +46,6 @@ const AdminBanner = () => {
       alert("오류가 발생했습니다. 나중에 다시 시도해주세요.");
     }
   };
-
   return (
     <div className="fixed top-0 right-0 z-50">
       {!isClicked ? (
@@ -72,22 +70,20 @@ const AdminBanner = () => {
               text="PDF 관리"
               icon={pdf}
               isActive={activeBtn === "adminpdf"}
-              onClick={() => handleNavigate("/api/admin/adminPdf", "adminpdf")}
+              onClick={() => handleNavigate("/admin/adminPdf", "adminpdf")}
             />
             <NavBarBtn
               text="유저정보 관리"
               icon={user}
               isActive={activeBtn === "adminuser"}
-              onClick={() =>
-                handleNavigate("/api/admin/adminUser", "adminuser")
-              }
+              onClick={() => handleNavigate("/admin/adminUser", "adminuser")}
             />
             <NavBarBtn
               text="문의게시판 관리"
               icon={qboard}
               isActive={activeBtn === "adminqboard"}
               onClick={() =>
-                handleNavigate("/api/admin/adminQboard", "adminqboard")
+                handleNavigate("/admin/adminQboard", "adminqboard")
               }
             />
             <NavBarBtn
@@ -132,7 +128,6 @@ const NavBarBtn: React.FC<NavBarBtnProps> = ({
 };
 
 const NavBarBtnStyle = styled.button<NavBarBtnStyleProps>`
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   color: ${(props) => (props.isActive ? "white" : "black")};
   background-color: ${(props) => (props.isActive ? "#5A4BFF" : "#FFFFFF")};
   text-align: left;
