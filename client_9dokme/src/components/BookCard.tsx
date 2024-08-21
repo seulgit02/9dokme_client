@@ -1,93 +1,7 @@
-// // BookCard.js (JavaScript로 변경)
-// import React from "react";
-// import styled from "styled-components";
-// import { Card } from "antd";
-// import onBookmark from "../images/onBookmark.png";
-// import offBookmark from "../images/offBookmark.png";
-// import { useNavigate } from "react-router-dom";
-
-// const { Meta } = Card;
-
-// interface BookCardProps {
-//   cover: string; // 이미지 URL
-//   title: string; // 책 제목
-//   onClick: () => void; // 클릭 이벤트 핸들러
-//   isMarked: boolean;
-// }
-
-// const BookCard: React.FC<BookCardProps> = ({
-//   cover,
-//   title,
-//   isMarked,
-//   onClick,
-// }) => {
-//   return (
-//     <StyledCard hoverable onClick={onClick}>
-//       <BookmarkIcon
-//         src={isMarked ? onBookmark : offBookmark}
-//         alt="Bookmark Icon"
-//       />
-//       <img
-//         alt={title}
-//         src={cover}
-//         style={{ height: "16vw", borderRadius: "10px" }}
-//       />
-//       <Meta title={title.length > 11 ? `${title.slice(0, 11)}...` : title} />
-//     </StyledCard>
-//   );
-// };
-
-// const BookmarkIcon = styled.img`
-//   position: absolute;
-//   top: 10px;
-//   right: 10px;
-//   width: 30px;
-//   height: 30px;
-// `;
-
-// const StyledCard = styled(Card)`
-//   width: 13vw;
-//   height: 20vw;
-//   margin: 2vw;
-//   overflow: hidden;
-//   border-radius: 10px;
-
-//   img {
-//     border-radius: 10px;
-//     height: 16vw;
-//   }
-
-//   .ant-card-meta-title {
-//     text-align: center;
-//     font-size: 1.1vw;
-//     margin-bottom: 0.2vw;
-//     font-weight: bold;
-//   }
-
-//   &:before {
-//     content: "";
-//     position: absolute;
-//     top: 0;
-//     left: 0;
-//     width: 100%;
-//     height: 100%;
-//     background-color: #f0f0f0;
-//     border-radius: 10px;
-//     opacity: 0.1;
-//     z-index: -1;
-//     filter: blur(8px);
-//   }
-// `;
-
-// export default BookCard;
-
 import React from "react";
 import styled from "styled-components";
-import { Card } from "antd";
 import onBookmark from "../images/onBookmark.png";
 import offBookmark from "../images/offBookmark.png";
-
-const { Meta } = Card;
 
 interface BookCardProps {
   cover: string; // 이미지 URL
@@ -96,32 +10,29 @@ interface BookCardProps {
   isMarked: boolean; // 즐겨찾기 상태
 }
 
-const BookCard: React.FC<BookCardProps> = ({
-  cover,
-  title,
-  isMarked,
-  onClick,
-}) => {
+const BookCard: React.FC<BookCardProps> = ({ cover, title, isMarked, onClick }) => {
   return (
-    <StyledCard hoverable onClick={onClick}>
+    <div style={{ position: "relative" }}>
+    <BookmarkIcon src={isMarked ? onBookmark : offBookmark} alt="Bookmark Icon" />
+    <CardContainer onClick={onClick}>
       <CoverImageWrapper>
         <CoverImage alt={title} src={cover} />
-        <BookmarkIcon
-          src={isMarked ? onBookmark : offBookmark}
-          alt="Bookmark Icon"
-        />
+        
       </CoverImageWrapper>
-      <Meta title={title.length > 15 ? `${title.slice(0, 15)}...` : title} />
-    </StyledCard>
+      <Title>{title.length > 15 ? `${title.slice(0, 15)}...` : title}</Title>
+    </CardContainer>
+    </div>
   );
 };
 
 const BookmarkIcon = styled.img`
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: -7px;
+  right: 2px; 
   width: 30px;
   height: 30px;
+  cursor: pointer;
+  z-index: 1;
 `;
 
 const CoverImageWrapper = styled.div`
@@ -129,6 +40,8 @@ const CoverImageWrapper = styled.div`
   width: 100%;
   height: 0;
   padding-top: 150%;
+  overflow: hidden;
+  border-radius: 10px 10px 0 0;
 `;
 
 const CoverImage = styled.img`
@@ -138,22 +51,31 @@ const CoverImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 10px 10px 0 0; // Rounded top corners only
+  border-radius: 10px;
 `;
 
-const StyledCard = styled(Card)`
-  width: 100%;
-  background-color: transparent;
-  overflow: hidden;
+const Title = styled.div`
+  padding: 12px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+`;
+
+const CardContainer = styled.div`
+  width: 200px;
+  height: 300px;
+  background-color: #fff;
   border-radius: 10px;
-  border-style: none;
-  .ant-card-body {
-    padding: 12px;
-  }
-  .ant-card-meta-title {
-    text-align: center;
-    font-size: large;
-    font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  margin-bottom: 20px;
+  overflow: visible;
+
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   }
 `;
 

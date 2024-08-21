@@ -95,7 +95,8 @@ const Main = () => {
               {filterBooks.length === 0 ? (
                 <NoneBook>검색 결과가 없습니다.</NoneBook>
               ) : (
-                <div className="grid grid-cols-4 gap-4 m-4">
+                <BooksContainer>
+                <div className="grid grid-cols-4 gap-10 m-4">
                   {filterBooks.map((book) => (
                     <BookCard
                       key={book.bookId}
@@ -106,8 +107,11 @@ const Main = () => {
                     />
                   ))}
                 </div>
+                </BooksContainer>
               )}
+              
             </div>
+            
           </BookContainer>
         </Container>
       </Root>
@@ -140,6 +144,13 @@ const BookContainer = styled.div`
   align-items: center;
   justify-content: center;
 `;
+
+const BooksContainer = styled.div`
+margin-top: 70px;
+margin-bottom: 100px;
+  display: flex;
+  justify-content: center;
+`
 const SearchContainer = styled.div`
   width: 100%;
   padding-top: 60px;
@@ -175,59 +186,5 @@ const SearchButton = styled(Button)`
     background-color: ${PRIMARY.DEFAULT};
   }
 `;
-
-// const { Meta } = Card;
-
-// interface BookCardProps {
-//   cover: string;
-//   title: string;
-//   onClick: () => void;
-// }
-
-// const StyledCard = styled(Card)`
-//   width: 13vw;
-//   height: 20vw;
-//   margin: 2vw;
-//   overflow: hidden;
-//   border-radius: 10px;
-
-//   img {
-//     border-radius: 10px;
-//     height: 16vw;
-//   }
-
-//   .ant-card-meta-title {
-//     text-align: center;
-//     font-size: 1.1vw;
-//     margin-bottom: 0.2vw;
-//     font-weight: bold;
-//   }
-
-//   &:before {
-//     content: '';
-//     position: absolute;
-//     top: 0;
-//     left: 0;
-//     width: 100%;
-//     height: 100%;
-//     background-color: ${PRIMARY.DEFAULT};
-//     border-radius: 10px;
-//     opacity: 0.1;
-//     z-index: -1;
-//     filter: blur(8px);
-//   }
-// `;
-
-// const BookCard: React.FC<BookCardProps> = ({ cover, title, onClick }) => {
-//   return (
-//     <StyledCard
-//       hoverable
-//       cover={<img alt={title} src={cover} />}
-//       onClick={onClick}
-//     >
-//       <Meta title={title.length > 11 ? `${title.slice(0, 11)}...` : title} />
-//     </StyledCard>
-//   );
-// };
 
 export default Main;
