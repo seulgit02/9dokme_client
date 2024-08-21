@@ -32,10 +32,10 @@ public class InquireService {
     private MemberRepository memberRepository;
 
 
-    public Inquire createInquire(InquireRequestDto inquireRequest, String email) {
+    public Inquire createInquire(InquireRequestDto inquireRequest, Long memberId) {
         Inquire inquire = new Inquire();
 
-        Member member = memberRepository.findBySocialId(email);
+        Member member = memberRepository.findByMemberId(memberId);
 
         inquire.setTitle(inquireRequest.getTitle());
         inquire.setContent(inquireRequest.getContent());

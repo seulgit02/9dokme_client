@@ -1,5 +1,6 @@
 package com.example.server_9dokme.bookmark.service;
 
+import com.example.server_9dokme.book.repository.BookRepository;
 import com.example.server_9dokme.bookmark.entity.Bookmark;
 import com.example.server_9dokme.bookmark.exception.BookmarkException;
 import com.example.server_9dokme.bookmark.message.ErrorMessage;
@@ -10,6 +11,7 @@ import com.example.server_9dokme.bookmark.service.dto.response.BookmarkResponse;
 import com.example.server_9dokme.book.service.BookService;
 import com.example.server_9dokme.member.entity.Member;
 import com.example.server_9dokme.book.entity.Book;
+import com.example.server_9dokme.member.repository.MemberRepository;
 import com.example.server_9dokme.member.service.MemberService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +28,17 @@ public class BookmarkService {
     private  MemberService memberService;
     @Autowired
     private  BookService bookService;
+    @Autowired
+    private MemberRepository memberRepository;
+    @Autowired
+    private BookRepository bookRepository;
 
     @Transactional
-    public BookmarkResponse mark(BookMarkRequest request) {
-        Member member = memberService.getCurrentMember();
-        Book book = bookService.findById(request.bookId()).orElseThrow();
+    public BookmarkResponse mark(Long BookId, Long MemberId) {
+//        Member member = memberService.getCurrentMember();
+//        Book book = bookService.findById(request.bookId()).orElseThrow();
+        Member member = memberRepository.findByMemberId(MemberId);
+        Book book = bookRepository.findByBookId(BookId);
 
         // 이미 북마크가 존재하는지 확인
         if (bookmarkRepository.findByBookAndMember(book, member).isPresent()) {
