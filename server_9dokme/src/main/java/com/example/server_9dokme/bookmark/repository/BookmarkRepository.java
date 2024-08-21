@@ -13,5 +13,6 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
     List<Bookmark> findByMember(Member member);  // Member를 기준으로 북마크 찾기
     Optional<Bookmark> findByBookAndMember(Book book, Member member);
 
+
     boolean existsBookmarkByBook_BookIdAndMember_MemberId(Long bookId, Long memberId);
 }

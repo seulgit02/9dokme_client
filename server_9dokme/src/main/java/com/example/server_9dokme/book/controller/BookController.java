@@ -14,6 +14,7 @@ import com.example.server_9dokme.member.dto.response.BookDto;
 import com.example.server_9dokme.member.entity.Member;
 import com.example.server_9dokme.member.repository.MemberRepository;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -63,10 +64,11 @@ public class BookController {
                                       @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
                                                        HttpSession session) {
 
-        Object currentMember = session.getAttribute("email");
 
-        Page<BookDto> dto = bookService.searchBook(title,pageNo,currentMember.toString());
 
+        String email = (String) session.getAttribute("email");
+        Object currentMember = memberRepository.findBySocialId(email);
+        Page<BookDto> dto = bookService.searchBook(title,pageNo, email);
         if (currentMember == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "로그인 후 이용해주세요.");
         }
@@ -83,9 +85,9 @@ public class BookController {
     @GetMapping("/view")
     @Operation(summary = "pdf 교재 웹뷰 조회", description = "pdf 교재 웹뷰 조회")
     public ResponseEntity<BookWebViewDto> viewBookPDF(@RequestParam Long bookId,
-                                                      HttpSession session) {
+                                                      Long memberId) {
 
-        Object currentMember = session.getAttribute("email");
+        Object currentMember = memberRepository.findByMemberId(memberId);
 
         if (currentMember == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "로그인 후 이용해주세요.");
@@ -121,14 +123,21 @@ public class BookController {
     }
 
     @GetMapping("/mypage")
-    @Operation(summary = "마이페이지", description = "마이페이지,세션기반")
-    public MyPageDto mypage(HttpSession session,
+    public MyPageDto mypage(@RequestParam Long memberId,
                             @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
-
-        String socialId = session.getAttribute("email").toString();
-
-        return bookService.getMypageBookList(socialId, pageNo);
+        return bookService.getMypageBookList(memberId, pageNo);
     }
 
+//    @GetMapping("/mypage")
+//    @Operation(summary = "마이페이지", description = "마이페이지,세션기반")
+//    public MyPageDto mypage(HttpServletRequest request,
+//                            @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
+//
+//        HttpSession session = request.getSession();
+//
+//        String socialId = session.getAttribute("email").toString();
+//
+//        return bookService.getMypageBookList(Long.valueOf(socialId), pageNo);
+//    }
 }
 

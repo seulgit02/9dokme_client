@@ -30,6 +30,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Data
@@ -229,29 +230,36 @@ public class BookService {
     }
 
 
-    public MyPageDto getMypageBookList(String email, int pageNo){
+    public MyPageDto getMypageBookList(Long memberId, int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo, 8); // 페이지 번호와 크기 설정
 
-        Pageable pageable = PageRequest.of(pageNo, 8, Sort.Direction.DESC, "r.readAt");
-        Member member =memberRepository.findBySocialId(email);
+        // 회원 조회
+        Member member = memberRepository.findByMemberId(memberId);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+        // 프로필 정보 생성
         ProfileDto profileDto = new ProfileDto(
                 member.getMemberId(),
                 member.getNickName(),
                 member.getSubscribe().getExpiredAt().format(formatter)
         );
 
-        Page<Book> page = bookRepository.findBooksByMemberOrderByReadAtDesc(member.getMemberId(), pageable);
+        // 북마크된 책들 페이지 처리하여 가져오기
+        Page<Book> page = bookRepository.findBooksByMember(memberId, pageable);
 
+        // BookDto로 변환
         Page<BookDto> bookDtoPage = page.map(book -> new BookDto(
                 book.getBookId(),
                 book.getTitle(),
                 book.getCategory(),
                 book.getBookURL(),
                 book.getBookImage(),
-                bookmarkRepository.existsBookmarkByBook_BookIdAndMember_MemberId(book.getBookId(),member.getMemberId())));
+                bookmarkRepository.existsBookmarkByBook_BookIdAndMember_MemberId(book.getBookId(), memberId)));
 
-        return new MyPageDto(profileDto,bookDtoPage);
-
+        // MyPageDto 반환
+        return new MyPageDto(profileDto, bookDtoPage);
     }
+
+
+
 }
