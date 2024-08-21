@@ -11,14 +11,14 @@ const QueryBoard = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
+  
     const memberId = localStorage.getItem("memberId");
-
+  
     if (!memberId) {
       alert("로그인이 필요합니다.");
       return;
     }
-
+  
     try {
       const response = await API.post(
         `${BASE_URL}/api/inquire?memberId=${memberId}`,
@@ -27,12 +27,16 @@ const QueryBoard = () => {
           content: content,
         }
       );
-
+  
       if (response.status === 200 || response.status === 201) {
         message.success("문의글이 관리자에게 성공적으로 제출되었습니다:)");
+  
         setTitle("");
         setContent("");
-        window.location.reload();
+  
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       } else {
         message.error("문의글 제출에 실패했습니다.");
       }
@@ -41,6 +45,7 @@ const QueryBoard = () => {
       alert("오류가 발생했습니다. 나중에 다시 시도해주세요.");
     }
   };
+  
 
   return (
     <div className='w-screen h-[100vh] bg-customColor bg-opacity-20 p-[5vw]'>
