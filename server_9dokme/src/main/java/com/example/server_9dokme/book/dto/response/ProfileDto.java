@@ -10,6 +10,6 @@ import java.util.Date;
 public class ProfileDto {
     private Long memberId;
     private String nickName;
-//    private Date expirationDate;
+    private String expirationDate;
 //    private String profileImageURL;
 }

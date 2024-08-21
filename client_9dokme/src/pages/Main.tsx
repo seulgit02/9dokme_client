@@ -15,6 +15,7 @@ import Sidebanner from "../components/Sidebanner";
 import { PRIMARY } from "../utils/colors";
 import { Button, Card, Input } from "antd";
 import styled from "styled-components";
+import BookCard from "../components/BookCard";
 
 
 const images: { [key: string]: string } = {
@@ -175,58 +176,58 @@ const SearchButton = styled(Button)`
   }
 `;
 
-const { Meta } = Card;
+// const { Meta } = Card;
 
-interface BookCardProps {
-  cover: string;
-  title: string;
-  onClick: () => void;
-}
+// interface BookCardProps {
+//   cover: string;
+//   title: string;
+//   onClick: () => void;
+// }
 
-const StyledCard = styled(Card)`
-  width: 13vw;
-  height: 20vw;
-  margin: 2vw;
-  overflow: hidden;
-  border-radius: 10px;
+// const StyledCard = styled(Card)`
+//   width: 13vw;
+//   height: 20vw;
+//   margin: 2vw;
+//   overflow: hidden;
+//   border-radius: 10px;
 
-  img {
-    border-radius: 10px;
-    height: 16vw;
-  }
+//   img {
+//     border-radius: 10px;
+//     height: 16vw;
+//   }
 
-  .ant-card-meta-title {
-    text-align: center;
-    font-size: 1.1vw;
-    margin-bottom: 0.2vw;
-    font-weight: bold;
-  }
+//   .ant-card-meta-title {
+//     text-align: center;
+//     font-size: 1.1vw;
+//     margin-bottom: 0.2vw;
+//     font-weight: bold;
+//   }
 
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: ${PRIMARY.DEFAULT};
-    border-radius: 10px;
-    opacity: 0.1;
-    z-index: -1;
-    filter: blur(8px);
-  }
-`;
+//   &:before {
+//     content: '';
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     width: 100%;
+//     height: 100%;
+//     background-color: ${PRIMARY.DEFAULT};
+//     border-radius: 10px;
+//     opacity: 0.1;
+//     z-index: -1;
+//     filter: blur(8px);
+//   }
+// `;
 
-const BookCard: React.FC<BookCardProps> = ({ cover, title, onClick }) => {
-  return (
-    <StyledCard
-      hoverable
-      cover={<img alt={title} src={cover} />}
-      onClick={onClick}
-    >
-      <Meta title={title.length > 11 ? `${title.slice(0, 11)}...` : title} />
-    </StyledCard>
-  );
-};
+// const BookCard: React.FC<BookCardProps> = ({ cover, title, onClick }) => {
+//   return (
+//     <StyledCard
+//       hoverable
+//       cover={<img alt={title} src={cover} />}
+//       onClick={onClick}
+//     >
+//       <Meta title={title.length > 11 ? `${title.slice(0, 11)}...` : title} />
+//     </StyledCard>
+//   );
+// };
 
 export default Main;

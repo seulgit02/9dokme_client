@@ -116,9 +116,8 @@ public class BookController {
     }
 
     @GetMapping("/mypage")
-    public MyPageDto mypage(HttpSession session,
+    public MyPageDto mypage(@RequestParam Long memberId,
                             @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
-        Long memberId = (Long) session.getAttribute("memberId");
         return bookService.getMypageBookList(memberId, pageNo);
     }
 

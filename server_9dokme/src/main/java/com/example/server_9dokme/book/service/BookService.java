@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -225,10 +226,12 @@ public class BookService {
 
         Pageable pageable = PageRequest.of(pageNo, 8, Sort.Direction.DESC, "r.readAt");
         Member member =memberRepository.findByMemberId(id);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         ProfileDto profileDto = new ProfileDto(
                 member.getMemberId(),
-                member.getNickName()
+                member.getNickName(),
+                member.getSubscribe().getExpiredAt().format(formatter)
         );
 
         Page<Book> page = bookRepository.findBooksByMemberOrderByReadAtDesc(member.getMemberId(), pageable);
