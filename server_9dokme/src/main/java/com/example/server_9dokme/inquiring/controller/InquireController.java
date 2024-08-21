@@ -27,9 +27,9 @@ public class InquireController {
 
 
     @PostMapping("/inquire")
-    public ResponseEntity<Inquire> createInquire(@RequestBody InquireRequestDto inquireRequest, HttpSession session) {
+    public ResponseEntity<Inquire> createInquire(@RequestBody InquireRequestDto inquireRequest, @RequestParam Long memberId) {
 
-        Inquire createdInquire = inquireService.createInquire(inquireRequest, (Long)session.getAttribute("memberId"));
+        Inquire createdInquire = inquireService.createInquire(inquireRequest, memberId);
         return new ResponseEntity<>(createdInquire, HttpStatus.CREATED);
     }
 
@@ -38,7 +38,7 @@ public class InquireController {
         return inquireService.getInquireList(pageNo);
     }
 
-    @DeleteMapping("/admin/inquiries/{inquireId}")
+    @DeleteMapping("/admin/inquiries/delete/{inquireId}")
     public ResponseEntity<Void> deleteInquire(@PathVariable Long inquireId) {
         try {
             inquireService.deleteInquire(inquireId);
