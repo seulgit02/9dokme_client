@@ -128,7 +128,6 @@ const NavBarBtn: React.FC<NavBarBtnProps> = ({
 };
 
 const NavBarBtnStyle = styled.button<NavBarBtnStyleProps>`
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   color: ${(props) => (props.isActive ? "white" : "black")};
   background-color: ${(props) => (props.isActive ? "#5A4BFF" : "#FFFFFF")};
   text-align: left;
