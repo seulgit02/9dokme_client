@@ -6,6 +6,7 @@ export interface BookDetailType {
   bookImage: string;
   author: string;
   description: string;
+  isMarked: boolean;
 }
 export interface Books {
   books: BookDetailType[];

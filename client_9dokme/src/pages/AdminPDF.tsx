@@ -1,13 +1,35 @@
-import { useState } from "react";
+import axios from "axios";
+import { useState, useEffect } from "react";
 import PDFAdd from "../components/PDFAdd";
 import PDFEdit from "../components/PDFEdit";
 import PDFDelete from "../components/PDFDelete";
 import styled from "styled-components";
 import AdminBanner from "../components/AdminBanner";
 
-// 상태 기반 조건부 렌더링
 const AdminPDF: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"add" | "edit" | "delete">("add");
+  const [books, setBooks] = useState([]);
+
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:8080/api/admin/books?search=""")
+  //     .then((response) => {
+  //       console.log("서버 응답:", response.data);
+  //       setBooks(response.data);
+  //     })
+  //     .catch((error) => console.error("데이터 로딩 중 오류 발생:", error));
+  // }, []);
+  useEffect(() => {
+    // 검색어를 포함한 API 호출
+    const defaultSearchTerm = "title"; // 기본 검색어 설정
+    axios
+      .get(`http://localhost:8080/api/admin/books?search=${defaultSearchTerm}`)
+      .then((response) => {
+        console.log("서버 응답:", response.data);
+        setBooks(response.data);
+      })
+      .catch((error) => console.error("데이터 로딩 중 오류 발생:", error));
+  }, []);
 
   const handleTabChange = (tab: "add" | "edit" | "delete") => {
     setActiveTab(tab);
@@ -40,7 +62,6 @@ const AdminPDF: React.FC = () => {
         </OptionTab>
       </div>
       <div className="text-center w-full flex items-center justify-center font-bold mt-[-0.1vw]">
-        {/* 마이너스 마진을 사용해 Tab 바와 바로 아래에 붙도록 설정 */}
         {activeTab === "add" && <PDFAdd />}
         {activeTab === "edit" && <PDFEdit />}
         {activeTab === "delete" && <PDFDelete />}
@@ -52,7 +73,7 @@ const AdminPDF: React.FC = () => {
 const OptionTab = styled.button`
   width: 25vw;
   height: 6vw;
-  border-radius: 1vw 1vw 0 0; /* 위쪽 모서리 둥글게 */
+  border-radius: 1vw 1vw 0 0;
   border: 1px solid black;
   display: flex;
   justify-content: center;

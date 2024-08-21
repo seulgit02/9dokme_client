@@ -1,7 +1,7 @@
 {
   "name": "client_9dokme",
   "version": "0.1.0",
-  "proxy": "https://www.booksr.co.kr/wp-content/uploads/2022/12/%EC%9D%B8%EA%B3%B5%EC%A7%80%EB%8A%A5-%EC%8B%9C%EB%8C%80%EC%9D%98-%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B0%9C%EB%A1%A0%EA%B0%9C%EC%A0%958%ED%8C%90-%EC%83%98%ED%94%8C%EC%B1%95%ED%84%B0.pdf",
+  "proxy": "http://localhost:8080",
   "private": true,
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.1",
@@ -69,6 +69,7 @@
     "@types/send": "^0.17.4",
     "@types/serve-static": "^1.15.7",
     "autoprefixer": "^10.4.19",
+    "cross-env": "^7.0.3",
     "postcss": "^8.4.39",
     "tailwindcss": "^3.4.7"
   }

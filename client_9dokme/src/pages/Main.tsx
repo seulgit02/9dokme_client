@@ -17,7 +17,6 @@ import { Button, Card, Input } from "antd";
 import styled from "styled-components";
 import BookCard from "../components/BookCard";
 
-
 const images: { [key: string]: string } = {
   "book1.png": book1,
   "book2.png": book2,
@@ -64,7 +63,7 @@ const Main = () => {
       handleSearchBtnClick();
     }
   }, [category]);
-  
+
   return (
     <>
       <Root>
@@ -80,34 +79,35 @@ const Main = () => {
             >
               <SearchContainer>
                 <SearchBox
-                  placeholder='도서를 검색해보세요!'
+                  placeholder="도서를 검색해보세요!"
                   onChange={handleSearchInputChange}
                 />
                 <SearchButton onClick={handleSearchBtnClick}>검색</SearchButton>
               </SearchContainer>
             </form>
-            <div className='m-3'>
+            <div className="m-3">
               <Hashtag
                 onCategoryChange={handleHashBtnClick}
                 selectedCategory={category}
               />
             </div>
             <div className="flex justify-center">
-      {filterBooks.length === 0 ? (
-        <NoneBook>검색 결과가 없습니다.</NoneBook>
-      ) : (
-        <div className="grid grid-cols-4 gap-4 m-4">
-          {filterBooks.map((book) => (
-            <BookCard
-              key={book.bookId}
-              cover={images[book.bookUrl]}
-              title={book.bookTitle}
-              onClick={() => handleImgClick(book.bookId)}
-            />
-          ))}
-        </div>
-      )}
-    </div>
+              {filterBooks.length === 0 ? (
+                <NoneBook>검색 결과가 없습니다.</NoneBook>
+              ) : (
+                <div className="grid grid-cols-4 gap-4 m-4">
+                  {filterBooks.map((book) => (
+                    <BookCard
+                      key={book.bookId}
+                      cover={images[book.bookUrl]}
+                      title={book.bookTitle}
+                      onClick={() => handleImgClick(book.bookId)}
+                      isMarked={book.isMarked}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </BookContainer>
         </Container>
       </Root>
@@ -130,9 +130,9 @@ const Container = styled.div`
 `;
 
 const NoneBook = styled.div`
- width: 100%;
- margin: 10vw 0;
-`
+  width: 100%;
+  margin: 10vw 0;
+`;
 const BookContainer = styled.div`
   width: 70%;
   display: flex;

@@ -14,6 +14,7 @@ const MyPage = () => {
     title: string;
     bookImage: string;
     bookUrl: string;
+    isMarked: boolean;
   }
 
   const [books, setBooks] = useState<Book[]>([]);
@@ -59,18 +60,18 @@ const MyPage = () => {
   }, []);
 
   return (
-    <div className='w-screen h-[130vh] bg-customColor bg-opacity-20'>
+    <div className="w-screen h-[130vh] bg-customColor bg-opacity-20">
       <Sidebanner />
-      <div className='flex flex-col justify-center items-center'>
-        <img src={profile} className='w-[10vw] mt-[5vw]' alt='Profile' />
-        <p className='text-[1.2vw] mt-[2vw] text-center'>
-          <span className='text-sky-600 font-bold'>
+      <div className="flex flex-col justify-center items-center">
+        <img src={profile} className="w-[10vw] mt-[5vw]" alt="Profile" />
+        <p className="text-[1.2vw] mt-[2vw] text-center">
+          <span className="text-sky-600 font-bold">
             {localStorage.getItem("name")}
           </span>
-          <span className='font-bold'>님, 안녕하세요:)</span>
+          <span className="font-bold">님, 안녕하세요:)</span>
           <br />
           구독 만료일은
-          <span className='text-red-400 font-bold'>{expiredAt}</span>
+          <span className="text-red-400 font-bold">{expiredAt}</span>
           입니다.
         </p>
         <SubscribeBtn onClick={handleClickSubscribeBtn}>
@@ -92,6 +93,7 @@ const MyPage = () => {
                   key={book.bookId}
                   cover={book.bookImage} // bookImage를 cover로 매핑
                   title={book.title}
+                  isMarked={book.isMarked}
                   onClick={() => handleImgClick(book.bookId)} // 핸들러에서 book.bookId를 인자로 전달
                 />
               ))}

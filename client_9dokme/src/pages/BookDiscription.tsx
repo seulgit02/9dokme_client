@@ -1,34 +1,31 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useParams, useNavigate } from "react-router-dom";
-import book1 from "../images/books/book1.png";
 import books from "../json/BookDetail.json";
-import { BookDetailType, Books } from "../json/BookDetailType";
+import { BookDetailType } from "../json/BookDetailType";
 import Sidebanner from "../components/Sidebanner";
+import BookmarkSuccess from "../components/BookmarkSuccess";
+import onBookmark from "../images/onBookmark.png"; // Assuming you have these images
+import offBookmark from "../images/offBookmark.png"; // Assuming you have these images
 
 import BookmarkSucces from "../components/BookmarkSuccess";
 const BookDescription = () => {
   const handleBookmarkBtn = () => {
     setIsOpen(true);
+    setIsBookmarked(!isBookmarked); // Toggle bookmark status on button click
   };
-  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleModalClose = () => {
     setIsOpen(false);
   };
 
-  const navigate = useNavigate();
-  const handleImgClick = (bookId: string | undefined) => {
-    const book = books.books.find(
-      (b: BookDetailType) => String(b.bookId) === String(bookId)
-    );
+  const handleImgClick = () => {
+    const book = books.books.find((b) => String(b.bookId) === bookId);
     navigate(`/view/${bookId}`, { state: { book } });
   };
-  const { bookId } = useParams<{ bookId: string }>();
-  const book = books.books.find(
-    (b: BookDetailType) => String(b.bookId) === String(bookId)
-  );
-  console.log("book:", book);
+
+  const book = books.books.find((b) => String(b.bookId) === bookId);
+
   return (
     <div className="w-screen h-screen bg-customColor bg-opacity-20">
       <Sidebanner />
@@ -38,15 +35,22 @@ const BookDescription = () => {
           <div className="p-20 box-content">
             <img
               src={require(`../images/books/${book?.bookImage}`)}
-              alt="book1 mt-10"
-              className="w-[15vw] rounded-lg mt-10 self-senter"
+              alt="Book Cover"
+              className="w-[15vw] rounded-lg mt-10 self-center"
             />
           </div>
-          <div className="pr-10 box-border">
-            <div className="font-bold text-left mt-20 text-[1.5vw] ">
-              [{book?.bookTitle}]
-              <p className="text-[1.3vw] mt-[0.2vw]">{book?.author}</p>
+          <div className="pr-10 box-border flex flex-col">
+            <div className="flex items-center mt-20">
+              <h1 className="font-bold text-left text-[1.5vw]">
+                [{book?.bookTitle}]
+              </h1>
+              <img
+                src={isBookmarked ? onBookmark : offBookmark}
+                alt={isBookmarked ? "Bookmarked" : "Not Bookmarked"}
+                style={{ width: "24px", marginLeft: "15px" }}
+              />
             </div>
+            <p className="text-[1.3vw] mt-[0.2vw]">{book?.author}</p>
             <div>
               <TagBtn>{book?.bookCategory}</TagBtn>
             </div>
@@ -58,24 +62,32 @@ const BookDescription = () => {
       </div>
       <div className="w-screen h-[35%] bg-customColor2 flex justify-between pt-20">
         <button
-          onClick={() => handleImgClick(bookId)}
+          onClick={handleImgClick}
           className="cursor-pointer border-xl bg-submitColor w-[29vw] h-[4vw] rounded-lg text-white font-semibold text-[1.5vw] ml-20 box-border"
         >
           PDF 보러가기
         </button>
-        <GradientDiv
-          onClick={handleBookmarkBtn}
-          className="border-xl bg-customGradient w-[29vw] h-[4vw] rounded-lg text-white font-semibold text-[1.5vw] mr-20 box-border"
-        >
-          나의 책갈피에 추가하기
-        </GradientDiv>
+        {book?.isMarked ? (
+          <GradientDiv
+            onClick={handleBookmarkBtn}
+            className="border-xl bg-slate-600 w-[29vw] h-[4vw] rounded-lg text-white font-semibold text-[1.5vw] mr-20 box-border"
+          >
+            나의 책갈피 취소하기
+          </GradientDiv>
+        ) : (
+          <GradientDiv
+            onClick={handleBookmarkBtn}
+            className="border-xl bg-customGradient w-[29vw] h-[4vw] rounded-lg text-white font-semibold text-[1.5vw] mr-20 box-border"
+          >
+            나의 책갈피에 추가하기
+          </GradientDiv>
+        )}
       </div>
-      <BookmarkSucces
+      <BookmarkSuccess
         isOpen={isOpen}
         handleModalClose={handleModalClose}
         bookId={bookId}
       />
-
     </div>
   );
 };

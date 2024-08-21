@@ -4,8 +4,9 @@ export interface Book {
   bookCategory: string;
   bookImage: string;
   bookUrl: string;
+  isMarked: boolean;
 }
 
 export interface BookData {
-  bookList: Book[];
+  bookData: Book[];
 }
