@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import banner from "../images/banner.png";
+import styled, { keyframes } from "styled-components";
 import chat from "../images/banner/chat.png";
 import book from "../images/banner/book.png";
 import bookmark from "../images/banner/bookmark.png";
@@ -19,12 +20,16 @@ const Sidebanner = () => {
   const handleBannerClickOn = () => {
     if (!isClicked) setIsClicked(true);
   };
+
   const handleBannerClickOff = () => {
     if (isClicked) setIsClicked(false);
   };
 
   useEffect(() => {
     const pathToKeyMap: { [key: string]: string | undefined } = {
+      "/mainpage": "mainpage",
+      "/": "landing",
+      "/queryBoard": "queryboard",
       "/api/mainpage": "mainpage",
       "/api/mypage": "mypage",
       "/api/myarticle": "myarticle",
@@ -66,36 +71,28 @@ const Sidebanner = () => {
 
           <BtnComponent>
             <NavBarBtn
-              text="메인페이지"
+              text="메인 페이지"
               icon={book}
               isActive={activeBtn === "mainpage"}
-              onClick={() => handleNavigate("/api/mainpage", "mainpage")}
+              onClick={() => handleNavigate("/mainpage", "mainpage")}
             />
             <NavBarBtn
-              text="나의책갈피"
+              text="나의 책갈피"
               icon={bookmark}
-              isActive={activeBtn === "mypage"}
-
-              onClick={() => handleNavigate("/api/mypage", "mypage")}
+              isActive={activeBtn === "/mypage"}
+              onClick={() => handleNavigate("/mypage", "mypage")}
             />
             <NavBarBtn
               text="나의 작성글"
               icon={chat}
-              isActive={activeBtn === "myarticle"}
-              onClick={() => handleNavigate("/api/myarticle", "myarticle")}
-
+              isActive={activeBtn === "query"}
+              onClick={() => handleNavigate("/queryBoard", "query")}
             />
             <NavBarBtn
               text="문의글 작성"
               icon={query}
-              isActive={activeBtn === "queryboard"}
-              onClick={() => handleNavigate("/api/queryBoard", "queryboard")}
-            />
-            <NavBarBtn
-              text="로그아웃"
-              icon={logout}
-              isActive={activeBtn === "logout"}
-              onClick={() => handleNavigate("/", "landing")}
+              isActive={activeBtn === "query"}
+              onClick={() => handleNavigate("/queryBoard", "query")}
             />
           </BtnComponent>
         </div>
@@ -104,6 +101,7 @@ const Sidebanner = () => {
     </div>
   );
 };
+
 interface NavBarBtnProps {
   text: string;
   icon: string;
@@ -127,7 +125,7 @@ const NavBarBtn: React.FC<NavBarBtnProps> = ({
         <img
           src={icon}
           alt={text}
-          style={{ marginRight: "10px", width: "18%" }}
+          style={{ marginRight: "20px", width: "18%" }}
         />
       )}
       {text}
@@ -135,6 +133,40 @@ const NavBarBtn: React.FC<NavBarBtnProps> = ({
   );
 };
 
+const slideIn = keyframes`
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+`;
+
+const slideOut = keyframes`
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+`;
+
+const StyledBannerContainer = styled.div`
+  width: 20vw;
+  height: 50vw;
+  background-color: white;
+  border-radius: 0 0 0 2vw;
+  text-align: left;
+  font-size: 1.5vw;
+  position: fixed;
+  right: 0;
+  animation: ${slideIn} 0.3s forwards;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+
+  &.slide-out {
+    animation: ${slideOut} 0.3s forwards;
+  }
+`;
 
 const NavBarBtnStyle = styled.button<NavBarBtnStyleProps>`
   color: ${(props) => (props.isActive ? "white" : "black")};
@@ -144,15 +176,20 @@ const NavBarBtnStyle = styled.button<NavBarBtnStyleProps>`
   font-size: 1vw;
   display: flex;
   align-items: center;
-  width: 15vw;
+  width: 16vw;
   height: 2.3vw;
-  padding: 1.7vw;
+  padding: 1.5vw;
   border-radius: 0.5vw;
   border-style: none;
-  margin: 1vw 0vw;
+  margin: 1vw 0;
+
   &:hover {
     background-color: #5a4bff;
     color: white;
+
+    & img {
+      filter: brightness(0) invert(1);
+    }
   }
 `;
 
@@ -163,4 +200,16 @@ const BtnComponent = styled.div`
   width: 100%;
 `;
 
+const MenuContainer = styled.div`
+padding: 2vw;
+display: flex;
+    flex-direction: row;
+justify-content: space-between;
+`
+
+const MenuTypo = styled(Typography)`
+margin-left: 0.4vw;
+  font-size: 1.7vw;
+  font-weight: bold;
+`
 export default Sidebanner;

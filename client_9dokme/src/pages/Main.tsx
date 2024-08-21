@@ -27,7 +27,7 @@ const images: { [key: string]: string } = {
 const Main = () => {
   const navigate = useNavigate();
   const handleImgClick = (bookId: number) => {
-    navigate(`/api/bookdetail/${bookId}`);
+    navigate(`/bookdetail/${bookId}`);
   };
   const [category, setCategory] = useState<string>("전체보기");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -63,71 +63,166 @@ const Main = () => {
   const bookList: Book[] = bookData.bookData;
   return (
     <>
-      <Sidebanner />
-      <div className="w-screen h-[100%] bg-customColor bg-opacity-20">
-        <SlidingBanner />
-        <div className="w-screen h-screen flex flex-col">
-          <div className="m-[2vw] text-[1.2vw]">
-            도서 검색을 통해 원하는 교재를 검색해보세요!
-          </div>
-          <form
-            className="flex pe-[2vw]"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSearchBtnClick();
-            }}
-          >
-            <input
-              onChange={handleSearchInputChange}
-              className="bg-white-900 rounded-[2vw] ml-[8vw] mt-[0.3vw] mr-[2vw] w-[78.5vw] h-[3vw] mb-[2vw] pl-[1.5vw] text-[1.5vw]"
-            />
-            <button
-              onClick={handleSearchBtnClick}
-              className="rounded-[1vw] bg-purple w-[8vw] h-[4vw] hover-effect hover:bg-purple2 text-[1.5vw] font-bold"
+      <Root>
+        <Sidebanner />
+        <Container>
+          <SlidingBanner />
+          <BookContainer>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSearchBtnClick();
+              }}
             >
-              검색
-            </button>
-          </form>
-          <div className="m-3">
-            <Hashtag
-              onCategoryChange={handleHashBtnClick}
-              selectedCategory={category}
-            />
-          </div>
-          <div className="flex justify-center ">
-            <div className="grid grid-cols-5 gap-4 m-4">
-              {filterBooks
-                .filter(
-                  (book: Book) =>
-                    category === "전체보기" || book.bookCategory === category
-                )
-                .map((book: Book) => (
-                  <div
-                    key={book.bookId}
-                    className="flex flex-col items-center align-center"
-                    onClick={() => handleImgClick(book.bookId)}
-                  >
-                    <img
-                      className="w-[10vw] m-[2vw] rounded-lg text-center"
-                      key={book.bookId}
-                      //src={require(`../images/books/${book?.bookImage}`)}
-                      src={images[book.bookUrl]}
-                      alt={book.bookTitle}
-                    />
-                    <div className="text-sm font-medium w=[5vw] text-center">
-                      [
-                      {book.bookTitle.length > 11
-                        ? book.bookTitle.slice(0, 11) + "..."
-                        : book.bookTitle}
-                      ]
-                    </div>
-                  </div>
-                ))}
+              <SearchContainer>
+                <SearchBox
+                  placeholder='도서를 검색해보세요!'
+                  onChange={handleSearchInputChange}
+                />
+                <SearchButton onClick={handleSearchBtnClick}>검색</SearchButton>
+              </SearchContainer>
+            </form>
+            <div className='m-3'>
+              <Hashtag
+                onCategoryChange={handleHashBtnClick}
+                selectedCategory={category}
+              />
             </div>
-          </div>
+            <div className="flex justify-center">
+      {filterBooks.length === 0 ? (
+        <NoneBook>검색 결과가 없습니다.</NoneBook>
+      ) : (
+        <div className="grid grid-cols-4 gap-4 m-4">
+          {filterBooks.map((book) => (
+            <BookCard
+              key={book.bookId}
+              cover={images[book.bookUrl]}
+              title={book.bookTitle}
+              onClick={() => handleImgClick(book.bookId)}
+            />
+          ))}
         </div>
-      </div>
+      )}
+    </div>
+          </BookContainer>
+        </Container>
+      </Root>
     </>
+  );
+};
+const Root = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+const Container = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: ${PRIMARY.LiGHT};
+`;
+
+const NoneBook = styled.div`
+ width: 100%;
+ margin: 10vw 0;
+`
+const BookContainer = styled.div`
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+const SearchContainer = styled.div`
+  width: 100%;
+  padding-top: 60px;
+  padding-bottom: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const SearchBox = styled(Input)`
+  width: 850px;
+  height: 45px;
+  font-size: 16px;
+  &:hover,
+  &:focus {
+    border-color: ${PRIMARY.DEFAULT};
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  }
+`;
+
+const SearchButton = styled(Button)`
+  height: 45px;
+  width: 110px;
+  font-size: 16px;
+  background-color: ${PRIMARY.DEFAULT};
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background-color: ${PRIMARY.DEFAULT};
+  }
+`;
+
+const { Meta } = Card;
+
+interface BookCardProps {
+  cover: string;
+  title: string;
+  onClick: () => void;
+}
+
+const StyledCard = styled(Card)`
+  width: 13vw;
+  height: 20vw;
+  margin: 2vw;
+  overflow: hidden;
+  border-radius: 10px;
+
+  img {
+    border-radius: 10px;
+    height: 16vw;
+  }
+
+  .ant-card-meta-title {
+    text-align: center;
+    font-size: 1.1vw;
+    margin-bottom: 0.2vw;
+    font-weight: bold;
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: ${PRIMARY.DEFAULT};
+    border-radius: 10px;
+    opacity: 0.1;
+    z-index: -1;
+    filter: blur(8px);
+  }
+`;
+
+const BookCard: React.FC<BookCardProps> = ({ cover, title, onClick }) => {
+  return (
+    <StyledCard
+      hoverable
+      cover={<img alt={title} src={cover} />}
+      onClick={onClick}
+    >
+      <Meta title={title.length > 11 ? `${title.slice(0, 11)}...` : title} />
+    </StyledCard>
   );
 };
 
