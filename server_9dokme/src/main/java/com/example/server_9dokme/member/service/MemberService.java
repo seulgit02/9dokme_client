@@ -4,6 +4,7 @@ import com.example.server_9dokme.book.entity.Advertisement;
 import com.example.server_9dokme.book.entity.Book;
 import com.example.server_9dokme.book.repository.AdvertisementRepository;
 import com.example.server_9dokme.book.repository.BookRepository;
+import com.example.server_9dokme.bookmark.repository.BookmarkRepository;
 import com.example.server_9dokme.member.dto.response.BookDto;
 import com.example.server_9dokme.member.dto.response.MainPageDto;
 import com.example.server_9dokme.member.dto.response.PostWrittenDto;
@@ -61,9 +62,13 @@ public class MemberService {
     private QuestionRepository questionRepository;
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private BookmarkRepository bookmarkRepository;
 
 
-    public MainPageDto getMainPage(String category, int pageNo){
+    public MainPageDto getMainPage(String category, int pageNo, String email){
+
+        Member member = memberRepository.findBySocialId(email);
 
         List<Advertisement> advertisementDtoList = advertisementRepository.findAll();
 
@@ -83,7 +88,9 @@ public class MemberService {
                 book.getTitle(),
                 book.getCategory(),
                 book.getBookURL(),
-                book.getBookImage()));
+                book.getBookImage(),
+                bookmarkRepository.existsBookmarkByBook_BookIdAndMember_MemberId(book.getBookId(),member.getMemberId()))
+        );
 
 
         return new MainPageDto(advertisementDtoList,bookDtoPage);

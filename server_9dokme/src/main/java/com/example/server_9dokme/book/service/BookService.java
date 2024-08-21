@@ -5,6 +5,7 @@ import com.example.server_9dokme.book.dto.request.BookUpdateRequest;
 import com.example.server_9dokme.book.dto.response.BookInfoResponse;
 import com.example.server_9dokme.book.dto.response.MyPageDto;
 import com.example.server_9dokme.book.dto.response.ProfileDto;
+import com.example.server_9dokme.bookmark.repository.BookmarkRepository;
 import com.example.server_9dokme.member.entity.Member;
 import com.example.server_9dokme.member.repository.MemberRepository;
 import com.example.server_9dokme.book.dto.response.BookCheckDto;
@@ -42,6 +43,8 @@ public class BookService {
     private RentRepository rentRepository;
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private BookmarkRepository bookmarkRepository;
 
     public BookCheckDto checkBook(Long bookId,String email){
 
@@ -64,14 +67,17 @@ public class BookService {
                 category(book.getCategory()).
                 pdfImage(book.getBookImage()).
                 lastPage(lastPage).
-                category(book.getCategory()).build();
+                category(book.getCategory()).
+                isMarked(bookmarkRepository.existsBookmarkByBook_BookIdAndMember_MemberId(book.getBookId(),memberId)).build();
 
 
 
             return dto;
     }
 
-    public Page<BookDto> searchBook(String title, int pageNo){
+    public Page<BookDto> searchBook(String title, int pageNo, String email){
+
+        Member member = memberRepository.findBySocialId(email);
 
         Pageable pageable = PageRequest.of(pageNo,4);
         Page<Book> bookPage;
@@ -87,7 +93,8 @@ public class BookService {
                 book.getTitle(),
                 book.getCategory(),
                 book.getBookURL(),
-                book.getBookImage()));
+                book.getBookImage(),
+                bookmarkRepository.existsBookmarkByBook_BookIdAndMember_MemberId(book.getBookId(),member.getMemberId())));
 
 
 
@@ -125,7 +132,7 @@ public class BookService {
 
             rentRepository.save(initRent);
         }else{
-            Rent updateRent = rentRepository.findByBookId(bookId);
+            Rent updateRent = rentRepository.findByBookIdAndMemberId(bookId, member.getMemberId());
             updateRent.setReadAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
 
             rentRepository.save(updateRent);
@@ -222,10 +229,10 @@ public class BookService {
     }
 
 
-    public MyPageDto getMypageBookList(Long id, int pageNo){
+    public MyPageDto getMypageBookList(String email, int pageNo){
 
         Pageable pageable = PageRequest.of(pageNo, 8, Sort.Direction.DESC, "r.readAt");
-        Member member =memberRepository.findByMemberId(id);
+        Member member =memberRepository.findBySocialId(email);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         ProfileDto profileDto = new ProfileDto(
@@ -241,7 +248,8 @@ public class BookService {
                 book.getTitle(),
                 book.getCategory(),
                 book.getBookURL(),
-                book.getBookImage()));
+                book.getBookImage(),
+                bookmarkRepository.existsBookmarkByBook_BookIdAndMember_MemberId(book.getBookId(),member.getMemberId())));
 
         return new MyPageDto(profileDto,bookDtoPage);
 

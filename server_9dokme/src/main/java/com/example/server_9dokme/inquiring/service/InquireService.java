@@ -28,14 +28,18 @@ import java.util.List;
 public class InquireService {
     @Autowired
     private InquireRepository inquireRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
 
-    public Inquire createInquire(InquireRequestDto inquireRequest, long userId) {
+    public Inquire createInquire(InquireRequestDto inquireRequest, String email) {
         Inquire inquire = new Inquire();
+
+        Member member = memberRepository.findBySocialId(email);
 
         inquire.setTitle(inquireRequest.getTitle());
         inquire.setContent(inquireRequest.getContent());
-        inquire.setUserId(userId);
+        inquire.setUserId(member.getMemberId());
         return inquireRepository.save(inquire);
     }
 

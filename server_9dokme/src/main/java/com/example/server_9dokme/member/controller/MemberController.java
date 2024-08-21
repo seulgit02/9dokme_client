@@ -99,7 +99,7 @@ public class MemberController {
 
 
 
-        MainPageDto mainPageDto = memberService.getMainPage(category,pageNo);
+        MainPageDto mainPageDto = memberService.getMainPage(category,pageNo,socialId.toString());
 
         return SuccessResponse.success("메인 페이지",mainPageDto);
     }

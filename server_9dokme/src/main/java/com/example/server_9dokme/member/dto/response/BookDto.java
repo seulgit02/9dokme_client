@@ -13,4 +13,5 @@ public class BookDto {
     private String category;
     private String bookImage;
     private String bookUrl;
+    private Boolean isMarked;
 }
