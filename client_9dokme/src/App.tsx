@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import Main from "./pages/Main";
-import BookDiscription from "./pages/BookDiscription";
 import Landing from "./pages/Landing";
 import PdfViewer from "./pages/PdfViewer";
 import QueryBoard from "./pages/QueryBoard";
