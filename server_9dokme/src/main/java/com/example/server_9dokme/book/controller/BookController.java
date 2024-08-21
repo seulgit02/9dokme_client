@@ -63,9 +63,9 @@ public class BookController {
                                       @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
                                                        HttpSession session) {
 
-        Page<BookDto> dto = bookService.searchBook(title,pageNo);
-
         Object currentMember = session.getAttribute("email");
+
+        Page<BookDto> dto = bookService.searchBook(title,pageNo,currentMember.toString());
 
         if (currentMember == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "로그인 후 이용해주세요.");
@@ -83,9 +83,9 @@ public class BookController {
     @GetMapping("/view")
     @Operation(summary = "pdf 교재 웹뷰 조회", description = "pdf 교재 웹뷰 조회")
     public ResponseEntity<BookWebViewDto> viewBookPDF(@RequestParam Long bookId,
-                                                      Long memberId) {
+                                                      HttpSession session) {
 
-        Object currentMember = memberRepository.findByMemberId(memberId);
+        Object currentMember = session.getAttribute("email");
 
         if (currentMember == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "로그인 후 이용해주세요.");
@@ -121,9 +121,13 @@ public class BookController {
     }
 
     @GetMapping("/mypage")
-    public MyPageDto mypage(@RequestParam Long memberId,
+    @Operation(summary = "마이페이지", description = "마이페이지,세션기반")
+    public MyPageDto mypage(HttpSession session,
                             @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
-        return bookService.getMypageBookList(memberId, pageNo);
+
+        String socialId = session.getAttribute("email").toString();
+
+        return bookService.getMypageBookList(socialId, pageNo);
     }
 
 }

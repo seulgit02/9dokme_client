@@ -27,9 +27,12 @@ public class InquireController {
 
 
     @PostMapping("/inquire")
-    public ResponseEntity<Inquire> createInquire(@RequestBody InquireRequestDto inquireRequest, @RequestParam Long memberId) {
+    public ResponseEntity<Inquire> createInquire(@RequestBody InquireRequestDto inquireRequest, HttpSession session) {
 
-        Inquire createdInquire = inquireService.createInquire(inquireRequest, memberId);
+
+        String socialId = session.getAttribute("email").toString();
+
+        Inquire createdInquire = inquireService.createInquire(inquireRequest, socialId);
         return new ResponseEntity<>(createdInquire, HttpStatus.CREATED);
     }
 
