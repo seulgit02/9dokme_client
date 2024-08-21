@@ -92,7 +92,7 @@
                 pay_method: "card",
                 merchant_uid: "order_no_" + new Date().getTime(),
                 name: "9dokme 정기결제 등록",
-                amount: 15000,
+                amount: 9900,
                 buyer_email: userEmail,
                 buyer_name: userName,
                 buyer_tel: "010-1234-5678",
@@ -154,7 +154,7 @@
         }
 
         function goToMainPage() {
-            window.location.href = baseURL + "api/mainpage";
+            window.location.href = window.location.origin + "/api/mainpage";
         }
 
         window.requestPay = requestPay;

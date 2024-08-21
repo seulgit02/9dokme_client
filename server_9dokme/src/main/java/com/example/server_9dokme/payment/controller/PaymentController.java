@@ -42,7 +42,7 @@ public class PaymentController {
                 "card",
                 "order_no_" + new Date().getTime(),
                 "9dokme 정기 결제",
-                15000,
+                9900,
                 currentMember.getSocialId(), // 사용자 이메일
                 currentMember.getNickName(), // 사용자 이름
                 "010-5511-0021",
