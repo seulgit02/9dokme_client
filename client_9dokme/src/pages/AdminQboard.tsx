@@ -18,6 +18,8 @@ import {
 import axios from "axios";
 import ReactPaginate from "react-paginate";
 import styles from './AdminQBoard.module.css';
+import { message } from "antd";
+import { BASE_URL } from "../env";
 
 
 const AdminQboard = () => {
@@ -32,13 +34,13 @@ const AdminQboard = () => {
   const fetchQueries = async (pageNo: number) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/admin/inquiries/${pageNo}`
+        `${BASE_URL}/api/admin/inquiries/${pageNo}`
       );
       setQueryData(response.data);
       console.log(response.data);
     } catch (error) {
       console.log("API 호출 오류: ", error);
-      alert("데이터를 가져오는 데 오류가 발생했습니다.");
+      
     }
   };
 
@@ -56,16 +58,17 @@ const AdminQboard = () => {
     setOpenEditor(true);
   };
 
-  const onDeleteClick = async (inquireId: string) => {
+  const onDeleteClick = async (inquireId: number) => {
     try {
       const response = await axios.delete(
-        `/api/admin/inquire/delete/${inquireId}`
+        `http://localhost:8080/api/admin/inquiries/delete/${inquireId}`
       );
-      if (response.status === 200 || response.status === 201) {
-        alert(`${inquireId}: 문의글이 삭제되었습니다.`);
+      if (response.status === 200 || response.status === 204) {
+        
         fetchQueries(currentPage); // 삭제 후 데이터 새로고침
+        message.success("문의글이 삭제되었습니다.");
       } else {
-        alert("문의글 삭제에 실패했습니다.");
+        message.error("문의글 삭제에 실패했습니다.");
       }
     } catch (error) {
       console.log("문의글 삭제 오류: ", error);
@@ -114,7 +117,7 @@ const AdminQboard = () => {
               </TableCell>
               <TableCell>
                 <button
-                  onClick={() => onDeleteClick(String(query.inquireId))}
+                  onClick={() => onDeleteClick(query.inquireId)}
                   className='bg-slate-400 text-[0.8vw] text-white px-[0.5vw] rounded hover:bg-[#FF7E7E]'
                 >
                   삭제
