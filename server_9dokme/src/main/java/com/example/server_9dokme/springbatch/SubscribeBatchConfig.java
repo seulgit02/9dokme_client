@@ -45,7 +45,7 @@ public class SubscribeBatchConfig {
     @Autowired
     PaymentService paymentService;
 
-    @Scheduled(cron= "0 0/5 * * * *")
+    @Scheduled(cron= "0 0 10 * * *")   //오전 10시 수정 $$$
     public void performJob() throws Exception {
         jobLauncher.run(subscribeBatchJob(), new JobParameters());
     }

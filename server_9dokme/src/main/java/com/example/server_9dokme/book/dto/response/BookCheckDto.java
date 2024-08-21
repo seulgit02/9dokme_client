@@ -26,5 +26,7 @@ public class BookCheckDto {
 
     private int lastPage;
 
+    private boolean isMarked;
+
 
 }
