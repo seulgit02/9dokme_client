@@ -8,6 +8,6 @@ import lombok.Data;
 public class InquireDto {
     private Long inquireId;
     private Long userId;
-    private String titie;
+    private String title;
     private String content;
 }
