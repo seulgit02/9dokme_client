@@ -10,13 +10,15 @@ import AdminUser from "./pages/AdminUser";
 import AdminQboard from "./pages/AdminQboard";
 import LoginLoading from "./pages/LoginLoading";
 import MyArticle from "./pages/MyArticle";
+import BookDetail from "./pages/BookDetail";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/mainPage/" element={<Main />} />
-      <Route path="/bookdetail/:bookId/" element={<BookDiscription />} />
+      {/* <Route path="/bookdetail/:bookId/" element={<BookDiscription />} /> */}
+      <Route path="/bookdetail/:bookId/" element={<BookDetail />} />
       <Route path="/view/:bookId/" element={<PdfViewer />} />
       <Route path="/queryboard/" element={<QueryBoard />} />
       <Route path="/mypage/" element={<MyPage />} />

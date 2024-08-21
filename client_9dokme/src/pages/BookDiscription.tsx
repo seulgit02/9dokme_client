@@ -7,7 +7,7 @@ import { BookDetailType, Books } from "../json/BookDetailType";
 import Sidebanner from "../components/Sidebanner";
 
 import BookmarkSucces from "../components/BookmarkSuccess";
-const BookDetail = () => {
+const BookDescription = () => {
   const handleBookmarkBtn = () => {
     setIsOpen(true);
   };
@@ -112,4 +112,4 @@ const GradientDiv = styled.div`
   justify-content: center;
   cursor: pointer;
 `;
-export default BookDetail;
+export default BookDescription;
