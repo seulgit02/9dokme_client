@@ -20,6 +20,7 @@ const MyPage = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [expiredAt, setExpiredAt] = useState("");
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
   const navigate = useNavigate();
 
@@ -44,6 +45,7 @@ const MyPage = () => {
           const { profileDto, bookList } = response.data;
           setBooks(bookList.content);
           setExpiredAt(profileDto.expirationDate);
+          setIsSubscribed(profileDto.subscribed); // 구독 상태 설정
           console.log("Profile Data:", profileDto);
           console.log("Book List Data:", bookList);
         } else {
@@ -70,14 +72,21 @@ const MyPage = () => {
           </span>
           <span className='font-bold'>님, 안녕하세요:)</span>
           <br />
-          구독 만료일은
-          <span className='text-red-400 font-bold mx-2'>{expiredAt}</span>
-          입니다.
+          {isSubscribed ? (
+            <>
+              구독 만료일은
+              <span className='text-red-400 font-bold mx-2'>{expiredAt}</span>
+              입니다.
+            </>
+          ) : (
+            <span className='text-gray-400'>구독되어 있지 않습니다.</span>
+          )}
         </p>
 
         <SubscribeBtn onClick={handleClickSubscribeBtn}>
-          구독 연장하기
+          {isSubscribed ? "구독 연장하기" : "구독하기"}
         </SubscribeBtn>
+
         <BgContainer>
           {loading ? (
             <p>Loading...</p>
@@ -92,10 +101,10 @@ const MyPage = () => {
               {books.map((book) => (
                 <BookCard
                   key={book.bookId}
-                  cover={book.bookImage} // bookImage를 cover로 매핑
+                  cover={book.bookImage} 
                   title={book.title}
                   isMarked={book.isMarked}
-                  onClick={() => handleImgClick(book.bookId)} // 핸들러에서 book.bookId를 인자로 전달
+                  onClick={() => handleImgClick(book.bookId)} 
                 />
               ))}
             </div>
@@ -105,6 +114,8 @@ const MyPage = () => {
     </div>
   );
 };
+
+
 
 const BgContainer = styled.div`
   background-image: url(${bg});
