@@ -45,14 +45,14 @@ const MyArticle: React.FC = () => {
   const postDetail = myPostDetailData.data; // 상세 조회 데이터
 
   return (
-    <div className="w-screen h-[100vh] bg-customColor bg-opacity-20 p-[2vw] relative">
+    <div className="w-screen h-[150vh] bg-customColor bg-opacity-20 p-[2vw] relative">
       <Sidebanner />
-      <div className="max-w-[800px] mx-auto bg-white p-[2vw] rounded-lg shadow-lg">
+      <div className="w-[80vw] mx-auto bg-white p-[2vw] rounded-lg shadow-lg">
         {isDetailView && selectedQuestion ? (
           <MyPostDetail postDetail={postDetail} onBack={handleBack} />
         ) : (
           <>
-            <div className="text-center font-bold text-[2vw] mb-[1vw]">
+            <div className="text-center font-bold text-[1.5vw] mb-[1vw]">
               나의 작성글
             </div>
             <div className="flex w-full mb-[2vw]">
@@ -106,7 +106,7 @@ const CommunityBox: React.FC<{
       className="m-[1vw] bg-white shadow-lg rounded-lg p-4 border-solid border-[0.05vw] border-slate-300 mt-[1.5vw]"
       onClick={onClick}
     >
-      <h2 className="font-bold text-[1.5vw]">{title}</h2>
+      <h2 className="font-bold text-[1.2vw]">{title}</h2>
       <hr className="mt-[0.5vw] mb-[0.5vw] border-slate-400" />
       <p className="text-gray-400 text-[1vw]">
         {content.length > 20 ? `${content.substring(0, 20)}...` : content}

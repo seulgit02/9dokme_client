@@ -11,6 +11,7 @@ import AIChat from "../components/AIChat";
 pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
 interface Book {
+  bookId: number;
   bookTitle: string;
   author: string;
   bookCategory: string;
@@ -121,7 +122,17 @@ const PdfViewer: React.FC = () => {
 
   return (
     <Frame className="bg-customGradient w-full h-[150vh]">
-      <CommunityTab book={book} />
+      <CommunityTab
+        book={
+          book ?? {
+            bookId: 0,
+            bookTitle: "",
+            author: "",
+            bookCategory: "",
+            bookURL: "",
+          }
+        }
+      />
       <AIChat />
 
       <BackButton onClick={handleBackClick} className="w-[4vw] h-[1vw]">

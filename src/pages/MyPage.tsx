@@ -104,10 +104,11 @@ const MyPage = () => {
               {books.map((book) => (
                 <BookCard
                   bookId={book.bookId}
-                  key={book.bookId}
+                  // key={book.bookId}
                   cover={book.bookImage} // bookImage를 cover로 매핑
                   title={book.title}
                   isMarked={book.isMarked}
+                  // bookImage={book.bookImage}
                   onClick={() => handleImgClick(book.bookId)} // 핸들러에서 book.bookId를 인자로 전달
                 />
               ))}
