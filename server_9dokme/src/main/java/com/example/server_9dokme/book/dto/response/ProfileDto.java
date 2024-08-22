@@ -11,5 +11,6 @@ public class ProfileDto {
     private Long memberId;
     private String nickName;
     private String expirationDate;
+    private boolean subscribed;
 //    private String profileImageURL;
 }

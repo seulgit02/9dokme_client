@@ -17,6 +17,7 @@ import com.example.server_9dokme.book.repository.BookRepository;
 import com.example.server_9dokme.member.dto.response.BookDto;
 import com.example.server_9dokme.rent.entity.Rent;
 import com.example.server_9dokme.rent.repository.RentRepository;
+import com.example.server_9dokme.subscribe.repository.SubscribeRepository;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,8 @@ public class BookService {
     private MemberRepository memberRepository;
     @Autowired
     private BookmarkRepository bookmarkRepository;
+    @Autowired
+    private SubscribeRepository subscribeRepository;
 
     public BookCheckDto checkBook(Long bookId,String email){
 
@@ -230,6 +233,36 @@ public class BookService {
     }
 
 
+//    public MyPageDto getMypageBookList(Long memberId, int pageNo) {
+//        Pageable pageable = PageRequest.of(pageNo, 8); // 페이지 번호와 크기 설정
+//
+//        // 회원 조회
+//        Member member = memberRepository.findByMemberId(memberId);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//
+//        // 프로필 정보 생성
+//        ProfileDto profileDto = new ProfileDto(
+//                member.getMemberId(),
+//                member.getNickName(),
+//                member.getSubscribe().getExpiredAt().format(formatter)
+//        );
+//
+//        // 북마크된 책들 페이지 처리하여 가져오기
+//        Page<Book> page = bookRepository.findBooksByMember(memberId, pageable);
+//
+//        // BookDto로 변환
+//        Page<BookDto> bookDtoPage = page.map(book -> new BookDto(
+//                book.getBookId(),
+//                book.getTitle(),
+//                book.getCategory(),
+//                book.getBookURL(),
+//                book.getBookImage(),
+//                bookmarkRepository.existsBookmarkByBook_BookIdAndMember_MemberId(book.getBookId(), memberId)));
+//
+//        // MyPageDto 반환
+//        return new MyPageDto(profileDto, bookDtoPage);
+//    }
+
     public MyPageDto getMypageBookList(Long memberId, int pageNo) {
         Pageable pageable = PageRequest.of(pageNo, 8); // 페이지 번호와 크기 설정
 
@@ -237,11 +270,15 @@ public class BookService {
         Member member = memberRepository.findByMemberId(memberId);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        // 프로필 정보 생성
+        // 구독 여부 확인 및 프로필 정보 생성
+        boolean isSubscribed = member.getSubscribe() != null;
+        String expirationDate = isSubscribed ? member.getSubscribe().getExpiredAt().format(formatter) : null;
+
         ProfileDto profileDto = new ProfileDto(
                 member.getMemberId(),
                 member.getNickName(),
-                member.getSubscribe().getExpiredAt().format(formatter)
+                expirationDate,
+                isSubscribed
         );
 
         // 북마크된 책들 페이지 처리하여 가져오기
@@ -259,7 +296,6 @@ public class BookService {
         // MyPageDto 반환
         return new MyPageDto(profileDto, bookDtoPage);
     }
-
 
 
 }
