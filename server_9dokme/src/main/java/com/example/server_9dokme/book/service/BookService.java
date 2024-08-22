@@ -50,17 +50,15 @@ public class BookService {
     @Autowired
     private SubscribeRepository subscribeRepository;
 
-    public BookCheckDto checkBook(Long bookId,String email){
+    public BookCheckDto checkBook(Long bookId,Long memberId){
 
-        Long memberId = memberRepository.findBySocialId(email).getMemberId();
         Book book = bookRepository.findByBookId(bookId);
         int lastPage;
         if(rentRepository.existsByBookIdAndMemberId(bookId,memberId)){
             lastPage = rentRepository.findByBookIdAndMemberId(bookId,memberId).getLastPage();
-        }else{
+        } else {
             lastPage = 1;
         }
-
 
         BookCheckDto dto = BookCheckDto.builder().
                 bookId(book.getBookId()).
@@ -73,15 +71,12 @@ public class BookService {
                 lastPage(lastPage).
                 category(book.getCategory()).
                 isMarked(bookmarkRepository.existsBookmarkByBook_BookIdAndMember_MemberId(book.getBookId(),memberId)).build();
-
-
-
             return dto;
     }
 
-    public Page<BookDto> searchBook(String title, int pageNo, String email){
+    public Page<BookDto> searchBook(String title, int pageNo, Long memberId){
 
-        Member member = memberRepository.findBySocialId(email);
+        Member member = memberRepository.findByMemberId(memberId);
 
         Pageable pageable = PageRequest.of(pageNo,4);
         Page<Book> bookPage;
@@ -144,11 +139,9 @@ public class BookService {
 
     }
 
-    public void updateProgress(Long bookId, String email, int lastPage){
+    public void updateProgress(Long bookId, Long memberId, int lastPage){
 
         Book book = bookRepository.findByBookId(bookId);
-
-        Long memberId = memberRepository.findBySocialId(email).getMemberId();
 
         Rent updateRent = rentRepository.findByBookIdAndMemberId(bookId,memberId);
 
