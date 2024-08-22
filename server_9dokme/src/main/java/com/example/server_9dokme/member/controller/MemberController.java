@@ -55,15 +55,18 @@ public class MemberController {
 
         session.setAttribute("email",userInfo.get("email"));
         session.setAttribute("accessToken",accessToken);
+
+        if(!memberRepository.existsBySocialId(userInfo.get("email").toString())){
+            kakaoService.registerMember(String.valueOf(userInfo.get("email")),String.valueOf(userInfo.get("nickname")));
+        }
+
+
         Member member = memberRepository.findBySocialId((String)userInfo.get("email"));
         session.setAttribute("memberId",member.getMemberId());
         Long memberId = member.getMemberId();
-
         userInfo.put("memberId", memberId); // memberId 추가
+
         session.setMaxInactiveInterval(60 * 60);
-
-        kakaoService.registerMember(String.valueOf(userInfo.get("email")),String.valueOf(userInfo.get("nickname")));
-
 
         return SuccessResponse.success(String.valueOf(userInfo));
     }

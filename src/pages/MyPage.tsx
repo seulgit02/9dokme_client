@@ -103,6 +103,7 @@ const MyPage = () => {
             >
               {books.map((book) => (
                 <BookCard
+                  bookId={book.bookId}
                   key={book.bookId}
                   cover={book.bookImage} // bookImage를 cover로 매핑
                   title={book.title}

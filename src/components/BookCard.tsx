@@ -2,28 +2,74 @@ import React from "react";
 import styled from "styled-components";
 import onBookmark from "../images/onBookmark.png";
 import offBookmark from "../images/offBookmark.png";
-import defaultCover from "../images/bookcover.png"
+import defaultCover from "../images/bookcover.png";
+import API from "../api/axios";
+
 interface BookCardProps {
+  bookId: number;
   cover: string; // 이미지 URL
   title: string; // 책 제목
   onClick: () => void; // 클릭 이벤트 핸들러
   isMarked: boolean; // 즐겨찾기 상태
 }
 
+const memberId = localStorage.getItem("memberId");
 
-const BookCard: React.FC<BookCardProps> = ({ cover, title, isMarked, onClick }) => {
+const BookCard: React.FC<BookCardProps> = ({
+  bookId,
+  cover,
+  title,
+  isMarked,
+  onClick,
+}) => {
   const coverSrc = cover ? cover : defaultCover;
+
+  const addBookmark = async () => {
+    try {
+      const response = await API.post(`/bookmark`, null, {
+        params: {
+          bookId: bookId,
+          memberId: memberId,
+        },
+      });
+      if (response.status === 200 && response.data.isMarked) {
+        console.log("Bookmark added successfully");
+        alert(`[${title}] 도서가 북마크에 성공적으로 추가되었습니다:)`);
+      }
+    } catch (error) {
+      console.error("Error adding bookmark:", error);
+      alert(`[${title}] 도서가 북마크에서 삭제되었습니다.`);
+    }
+  };
+
+  const deleteBookmark = async () => {
+    try {
+      const response = await API.delete(`/bookmark`, {
+        data: {
+          bookId: bookId,
+        },
+      });
+      if (response.status === 200 && !response.data.isMarked) {
+        console.log("Bookmark deleted successfully");
+      }
+    } catch (error) {
+      console.error("Error deleting bookmark:", error);
+    }
+  };
 
   return (
     <div style={{ position: "relative" }}>
-    <BookmarkIcon src={isMarked ? onBookmark : offBookmark} alt="Bookmark Icon" />
-    <CardContainer onClick={onClick}>
-      <CoverImageWrapper>
-        <CoverImage alt={title} src={coverSrc} />
-        
-      </CoverImageWrapper>
-      <Title>{title.length > 15 ? `${title.slice(0, 15)}...` : title}</Title>
-    </CardContainer>
+      <BookmarkIcon
+        src={isMarked ? onBookmark : offBookmark}
+        alt="Bookmark Icon"
+        onClick={isMarked ? deleteBookmark : addBookmark}
+      />
+      <CardContainer onClick={onClick}>
+        <CoverImageWrapper>
+          <CoverImage alt={title} src={coverSrc} />
+        </CoverImageWrapper>
+        <Title>{title.length > 15 ? `${title.slice(0, 15)}...` : title}</Title>
+      </CardContainer>
     </div>
   );
 };
@@ -31,7 +77,7 @@ const BookCard: React.FC<BookCardProps> = ({ cover, title, isMarked, onClick }) 
 const BookmarkIcon = styled.img`
   position: absolute;
   top: -7px;
-  right: 2px; 
+  right: 2px;
   width: 30px;
   height: 30px;
   cursor: pointer;
