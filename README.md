@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -44,3 +45,7 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+=======
+# 2024-1-VSA-9dokme
+2024년 SW개발자양성과정 산학연계프로젝트1 - 구독해조(9dokme)
+>>>>>>> 848be4c9b0786701116a69c54495ed592814b6a2
