@@ -82,7 +82,7 @@ public class BookController {
     public ResponseEntity<BookWebViewDto> viewBookPDF(@RequestParam Long bookId,
                                                       @RequestParam Long memberId) {
 
-        Object currentMember = memberRepository.findByMemberId(memberId);
+        Member currentMember = memberRepository.findByMemberId(memberId);
 
         if (currentMember == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "로그인 후 이용해주세요.");
@@ -94,7 +94,7 @@ public class BookController {
 
         BookWebViewDto dto = bookService.bookWebView(bookId);
 
-        bookService.saveRentBook(bookId,currentMember.toString());
+        bookService.saveRentBook(bookId,currentMember.getSocialId());
 
         return ResponseEntity.ok(dto);
     }
