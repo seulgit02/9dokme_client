@@ -317,6 +317,7 @@ const Main = () => {
             <BooksContainer>
               {books.map((book) => (
                 <BookCard
+                  bookId={book.bookId}
                   key={book.bookId}
                   cover={images[book.bookImage]}
                   title={book.title}
