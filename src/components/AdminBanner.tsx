@@ -20,9 +20,9 @@ const AdminBanner = () => {
   };
   useEffect(() => {
     const pathToKeyMap: { [key: string]: string | undefined } = {
-      "/admin/adminPdf": "adminpdf",
-      "/admin/adminUser": "adminuser",
-      "/admin/adminQboard": "adminqboard",
+      "/api/admin/adminPdf": "adminpdf",
+      "/api/admin/adminUser": "adminuser",
+      "/api/admin/adminQboard": "adminqboard",
     };
     const currentKey = pathToKeyMap[location.pathname];
     if (currentKey) {
@@ -35,7 +35,7 @@ const AdminBanner = () => {
   };
   const onLogoutClick = async () => {
     try {
-      const response = await API.get("/user/logout");
+      const response = await API.get("/api/user/logout");
       if (response.status === 200) {
         alert("성공적으로 로그아웃되었습니다.");
       } else {
@@ -70,20 +70,22 @@ const AdminBanner = () => {
               text="PDF 관리"
               icon={pdf}
               isActive={activeBtn === "adminpdf"}
-              onClick={() => handleNavigate("/admin/adminPdf", "adminpdf")}
+              onClick={() => handleNavigate("/api/admin/adminPdf", "adminpdf")}
             />
             <NavBarBtn
               text="유저정보 관리"
               icon={user}
               isActive={activeBtn === "adminuser"}
-              onClick={() => handleNavigate("/admin/adminUser", "adminuser")}
+              onClick={() =>
+                handleNavigate("/api/admin/adminUser", "adminuser")
+              }
             />
             <NavBarBtn
               text="문의게시판 관리"
               icon={qboard}
               isActive={activeBtn === "adminqboard"}
               onClick={() =>
-                handleNavigate("/admin/adminQboard", "adminqboard")
+                handleNavigate("/api/admin/adminQboard", "adminqboard")
               }
             />
             <NavBarBtn
@@ -128,6 +130,7 @@ const NavBarBtn: React.FC<NavBarBtnProps> = ({
 };
 
 const NavBarBtnStyle = styled.button<NavBarBtnStyleProps>`
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   color: ${(props) => (props.isActive ? "white" : "black")};
   background-color: ${(props) => (props.isActive ? "#5A4BFF" : "#FFFFFF")};
   text-align: left;

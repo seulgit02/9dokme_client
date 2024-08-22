@@ -139,7 +139,7 @@ const AIChat: React.FC = () => {
             </MessageBox>
             <InputArea>
               <StyledInput
-                placeholder="Ask something..."
+                placeholder="교재 내용에 대해 질문하세요!"
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
               />
