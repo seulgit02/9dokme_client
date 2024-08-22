@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../env";
 
 const LoginLoading = () => {
   const code = new URL(window.location.href).searchParams.get("code");
@@ -11,7 +12,8 @@ const LoginLoading = () => {
       try {
         console.log("Authorization code:", code); // 인가 code 출력
         const res = await axios.get(
-          `http://localhost:8080/api/oauth?code=${code}`
+          `${BASE_URL}/api/oauth?code=${code}`
+          // `http://localhost:8080/api/oauth?code=${code}`
         );
 
         console.log(res.data);

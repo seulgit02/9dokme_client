@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import profile from "../images/profile.png";
-import User from "../json/User.json";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import bg from "../images/bg.png";
 import BookCard from "../components/BookCard"; // BookCard 컴포넌트 import
 import axios from "axios";
 import Sidebanner from "../components/Sidebanner";
+import { BASE_URL } from "../env";
 
 const MyPage = () => {
   interface Book {
@@ -37,7 +37,7 @@ const MyPage = () => {
         const memberId = localStorage.getItem("memberId");
 
         if (memberId) {
-          const response = await axios.get(`http://localhost:8080/api/mypage`, {
+          const response = await axios.get(`${BASE_URL}/api/mypage`, {
             params: { memberId },
           });
 

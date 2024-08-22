@@ -12,22 +12,22 @@
 //   .listen(port, host, function () {
 //     console.log(`Running CORS Anywhere on ${host}:${port}`);
 //   });
-const { createProxyMiddleware } = require("http-proxy-middleware");
+// const { createProxyMiddleware } = require("http-proxy-middleware");
 
-module.exports = function (app) {
-  app.use(
-    "/api",
-    createProxyMiddleware({
-      target: "http://localhost:8080",
-      changeOrigin: true,
-      withCredentials: true,
-    })
-  );
-  app.use(
-    "/ws",
-    createProxyMiddleware({
-      target: "http://localhost:8080",
-      ws: true,
-    })
-  );
-};
+// module.exports = function (app) {
+//   app.use(
+//     "/api",
+//     createProxyMiddleware({
+//       target: "http://localhost:8080",
+//       changeOrigin: true,
+//       withCredentials: true,
+//     })
+//   );
+//   app.use(
+//     "/ws",
+//     createProxyMiddleware({
+//       target: "http://localhost:8080",
+//       ws: true,
+//     })
+//   );
+// };
