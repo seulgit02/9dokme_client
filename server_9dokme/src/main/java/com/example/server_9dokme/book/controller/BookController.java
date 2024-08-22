@@ -61,11 +61,11 @@ public class BookController {
     @GetMapping("/mainpage/search")
     @Operation(summary = "pdf 교재 검색", description = "pdf 교재 검색 title 기반")
     public ResponseEntity<Page<BookDto>> searchBookPDF(@RequestParam(defaultValue = "") String title,
-                                      @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
-                                                       HttpSession session) {
+                                                       @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+                                                       HttpServletRequest request) {
 
 
-
+        HttpSession session = request.getSession();
         String email = (String) session.getAttribute("email");
         Object currentMember = memberRepository.findBySocialId(email);
         Page<BookDto> dto = bookService.searchBook(title,pageNo, email);
