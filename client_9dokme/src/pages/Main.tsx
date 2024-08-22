@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import SlidingBanner from "../components/SlidingBanner";
 import Hashtag from "../components/Hashtag";
-import bookData from "../json/books.json";
 import { Book } from "../json/BookList";
 import { useNavigate } from "react-router-dom";
 import book1 from "../images/books/book1.png";
@@ -16,6 +15,8 @@ import { PRIMARY } from "../utils/colors";
 import { Button, Card, Input } from "antd";
 import styled from "styled-components";
 import BookCard from "../components/BookCard";
+import axios from "axios"; // axios 임포트
+import { BASE_URL } from "../env";
 
 const images: { [key: string]: string } = {
   "book1.png": book1,
@@ -32,8 +33,13 @@ const Main = () => {
   const handleImgClick = (bookId: number) => {
     navigate(`/bookdetail/${bookId}`);
   };
+
   const [category, setCategory] = useState<string>("전체보기");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filterBooks, setFilterBooks] = useState<Book[]>([]);
+  const [page, setPage] = useState<number>(0);
+  const [memberId] = useState<number>(1);
+
   const [filterBooks, setFilterBooks] = useState<Book[]>(bookData.bookData);
   const handleHashBtnClick = (newCategory: string) => {
     setCategory(newCategory);
@@ -58,11 +64,8 @@ const Main = () => {
   };
   //category 상태 변경시
   useEffect(() => {
-    if (category) {
-      console.log("category: ", category);
-      handleSearchBtnClick();
-    }
-  }, [category]);
+    handleSearchBtnClick();
+  }, [category, page]);
 
   return (
     <>
@@ -96,17 +99,17 @@ const Main = () => {
                 <NoneBook>검색 결과가 없습니다.</NoneBook>
               ) : (
                 <BooksContainer>
-                <div className="grid grid-cols-4 gap-10 m-4">
-                  {filterBooks.map((book) => (
-                    <BookCard
-                      key={book.bookId}
-                      cover={images[book.bookUrl]}
-                      title={book.bookTitle}
-                      onClick={() => handleImgClick(book.bookId)}
-                      isMarked={book.isMarked}
-                    />
-                  ))}
-                </div>
+                  <div className="grid grid-cols-4 gap-10 m-4">
+                    {filterBooks.map((book) => (
+                      <BookCard
+                        key={book.bookId}
+                        cover={images[book.bookUrl.split("/").pop() || ""]}
+                        title={book.bookTitle}
+                        onClick={() => handleImgClick(book.bookId)}
+                        isMarked={book.isMarked}
+                      />
+                    ))}
+                  </div>
                 </BooksContainer>
               )}
               
