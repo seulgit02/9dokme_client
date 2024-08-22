@@ -16,4 +16,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findByCustomerKey(String customerKey);
     List<Member> findAll();
     Page<Member> findAll(Pageable pageable);
+
+    Boolean existsBySocialId(String socialId);
 }
