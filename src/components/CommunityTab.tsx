@@ -422,7 +422,11 @@ const CommunityTab: React.FC<CommunityTabProps> = ({ book }) => {
           </div>
 
           {createPostBtn ? (
-            <CreatePost onBack={handleBackFromWriting} />
+            <CreatePost
+              onBack={handleBackFromWriting}
+              bookId={book.bookId}
+              userEmail="example@gmail.com"
+            />
           ) : (
             <>
               {selectedQuestionId === null ? (
