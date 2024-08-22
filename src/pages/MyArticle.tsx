@@ -4,29 +4,29 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import MyPostDetail from "../components/MyPosttDetail"; // MyPostDetail 컴포넌트 임포트
 import Sidebanner from "../components/Sidebanner";
-// 목데이터를 가져옵니다.
 import myPostsData from "../json/MyWrittenText.json";
 import myPostDetailData from "../json/MyPostDetail.json"; // 상세조회 목데이터 임포트
+import { BASE_URL } from "../env";
+import axios from "axios";
 
-interface HistoryItem {
-  question: number;
+interface Inquire {
+  inquireId: number;
+  userId: number;
   title: string;
-  createdAt: string;
+  content: string;
 }
-
-interface MyPostsData {
-  data: {
-    history: HistoryItem[];
-  };
+interface InquireResponse {
+  content: Inquire[];
 }
-
 const MyArticle: React.FC = () => {
+  const [page, setPage] = useState<number>(0);
   const [selectedQuestion, setSelectedQuestion] = useState<HistoryItem | null>(
     null
   );
   const [isDetailView, setIsDetailView] = useState<boolean>(false); // 상세 조회 상태 추가
   const [searchTitle, setSearchTitle] = useState<string>("");
-
+  const [filterPosts, setFilterPosts] = useState<Book[]>([]);
+  const [memberId] = useState<number>(1);
   const myPosts: MyPostsData = myPostsData;
 
   const handlePostClick = (post: HistoryItem) => {
@@ -43,6 +43,30 @@ const MyArticle: React.FC = () => {
   );
 
   const postDetail = myPostDetailData.data; // 상세 조회 데이터
+
+  const handleSearchBtnClick = async () => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/api/admin/inquiries/${page}`,
+        {
+          params: {
+            pageNo: page,
+            memberId: memberId,
+          },
+        }
+      );
+
+      const { content } = response.data;
+      console.log("Fetched content: ", content);
+      setFilterBooks(content);
+    } catch (error) {
+      console.error("Failed to fetch books", error);
+    }
+  };
+
+  useEffect(() => {
+    handleSearchBtnClick();
+  }, [category, page]);
 
   return (
     <div className="w-screen h-[150vh] bg-customColor bg-opacity-20 p-[2vw] relative">

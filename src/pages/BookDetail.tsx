@@ -76,11 +76,29 @@ const BookDetail = () => {
   };
 
   //북마크 삭제하기
+  // const handleDeleteBookmark = async () => {
+  //   try {
+  //     const response = await axios.delete(`${BASE_URL}/api/bookmark`, {
+  //       params: { memberId: memberId },
+  //       data: { bookId: book?.bookId },
+  //     });
+
+  //     if (response.status === 200) {
+  //       alert(`${book?.title}: 도서가 북마크 취소되었습니다:)`);
+  //       console.log("Bookmark removed successfully:", response.data);
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to remove bookmark", error);
+  //   }
+  // };
+
   const handleDeleteBookmark = async () => {
     try {
       const response = await axios.delete(`${BASE_URL}/api/bookmark`, {
-        params: { memberId: memberId },
-        data: { bookId: book?.bookId },
+        data: {
+          memberId: memberId,
+          bookId: book?.bookId,
+        },
       });
 
       if (response.status === 200) {
