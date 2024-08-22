@@ -4,6 +4,7 @@ import styled from "styled-components";
 import back from "../images/back.png";
 import AddComment from "./AddComment";
 import { useState } from "react";
+
 interface Props {
   questionId: number;
   chapter: string;

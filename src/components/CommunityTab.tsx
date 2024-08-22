@@ -379,6 +379,7 @@ const CommunityTab: React.FC<CommunityTabProps> = ({ book }) => {
         const response = await API.get(`/api/questionlist/${book.bookId}`, {
           params: {
             chapter: searchChapter,
+
             bookPage: searchPage,
           },
         });
