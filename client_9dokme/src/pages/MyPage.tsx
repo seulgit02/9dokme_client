@@ -87,17 +87,12 @@ const MyPage = () => {
           {isSubscribed ? "구독 연장하기" : "구독하기"}
         </SubscribeBtn>
 
-        <BgContainer>
+        <BooksContainer>
+        
           {loading ? (
             <p>Loading...</p>
           ) : (
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                justifyContent: "center",
-              }}
-            >
+            <div className="grid grid-cols-4 gap-10 m-4">
               {books.map((book) => (
                 <BookCard
                   key={book.bookId}
@@ -109,7 +104,7 @@ const MyPage = () => {
               ))}
             </div>
           )}
-        </BgContainer>
+        </BooksContainer>
       </div>
     </div>
   );
@@ -124,7 +119,12 @@ const BgContainer = styled.div`
   padding: 2vw;
   margin-top: 2vw;
 `;
-
+const BooksContainer = styled.div`
+margin-top: 70px;
+margin-bottom: 100px;
+  display: flex;
+  justify-content: center;
+`
 const SubscribeBtn = styled.button`
   background: linear-gradient(
     90deg,
