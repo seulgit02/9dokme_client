@@ -123,15 +123,7 @@ const PdfViewer: React.FC = () => {
   return (
     <Frame className="bg-customGradient w-full h-[150vh]">
       <CommunityTab
-        book={
-          book ?? {
-            bookId: 0,
-            bookTitle: "",
-            author: "",
-            bookCategory: "",
-            bookURL: "",
-          }
-        }
+        bookId = {bookId}
       />
       <AIChat />
 
