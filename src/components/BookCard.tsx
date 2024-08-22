@@ -19,8 +19,8 @@ const BookCard: React.FC<BookCardProps> = ({
   bookId,
   cover,
   title,
-  isMarked,
   onClick,
+  isMarked,
 }) => {
   const coverSrc = cover ? cover : defaultCover;
 
