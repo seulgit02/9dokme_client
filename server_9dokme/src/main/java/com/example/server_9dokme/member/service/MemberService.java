@@ -157,8 +157,8 @@ public class MemberService {
     }
 
 
-    public Page<PostWrittenDto> getPostWrittenList(Object socialId, int pageNo){
-        String email = socialId.toString();
+    public Page<PostWrittenDto> getPostWrittenList(Long memberId, int pageNo){
+        String email = memberRepository.findByMemberId(memberId).getSocialId().toString();
 
         Pageable pageable = PageRequest.of(pageNo,6);
 

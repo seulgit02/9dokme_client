@@ -93,15 +93,15 @@ public class MemberController {
 
     @GetMapping("/mainpage")
     @Operation(summary = "메인 페이지", description = "메인페이지, 페이지 네이션 적용")
-    public SuccessResponse<MainPageDto> mainPage(HttpSession session ,
+    public SuccessResponse<MainPageDto> mainPage(
                                                  @RequestParam(required = false, defaultValue = "", value = "category")  String category,
-                                                 @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
-
-        String socialId = (String) session.getAttribute("email");
-        String accessToken = (String) session.getAttribute("accessToken");
-
+                                                 @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+                                                 Long memberId
+    ){
 
 
+        String socialId = (String) memberRepository.findByMemberId(memberId).getSocialId();
+//        String accessToken = (String) session.getAttribute("accessToken");
         MainPageDto mainPageDto = memberService.getMainPage(category,pageNo,socialId.toString());
 
         return SuccessResponse.success("메인 페이지",mainPageDto);
@@ -126,11 +126,10 @@ public class MemberController {
 
     @GetMapping("/myHistory")
     @Operation(summary = "나의 작성글")
-    public ResponseEntity<Page<PostWrittenDto>> getPostWritten(HttpSession session,
-                                                               @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
-        Object currentUser = session.getAttribute("email");
-
-        Page<PostWrittenDto> listdto = memberService.getPostWrittenList(currentUser,pageNo);
+    public ResponseEntity<Page<PostWrittenDto>> getPostWritten( @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+                                                                Long memberId
+    ){
+        Page<PostWrittenDto> listdto = memberService.getPostWrittenList(memberId,pageNo);
 
         if(listdto.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
