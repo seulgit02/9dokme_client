@@ -1,79 +1,77 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import MyPostDetail from "../components/MyPosttDetail"; // MyPostDetail 컴포넌트 임포트
 import Sidebanner from "../components/Sidebanner";
-import myPostsData from "../json/MyWrittenText.json";
-import myPostDetailData from "../json/MyPostDetail.json"; // 상세조회 목데이터 임포트
-import { BASE_URL } from "../env";
 import axios from "axios";
+import { BASE_URL } from "../env";
 
 interface Inquire {
-  inquireId: number;
-  userId: number;
+  questionId: number;
+  bookId: number;
   title: string;
   content: string;
+  commentCount: number;
+  chapter: number;
+  page: number;
+  createdAt: string;
+  nickName: string;
 }
+
 interface InquireResponse {
   content: Inquire[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
 }
+
 const MyArticle: React.FC = () => {
   const [page, setPage] = useState<number>(0);
-  const [selectedQuestion, setSelectedQuestion] = useState<HistoryItem | null>(
-    null
-  );
-  const [isDetailView, setIsDetailView] = useState<boolean>(false); // 상세 조회 상태 추가
+  const [selectedInquire, setSelectedInquire] = useState<Inquire | null>(null);
+  const [isDetailView, setIsDetailView] = useState<boolean>(false);
   const [searchTitle, setSearchTitle] = useState<string>("");
-  const [filterPosts, setFilterPosts] = useState<Book[]>([]);
+  const [filteredPosts, setFilteredPosts] = useState<Inquire[]>([]);
   const [memberId] = useState<number>(1);
-  const myPosts: MyPostsData = myPostsData;
 
-  const handlePostClick = (post: HistoryItem) => {
-    setSelectedQuestion(post);
-    setIsDetailView(true); // 상세 조회 상태로 전환
+  const handlePostClick = (post: Inquire) => {
+    setSelectedInquire(post);
+    setIsDetailView(true);
   };
 
   const handleBack = () => {
-    setIsDetailView(false); // 목록 보기로 전환
+    setIsDetailView(false);
   };
-
-  const filteredPosts = myPosts.data.history.filter((post) =>
-    post.title.toLowerCase().includes(searchTitle.toLowerCase())
-  );
-
-  const postDetail = myPostDetailData.data; // 상세 조회 데이터
 
   const handleSearchBtnClick = async () => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}/api/admin/inquiries/${page}`,
-        {
-          params: {
-            pageNo: page,
-            memberId: memberId,
-          },
-        }
-      );
+      const response = await axios.get(`${BASE_URL}/api/myHistory`, {
+        params: {
+          page: page,
+          memberId: memberId,
+        },
+      });
 
       const { content } = response.data;
-      console.log("Fetched content: ", content);
-      setFilterBooks(content);
+      const filtered = content.filter((post: Inquire) =>
+        post.title.toLowerCase().includes(searchTitle.toLowerCase())
+      );
+      setFilteredPosts(filtered);
     } catch (error) {
-      console.error("Failed to fetch books", error);
+      console.error("Failed to fetch posts", error);
     }
   };
 
   useEffect(() => {
     handleSearchBtnClick();
-  }, [category, page]);
+  }, [page]);
 
   return (
     <div className="w-screen h-[150vh] bg-customColor bg-opacity-20 p-[2vw] relative">
       <Sidebanner />
       <div className="w-[80vw] mx-auto bg-white p-[2vw] rounded-lg shadow-lg">
-        {isDetailView && selectedQuestion ? (
-          <MyPostDetail postDetail={postDetail} onBack={handleBack} />
+        {isDetailView && selectedInquire ? (
+          <MyPostDetail postDetail={selectedInquire} onBack={handleBack} />
         ) : (
           <>
             <div className="text-center font-bold text-[1.5vw] mb-[1vw]">
@@ -89,6 +87,7 @@ const MyArticle: React.FC = () => {
               <Button
                 variant="outline"
                 className="border-[#C5B5F7] text-[1vw] hover:bg-[#C5B5F7] m-[0.5vw]"
+                onClick={handleSearchBtnClick}
               >
                 검색
               </Button>
@@ -97,12 +96,12 @@ const MyArticle: React.FC = () => {
               {filteredPosts.length > 0 ? (
                 filteredPosts.map((post) => (
                   <CommunityBox
-                    key={post.question}
+                    key={post.questionId}
                     title={post.title}
-                    content={post.createdAt}
-                    commentsCount={0} // 댓글 수는 없으므로 0으로 설정
-                    chapter=""
-                    onClick={() => handlePostClick(post)} // 클릭 시 상세 조회로 이동
+                    content={post.content}
+                    commentsCount={post.commentCount}
+                    chapter={post.chapter}
+                    onClick={() => handlePostClick(post)}
                   />
                 ))
               ) : (
@@ -122,7 +121,7 @@ const CommunityBox: React.FC<{
   title: string;
   content: string;
   commentsCount: number;
-  chapter: string;
+  chapter: number;
   onClick: () => void;
 }> = ({ title, content, commentsCount, chapter, onClick }) => {
   return (
@@ -139,7 +138,7 @@ const CommunityBox: React.FC<{
         <span className="text-gray-500 text-[1vw]">댓글 {commentsCount}</span>
         {chapter && (
           <span className="text-[1vw] bg-customColor rounded px-[0.5vw]">
-            {chapter}
+            Chapter {chapter}
           </span>
         )}
       </div>
