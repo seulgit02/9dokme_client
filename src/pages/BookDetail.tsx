@@ -1,73 +1,144 @@
-import axios from "axios";
+// import axios from "axios";
+// import styled from "styled-components";
+// import Sidebanner from "../components/Sidebanner";
+// import { useState } from "react";
+// import { useNavigate, useParams } from "react-router-dom";
+// import { BookDetails, Books } from "../json/BookDetailType";
+// import books from "../json/BookDetail.json";
+// import { Divider } from "antd";
+// import { PRIMARY } from "../utils/colors";
+// import { BASE_URL } from "../env";
+// import { message } from "antd";
+
+// const BookDetail = () => {
+//   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+//   // const handleBookmarkBtn = () => {
+//   //   setIsOpen(true);
+//   // };
+//   const handleModalClose = () => {
+//     setIsOpen(false);
+//   };
+//   // const navigate = useNavigate();
+//   const handleImgClick = (bookId: string | undefined) => {
+//     const book = books.books.find(
+//       (b: BookDetailType) => String(b.bookId) === String(bookId)
+//     );
+//     navigate(`/view/${bookId}`, { state: { book } });
+//   };
+//   const { bookId } = useParams<{ bookId: string }>();
+//   const book = books.books.find(
+//     (b: BookDetailType) => String(b.bookId) === String(bookId)
+//   );
+//   const memberId = localStorage.getItem("memberId");
+
+//   const handleBookmarkBtn = async () => {
+//     try {
+//       console.log(bookId);
+//       await axios.post(
+//         `${BASE_URL}/api/bookmark?BookId=${bookId}&memberId=${memberId}`
+//       );
+//       message.success("북마크에 추가되었습니다!");
+//     } catch (error) {
+//       console.error("Error bookmarking the book:", error);
+//       message.error("이미 북마크에 등록되었습니다.");
+//     }
+//     setIsOpen(true);
+//   };
+
+//   return (
+//     <Root>
+//       <Sidebanner />
+//       <Container>
+//         <BookContainer>
+//           <BookImage src={require(`../images/books/${book?.bookImage}`)} />
+//         </BookContainer>
+//         <ContentContainer>
+//           <div>
+//             <BookTypo>{book?.bookTitle}</BookTypo>
+//             <TagBtn>{book?.bookCategory}</TagBtn>
+//             <ContentTypo>{book?.description}</ContentTypo>
+//           </div>
+//           <Divider
+//             style={{
+//               borderColor: "#cacaca",
+//             }}
+//           />
+//           <ButtonContainer>
+//             <GradientButton onClick={() => handleImgClick(bookId)}>
+//               PDF 보러가기
+//             </GradientButton>
+//             <GradientButton onClick={handleBookmarkBtn}>
+//               나의 책갈피에 추가하기
+//             </GradientButton>
+//           </ButtonContainer>
+//         </ContentContainer>
+//       </Container>
+//     </Root>
+//   );
+// };
+
+// export default BookDetail;
+
+import API from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Sidebanner from "../components/Sidebanner";
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { BookDetailType, Books } from "../json/BookDetailType";
-import books from "../json/BookDetail.json";
-import { Divider } from "antd";
+import { Divider, message } from "antd";
 import { PRIMARY } from "../utils/colors";
-import { BASE_URL } from "../env";
-import { message } from "antd";
+
+// 책 상세 정보를 위한 인터페이스 정의
+interface BookDetailType {
+  bookId: number;
+  pdfImage: string;
+  title: string;
+  author: string;
+  category: string;
+  publisher: string;
+  description: string;
+  lastPage: number;
+  marked: boolean;
+}
 
 const BookDetail = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  // const handleBookmarkBtn = () => {
-  //   setIsOpen(true);
-  // };
-  const handleModalClose = () => {
-    setIsOpen(false);
-  };
   const navigate = useNavigate();
-  const handleImgClick = (bookId: string | undefined) => {
-    const book = books.books.find(
-      (b: BookDetailType) => String(b.bookId) === String(bookId)
-    );
-    navigate(`/view/${bookId}`, { state: { book } });
-  };
   const { bookId } = useParams<{ bookId: string }>();
-  const book = books.books.find(
-    (b: BookDetailType) => String(b.bookId) === String(bookId)
-  );
-  const memberId = localStorage.getItem("memberId");
+  const [book, setBook] = useState<BookDetailType | null>(null);
 
-  const handleBookmarkBtn = async () => {
-    try {
-      console.log(bookId);
-      await axios.post(`${BASE_URL}/api/bookmark?BookId=${bookId}&memberId=${memberId}`);
-      message.success("북마크에 추가되었습니다!");
-    } catch (error) {
-      console.error('Error bookmarking the book:', error);
-      message.error("이미 북마크에 등록되었습니다.");
-    }
-    setIsOpen(true);
-  };
+  useEffect(() => {
+    const fetchBookDetail = async () => {
+      try {
+        const response = await API.get<BookDetailType>(
+          `/api/books?id=${bookId}`
+        );
+        setBook(response.data);
+      } catch (error) {
+        console.error("Error fetching book details:", error);
+        message.error("책 정보를 불러오는데 실패했습니다.");
+      }
+    };
+
+    if (bookId) fetchBookDetail();
+  }, [bookId]);
+
+  if (!book) return <p>Loading...</p>;
 
   return (
     <Root>
       <Sidebanner />
       <Container>
-        <BookContainer>
-          <BookImage src={require(`../images/books/${book?.bookImage}`)} />
-        </BookContainer>
+        <BookImage src={book.pdfImage} alt={`Cover of ${book.title}`} />
         <ContentContainer>
           <div>
-            <BookTypo>{book?.bookTitle}</BookTypo>
-            <TagBtn>{book?.bookCategory}</TagBtn>
-            <ContentTypo>{book?.description}</ContentTypo>
+            <BookTypo>{book.title}</BookTypo>
+            <TagBtn>{book.category}</TagBtn>
+            <ContentTypo>{book.description}</ContentTypo>
           </div>
-          <Divider
-          style={{
-            borderColor: '#cacaca',
-          }}
-           />
+          <Divider style={{ borderColor: "#cacaca" }} />
           <ButtonContainer>
-            <GradientButton onClick={() => handleImgClick(bookId)}>
+            <GradientButton onClick={() => navigate(`/view/${bookId}`)}>
               PDF 보러가기
-            </GradientButton>
-            <GradientButton onClick={handleBookmarkBtn}>
-              나의 책갈피에 추가하기
             </GradientButton>
           </ButtonContainer>
         </ContentContainer>
@@ -75,8 +146,10 @@ const BookDetail = () => {
     </Root>
   );
 };
+
 const Root = styled.div`
   width: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -173,5 +246,4 @@ const TagBtn = styled.button`
   background-color: white;
   margin: 1vw 1vw 1vw 0vw;
 `;
-
 export default BookDetail;
