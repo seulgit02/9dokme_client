@@ -42,18 +42,16 @@ public class BookController {
     @GetMapping("/books")
     @Operation(summary = "pdf 교재 상세조회", description = "pdf 교재 상세조회")
     public ResponseEntity<BookCheckDto> getBookDetail(@RequestParam Long id,
-                                                      HttpSession session) {
+                                                      Long memberId) {
 
-        Object currentMember = session.getAttribute("email");
-
-        if (currentMember == null) {
+        if (memberId == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "로그인 후 이용해주세요.");
         }
         if(bookRepository.existsById(id)==false){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "찾을 수 없는 pdf 교재입니다.");
         }
 
-        BookCheckDto dto = bookService.checkBook(id,currentMember.toString());
+        BookCheckDto dto = bookService.checkBook(id,memberId);
 
         return ResponseEntity.ok(dto);
     }
@@ -62,22 +60,19 @@ public class BookController {
     @Operation(summary = "pdf 교재 검색", description = "pdf 교재 검색 title 기반")
     public ResponseEntity<Page<BookDto>> searchBookPDF(@RequestParam(defaultValue = "") String title,
                                                        @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
-                                                       HttpServletRequest request) {
+                                                       @RequestParam Long memberId) {
 
+//        Object currentMember = memberRepository.findByMemberId(memberId);
+        Page<BookDto> dto = bookService.searchBook(title,pageNo, memberId);
 
-        HttpSession session = request.getSession();
-        String email = (String) session.getAttribute("email");
-        Object currentMember = memberRepository.findBySocialId(email);
-        Page<BookDto> dto = bookService.searchBook(title,pageNo, email);
-        if (currentMember == null) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "로그인 후 이용해주세요.");
-        }
-        if(dto.isEmpty()==true){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "찾을 수 없는 pdf 교재입니다.");
-        }
-
-
-
+//        if (currentMember == null) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "로그인 후 이용해주세요.");
+//        }
+//        if(dto.isEmpty()==true){
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "찾을 수 없는 pdf 교재입니다.");
+//        }
+//
+//
         return ResponseEntity.ok(dto);
     }
 
@@ -85,7 +80,7 @@ public class BookController {
     @GetMapping("/view")
     @Operation(summary = "pdf 교재 웹뷰 조회", description = "pdf 교재 웹뷰 조회")
     public ResponseEntity<BookWebViewDto> viewBookPDF(@RequestParam Long bookId,
-                                                      Long memberId) {
+                                                      @RequestParam Long memberId) {
 
         Object currentMember = memberRepository.findByMemberId(memberId);
 
@@ -109,15 +104,13 @@ public class BookController {
     @Operation(summary = "웹 뷰 조회 나가기", description = "웹 뷰 조회를 나가며 진행률 최신화(뒤로가기)")
     public ResponseEntity<String> quitViewBookPDF(@PathVariable Long bookId,
                                             @RequestParam int lastPage,
-                                            HttpSession session){
+                                            Long memberId){
 
-        Object currentMember = session.getAttribute("email");
-
-        if (currentMember == null) {
+        if (memberId == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "로그인 후 이용해주세요.");
         }
 
-        bookService.updateProgress(bookId,currentMember.toString(),lastPage);
+        bookService.updateProgress(bookId,memberId,lastPage);
 
         return ResponseEntity.ok("웹 뷰 종료");
     }

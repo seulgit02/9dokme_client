@@ -103,13 +103,13 @@ public class QuestionService{
     }
 
     @Transactional
-    public void createQuestion(Long bookId, CreateQuestionDto dto, Object user){
+    public void createQuestion(Long bookId, CreateQuestionDto dto, Long memberId){
 
 
         Question question = Question.builder()
                 .book(bookRepository.findByBookId(bookId))
-                .nickName(memberRepository.findBySocialId(user.toString()).getNickName())
-                .email(user.toString())
+                .nickName(memberRepository.findByMemberId(memberId).getNickName())
+                .email(memberRepository.findByMemberId(memberId).getSocialId())
                 .chapter(dto.getBookChapter())
                 .bookPage(dto.getBookPage())
                 .title(dto.getTitle())
@@ -120,7 +120,7 @@ public class QuestionService{
 
 
     @Transactional
-    public void createComment(Integer questionId , Object user, CreateCommentDto dto){
+    public void createComment(Integer questionId , Long memberId, CreateCommentDto dto){
 
         Comment comment = new Comment();
 
@@ -130,8 +130,8 @@ public class QuestionService{
 
         comment.setQuestion(question);
         comment.setContent(dto.getContent());
-        comment.setNickName(memberRepository.findBySocialId(user.toString()).getNickName());
-        comment.setEmail(user.toString());
+        comment.setNickName(memberRepository.findByMemberId(memberId).getNickName());
+        comment.setEmail(memberRepository.findByMemberId(memberId).getSocialId());
 
         commentRepository.save(comment);
     }

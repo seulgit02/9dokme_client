@@ -42,15 +42,12 @@ public class QuestionController {
     @Operation(summary = "질문글 올리기", description = "양식에 맞춰서 chapter,bookPage(pdf)페이지")
     public ResponseEntity<String> createQuestion(@PathVariable("bookId") Long bookId,
                                                  @RequestBody CreateQuestionDto dto,
-                                                 HttpSession session){
+                                                 Long memberId){
 
-        Object currentMember = session.getAttribute("email");
-
-        if (currentMember == null) {
+        if (memberId == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "로그인을 진행해주세요!");
         }
-
-        questionService.createQuestion(bookId, dto,currentMember);
+        questionService.createQuestion(bookId, dto, memberId);
 
         return ResponseEntity.ok("질문 업로드 성공");
     }
@@ -59,15 +56,14 @@ public class QuestionController {
     @Operation(summary = "댓글 올리기", description = "댓글 작성")
     public ResponseEntity<String> createComment(@RequestBody CreateCommentDto dto,
                                                 @PathVariable("questionId") Integer questionId,
-                                                HttpSession session){
+                                                Long memberId){
 
-        Object currentMember = session.getAttribute("email");
 
-        if (currentMember == null) {
+        if (memberId == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "로그인을 진행해주세요!");
         }
 
-        questionService.createComment(questionId,currentMember,dto);
+        questionService.createComment(questionId,memberId,dto);
 
         return ResponseEntity.ok("댓글 업로드 성공");
     }
