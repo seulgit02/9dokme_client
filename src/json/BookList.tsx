@@ -1,7 +1,7 @@
 export interface Book {
   bookId: number;
-  bookTitle: string;
-  bookCategory: string;
+  title: string;
+  category: string;
   bookImage: string;
   bookUrl: string;
   isMarked: boolean;

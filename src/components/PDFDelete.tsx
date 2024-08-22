@@ -40,7 +40,6 @@ const PDFDelete: React.FC = () => {
           <TableRow className="bg-[#D8E7FF]">
             <TableHead className="w-[30vw]">책 제목</TableHead>
             <TableHead className="w-[20vw]">저자</TableHead>
-            <TableHead className="w-[13vw]">등록일</TableHead>
             <TableHead className="w-[7vw]">선택</TableHead>
           </TableRow>
         </TableHeader>
@@ -49,7 +48,6 @@ const PDFDelete: React.FC = () => {
             <TableRow key={book.bookId} className="text-left">
               <TableCell className="font-medium">{book.bookTitle}</TableCell>
               <TableCell>{book.author}</TableCell>
-              <TableCell>{book.publishDate}</TableCell>
               <TableCell>
                 <button
                   className="bg-slate-400 text-[0.8vw] text-white px-[0.5vw] rounded hover:bg-[#FF7E7E]"
