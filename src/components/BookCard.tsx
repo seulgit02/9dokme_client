@@ -121,7 +121,6 @@ const CardContainer = styled.div`
   transition: transform 0.3s, box-shadow 0.3s;
   margin-bottom: 20px;
   overflow: visible;
-
   &:hover {
     transform: scale(1.02);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
