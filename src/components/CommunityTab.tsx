@@ -1,11 +1,9 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import API from "../api/axios";
 import community from "../images/community.png";
 import communitytalk from "../images/communitytalk.png";
-import { QuestionList, Question } from "../json/Community";
-import DetailPost from "./DetailPost";
-import CreatePost from "./CreatePost";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import {
@@ -15,34 +13,25 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { BASE_URL } from "../env";
+import DetailPost from "./DetailPost";
+import CreatePost from "./CreatePost";
 
-interface Book {
-  bookId: number;
-  bookTitle: string;
-  author: string;
-  bookCategory: string;
-  bookURL: string;
-}
-
-interface CommunityTabProps {
-  bookId: number;
-}
-
-const CommunityTab: React.FC<CommunityTabProps> = ({ bookId }) => {
-  const [selectedQuestionId, setSelectedQuestionId] = useState<number | null>(
-    null
-  );
+const CommunityTab = ({ bookId }) => {
+  const [selectedQuestionId, setSelectedQuestionId] = useState(null);
   const [isClicked, setIsClicked] = useState(false);
   const [createPostBtn, setCreatePostBtn] = useState(false);
-  const [searchTitle, setSearchTitle] = useState<string>("");
-  const [searchChapter, setSearchChapter] = useState<string>("");
-  const [searchPage, setSearchPage] = useState<string>("");
-  const [filterPost, setFilterPost] = useState<Question[]>([]);
+  const [searchTitle, setSearchTitle] = useState("");
+  const [searchChapter, setSearchChapter] = useState("");
+  const [searchPage, setSearchPage] = useState("");
+  const [filterPost, setFilterPost] = useState([]);
+  const [questionDetail, setQuestionDetail] = useState(null);
 
   useEffect(() => {
     const fetchCommunityPosts = async () => {
       try {
-        const response = await API.get(`${BASE_URL}/api/questionlist/${bookId}?chapter=${searchChapter}&bookPage=${searchPage}`);
+        const response = await API.get(
+          `${BASE_URL}/api/questionlist/${bookId}?chapter=${searchChapter}&bookPage=${searchPage}`
+        );
         if (response.status === 200) {
           setFilterPost(response.data.questionList);
         }
@@ -54,7 +43,26 @@ const CommunityTab: React.FC<CommunityTabProps> = ({ bookId }) => {
     fetchCommunityPosts();
   }, [bookId, searchChapter, searchPage]);
 
-  const handlePostClick = (questionId: number) => {
+  useEffect(() => {
+    if (selectedQuestionId !== null) {
+      const fetchQuestionDetail = async () => {
+        try {
+          const response = await API.get(
+            `${BASE_URL}/api/questiondetail/${selectedQuestionId}`
+          );
+          if (response.status === 200) {
+            setQuestionDetail(response.data);
+          }
+        } catch (error) {
+          console.error("Error fetching question detail:", error);
+        }
+      };
+
+      fetchQuestionDetail();
+    }
+  }, [selectedQuestionId]);
+
+  const handlePostClick = (questionId) => {
     setSelectedQuestionId(questionId);
   };
 
@@ -76,11 +84,12 @@ const CommunityTab: React.FC<CommunityTabProps> = ({ bookId }) => {
 
   const handleSearch = () => {
     const fetchCommunityPosts = async () => {
-      try {        
-        const response = await API.get(`${BASE_URL}/api/questionlist/${bookId}?chapter=${searchChapter}&bookPage=${searchPage}`);
+      try {
+        const response = await API.get(
+          `${BASE_URL}/api/questionlist/${bookId}?chapter=${searchChapter}&bookPage=${searchPage}`
+        );
         if (response.status === 200) {
           setFilterPost(response.data.questionList);
-          console.log(response.data);
         }
       } catch (error) {
         console.error("Error fetching community posts:", error);
@@ -89,10 +98,6 @@ const CommunityTab: React.FC<CommunityTabProps> = ({ bookId }) => {
 
     fetchCommunityPosts();
   };
-
-  const selectedPost = filterPost.find(
-    (post) => post.questionId === selectedQuestionId
-  );
 
   return (
     <div className="fixed top-0 right-0 z-50">
@@ -110,7 +115,7 @@ const CommunityTab: React.FC<CommunityTabProps> = ({ bookId }) => {
           />
         </div>
       ) : (
-        <div className="pointer w-[30vw] h-full bg-white rounded-bl-[2vw] text-[1.5vw] shadow-sm">
+        <div className="pointer fixed top-0 right-0 z-50 w-[30vw] h-[80vh] bg-white rounded-bl-[2vw] text-[1.5vw] shadow-sm flex flex-col">
           <div
             onClick={handleBannerClickOff}
             className="text-right font-bold cursor-pointer p-[1vw]"
@@ -191,34 +196,32 @@ const CommunityTab: React.FC<CommunityTabProps> = ({ bookId }) => {
                     </div>
                   </div>
 
-                  <div className="h-full flex flex-col overflow-y-auto">
-                    <div className="flex-grow overflow-y-auto">
-                      {filterPost.map((post) => (
-                        <CommunityBox
-                          key={post.questionId}
-                          title={post.title}
-                          content={post.content}
-                          commentsCount={post.commentCount}
-                          chapter={post.chapter}
-                          onClick={() => handlePostClick(post.questionId)}
-                        />
-                      ))}
-                    </div>
-
-                    <WritingBtn
-                      onClick={handleCreatePostBtnClick}
-                      className="cursor-pointer"
-                    >
-                      글 작성하기
-                    </WritingBtn>
+                  <div className="flex-grow overflow-y-auto">
+                    {filterPost.map((post) => (
+                      <CommunityBox
+                        key={post.questionId}
+                        title={post.title}
+                        content={post.content}
+                        commentsCount={post.commentCount}
+                        chapter={post.chapter}
+                        onClick={() => handlePostClick(post.questionId)}
+                      />
+                    ))}
                   </div>
+
+                  <WritingBtn
+                    onClick={handleCreatePostBtnClick}
+                    className="cursor-pointer"
+                  >
+                    글 작성하기
+                  </WritingBtn>
                 </>
               ) : (
-                selectedPost && (
+                questionDetail && (
                   <DetailPost
-                    setSelectedQuestionId={setSelectedQuestionId}
                     questionId={selectedQuestionId}
-                    chapter={selectedPost.chapter}
+                    chapter={searchChapter}
+                    setSelectedQuestionId={setSelectedQuestionId}
                     handleBannerClickOff={handleBannerClickOff}
                   />
                 )
@@ -231,52 +234,31 @@ const CommunityTab: React.FC<CommunityTabProps> = ({ bookId }) => {
   );
 };
 
+const CommunityBox = ({ title, content, commentsCount, chapter, onClick }) => (
+  <div
+    onClick={onClick}
+    className="p-[1vw] mb-[1vw] border rounded-[0.5vw] shadow-sm cursor-pointer hover:bg-gray-100"
+  >
+    <h3 className="font-bold text-[1.2vw]">{title}</h3>
+    <p className="text-[1vw] mt-[0.5vw]">{content}</p>
+    <div className="text-gray-500 text-[0.8vw] mt-[1vw]">
+      Chapter: {chapter}, Comments: {commentsCount}
+    </div>
+  </div>
+);
+
 const WritingBtn = styled.div`
-  margin-top: 3vw;
+  width: 80%;
+  height: 7%;
+  border-radius: 30px;
+  margin-left: 10%;
+  background-color: #e6e5ef;
+  text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  background-color: #2519b2;
-  height: 4vw;
-  font-weight: bold;
-  color: white;
-  font-size: 1.5vw;
+  margin-top: 5%;
+  font-size: 1vw;
 `;
-
-interface CommunityPost {
-  title: string;
-  content: string;
-  commentsCount: number;
-  chapter: string;
-  onClick: () => void;
-}
-
-const CommunityBox: React.FC<CommunityPost> = ({
-  title,
-  content,
-  commentsCount,
-  chapter,
-  onClick,
-}) => {
-  return (
-    <div
-      className="m-[1vw] bg-white shadow-lg rounded-lg p-4 border-solid border-[0.05vw] border-slate-300 mt-[1.5vw]"
-      onClick={onClick}
-    >
-      <h2 className="font-bold text-[1vw]">{title}</h2>
-      <hr className="mt-[0.5vw] mb-[0.5vw] border-slate-400" />
-      <p className="text-gray-400 text-[1vw]">
-        {content.length > 20 ? `${content.substring(0, 20)}...` : content}
-      </p>
-      <div className="flex justify-between items-center mt-4">
-        <span className="text-gray-500 text-[1vw]">댓글 {commentsCount}</span>
-        <span className=" text-[1vw] bg-customColor rounded px-[0.5vw]">
-          {chapter}
-        </span>
-      </div>
-    </div>
-  );
-};
 
 export default CommunityTab;
