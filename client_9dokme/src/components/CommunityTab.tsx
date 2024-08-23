@@ -48,8 +48,12 @@ interface QuestionList {
 }
 
 const CommunityTab: React.FC<CommunityTabProps> = ({ book }) => {
-  const [questions, setQuestions] = useState<QuestionList>({ questionList: [] });
-  const [selectedQuestionId, setSelectedQuestionId] = useState<number | null>(null);
+  const [questions, setQuestions] = useState<QuestionList>({
+    questionList: [],
+  });
+  const [selectedQuestionId, setSelectedQuestionId] = useState<number | null>(
+    null
+  );
   const [isClicked, setIsClicked] = useState(false);
   const [createPostBtn, setCreatePostBtn] = useState(false);
   const [searchTitle, setSearchTitle] = useState<string>("");
@@ -64,8 +68,8 @@ const CommunityTab: React.FC<CommunityTabProps> = ({ book }) => {
           const response = await axios.get(`/api/questionlist/${book.bookId}`, {
             params: {
               chapter: searchChapter,
-              bookPage: searchPage
-            }
+              bookPage: searchPage,
+            },
           });
           setQuestions(response.data);
           setFilterPost(response.data.questionList);
@@ -108,7 +112,10 @@ const CommunityTab: React.FC<CommunityTabProps> = ({ book }) => {
         post.chapter.toString().toLowerCase() === searchChapter.toLowerCase();
       const matchPage =
         searchPage === "" ||
-        post.bookPage.toString().toLowerCase().includes(searchPage.toLowerCase());
+        post.bookPage
+          .toString()
+          .toLowerCase()
+          .includes(searchPage.toLowerCase());
       return matchTitle && matchChapter && matchPage;
     });
 
@@ -230,13 +237,14 @@ const CommunityTab: React.FC<CommunityTabProps> = ({ book }) => {
                         />
                       ))}
                     </div>
-
-                    <WritingBtn
-                      onClick={handleCreatePostBtnClick}
-                      className="cursor-pointer"
-                    >
-                      글 작성하기
-                    </WritingBtn>
+                    <TabContainer>
+                      <WriteButton
+                        onClick={handleCreatePostBtnClick}
+                        className="cursor-pointer"
+                      >
+                        글 작성하기
+                      </WriteButton>
+                    </TabContainer>
                   </div>
                 </>
               ) : (
@@ -256,20 +264,6 @@ const CommunityTab: React.FC<CommunityTabProps> = ({ book }) => {
     </div>
   );
 };
-
-
-const WritingBtn = styled.div`
-  margin-top: 3vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  background-color: #2519b2;
-  height: 4vw;
-  font-weight: bold;
-  color: white;
-  font-size: 1.5vw;
-`;
 
 interface CommunityPost {
   title: string;
@@ -306,4 +300,26 @@ const CommunityBox: React.FC<CommunityPost> = ({
   );
 };
 
+const TabContainer = styled.div`
+  width: 100%;
+  padding: 10px;
+  background-color: #f5f5f5;
+`;
+
+const WriteButton = styled.button`
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #45a049;
+  }
+`;
 export default CommunityTab;

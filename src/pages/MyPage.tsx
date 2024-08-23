@@ -8,6 +8,7 @@ import BookCard from "../components/BookCard"; // BookCard 컴포넌트 import
 import axios from "axios";
 import Sidebanner from "../components/Sidebanner";
 import API from "../api/axios";
+
 const MyPage = () => {
   interface Book {
     bookId: number;
@@ -73,6 +74,10 @@ const MyPage = () => {
     }
   };
 
+  const goToPayment = () => {
+    navigate("https://www.9dokme.p-e.kr/payments");
+  };
+
   return (
     <div className="w-screen h-[130vh] bg-customColor bg-opacity-20">
       <Sidebanner />
@@ -89,7 +94,7 @@ const MyPage = () => {
           입니다.
         </p>
 
-        <SubscribeBtn onClick={handleLogout}>구독 연장하기</SubscribeBtn>
+        <SubscribeBtn onClick={goToPayment}>구독 연장하기</SubscribeBtn>
         <BgContainer>
           {loading ? (
             <p>Loading...</p>
@@ -106,7 +111,7 @@ const MyPage = () => {
                   <BookCard
                     bookId={book.bookId}
                     // key={book.bookId}
-                    cover={book.bookImage} // bookImage를 cover로 매핑
+                    cover={book.bookUrl} // bookImage를 cover로 매핑
                     title={book.title}
                     isMarked={book.isMarked}
                     // bookImage={book.bookImage}

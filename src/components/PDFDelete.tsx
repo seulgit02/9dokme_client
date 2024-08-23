@@ -15,11 +15,11 @@ import {
 
 const PDFDelete: React.FC = () => {
   const [books, setBooks] = useState<BookDetailType[]>(BookDetail.books);
-
+  const [memberId] = useState<number>(1);
   const handleDelete = async (bookId: number) => {
     if (window.confirm("정말로 이 책을 삭제하시겠습니까?")) {
       try {
-        await API.delete(`/admin/books/${bookId}`);
+        await API.delete(`/admin/books/${bookId}`, {});
         alert("책이 성공적으로 삭제되었습니다.");
 
         // 삭제된 책을 books 상태에서 제거

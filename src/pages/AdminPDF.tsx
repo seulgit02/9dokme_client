@@ -5,7 +5,7 @@ import PDFEdit from "../components/PDFEdit";
 import PDFDelete from "../components/PDFDelete";
 import styled from "styled-components";
 import AdminBanner from "../components/AdminBanner";
-
+import { BASE_URL } from "../env";
 const AdminPDF: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"add" | "edit" | "delete">("add");
   const [books, setBooks] = useState([]);
@@ -21,9 +21,9 @@ const AdminPDF: React.FC = () => {
   // }, []);
   useEffect(() => {
     // 검색어를 포함한 API 호출
-    const defaultSearchTerm = "title"; // 기본 검색어 설정
+    const defaultSearchTerm = ""; // 기본 검색어 설정
     axios
-      .get(`http://localhost:8080/api/admin/books?search=${defaultSearchTerm}`)
+      .get(`${BASE_URL}/api/admin/books?search=${defaultSearchTerm}`)
       .then((response) => {
         console.log("서버 응답:", response.data);
         setBooks(response.data);

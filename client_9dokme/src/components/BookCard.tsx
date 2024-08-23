@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import onBookmark from "../images/onBookmark.png";
 import offBookmark from "../images/offBookmark.png";
-import defaultCover from "../images/bookcover.png"
+import defaultCover from "../images/bookcover.png";
 interface BookCardProps {
   cover: string; // 이미지 URL
   title: string; // 책 제목
@@ -10,20 +10,29 @@ interface BookCardProps {
   isMarked: boolean; // 즐겨찾기 상태
 }
 
-
-const BookCard: React.FC<BookCardProps> = ({ cover, title, isMarked, onClick }) => {
+{
+  /* <BookImage src={book.pdfImage} alt={`Cover of ${book.title}`} /> */
+}
+const BookCard: React.FC<BookCardProps> = ({
+  cover,
+  title,
+  isMarked,
+  onClick,
+}) => {
   const coverSrc = cover ? cover : defaultCover;
 
   return (
     <div style={{ position: "relative" }}>
-    <BookmarkIcon src={isMarked ? onBookmark : offBookmark} alt="Bookmark Icon" />
-    <CardContainer onClick={onClick}>
-      <CoverImageWrapper>
-        <CoverImage alt={title} src={coverSrc} />
-        
-      </CoverImageWrapper>
-      <Title>{title.length > 15 ? `${title.slice(0, 15)}...` : title}</Title>
-    </CardContainer>
+      <BookmarkIcon
+        src={isMarked ? onBookmark : offBookmark}
+        alt="Bookmark Icon"
+      />
+      <CardContainer onClick={onClick}>
+        <CoverImageWrapper>
+          <CoverImage alt={title} src={cover} />
+        </CoverImageWrapper>
+        <Title>{title.length > 15 ? `${title.slice(0, 15)}...` : title}</Title>
+      </CardContainer>
     </div>
   );
 };
@@ -31,7 +40,7 @@ const BookCard: React.FC<BookCardProps> = ({ cover, title, isMarked, onClick }) 
 const BookmarkIcon = styled.img`
   position: absolute;
   top: -7px;
-  right: 2px; 
+  right: 2px;
   width: 30px;
   height: 30px;
   cursor: pointer;

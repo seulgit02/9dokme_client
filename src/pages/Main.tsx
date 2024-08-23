@@ -112,7 +112,7 @@ const Main = () => {
                     {filterBooks.map((book) => (
                       <BookCard
                         key={book.bookId}
-                        cover={images[book.bookUrl.split("/").pop() || ""]}
+                        cover={book.bookUrl}
                         title={book.title}
                         onClick={() => handleImgClick(book.bookId)}
                         isMarked={book.isMarked}

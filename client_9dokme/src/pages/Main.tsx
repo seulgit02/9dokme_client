@@ -40,7 +40,6 @@ const Main = () => {
   const [page, setPage] = useState<number>(0);
   const [memberId] = useState<number>(1);
 
-  const [filterBooks, setFilterBooks] = useState<Book[]>(bookData.bookData);
   const handleHashBtnClick = (newCategory: string) => {
     setCategory(newCategory);
   };
@@ -51,18 +50,28 @@ const Main = () => {
     setSearchQuery(event.target.value);
   };
 
-  const handleSearchBtnClick = () => {
-    const filtered = bookData.bookData.filter((book: Book) => {
-      const matchCategory =
-        category === "전체보기" || book.bookCategory === category;
-      const matchSearchQuery = book.bookTitle
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-      return matchCategory && matchSearchQuery;
-    });
-    setFilterBooks(filtered);
+  useEffect(() => {
+    console.log("Updated filterBooks: ", filterBooks);
+  }, [filterBooks]);
+
+  const handleSearchBtnClick = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/mainpage/search`, {
+        params: {
+          title: searchQuery,
+          memberId: memberId,
+          page: page,
+        },
+      });
+
+      const { content } = response.data;
+      console.log("Fetched content: ", content);
+      setFilterBooks(content);
+    } catch (error) {
+      console.error("Failed to fetch books", error);
+    }
   };
-  //category 상태 변경시
+
   useEffect(() => {
     handleSearchBtnClick();
   }, [category, page]);
@@ -104,23 +113,23 @@ const Main = () => {
                       <BookCard
                         key={book.bookId}
                         cover={images[book.bookUrl.split("/").pop() || ""]}
-                        title={book.bookTitle}
+                        title={book.title}
                         onClick={() => handleImgClick(book.bookId)}
                         isMarked={book.isMarked}
+                        bookId={0}
                       />
                     ))}
                   </div>
                 </BooksContainer>
               )}
-              
             </div>
-            
           </BookContainer>
         </Container>
       </Root>
     </>
   );
 };
+
 const Root = styled.div`
   display: flex;
   flex-direction: column;
@@ -149,11 +158,11 @@ const BookContainer = styled.div`
 `;
 
 const BooksContainer = styled.div`
-margin-top: 70px;
-margin-bottom: 100px;
+  margin-top: 70px;
+  margin-bottom: 100px;
   display: flex;
   justify-content: center;
-`
+`;
 const SearchContainer = styled.div`
   width: 100%;
   padding-top: 60px;

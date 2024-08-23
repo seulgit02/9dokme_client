@@ -11,9 +11,16 @@ import LoginLoading from "./pages/LoginLoading";
 import MyArticle from "./pages/MyArticle";
 import BookDetail from "./pages/BookDetail";
 
+const useremail = sessionStorage.getItem("email");
+
 function App() {
   return (
     <Routes>
+      {useremail === "rlaalsghks8@naver.com" ? (
+        <Route path="/admin/adminPdf/" element={<AdminPDF />} />
+      ) : (
+        <Route path="/mainPage/" element={<Main />} />
+      )}
       <Route path="/" element={<Landing />} />
       <Route path="/mainPage/" element={<Main />} />
       {/* <Route path="/bookdetail/:bookId/" element={<BookDiscription />} /> */}

@@ -34,7 +34,10 @@ const AddComment: React.FC<Props> = ({ onBackFn, questionId }) => {
         onBackFn();
       }
     } catch (error) {
-      console.error("Error posting the comment:", error.response ? error.response.data : error.message);
+      console.error(
+        "Error posting the comment:",
+        error.response ? error.response.data : error.message
+      );
       alert("댓글 등록에 실패했습니다.");
     }
   };

@@ -26,22 +26,22 @@ const CommunityTab = ({ bookId }) => {
   const [filterPost, setFilterPost] = useState([]);
   const [questionDetail, setQuestionDetail] = useState(null);
 
-  useEffect(() => {
-    const fetchCommunityPosts = async () => {
-      try {
-        const response = await API.get(
-          `${BASE_URL}/api/questionlist/${bookId}?chapter=${searchChapter}&bookPage=${searchPage}`
-        );
-        if (response.status === 200) {
-          setFilterPost(response.data.questionList);
-        }
-      } catch (error) {
-        console.error("Error fetching community posts:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchCommunityPosts = async () => {
+  //     try {
+  //       const response = await API.get(
+  //         `${BASE_URL}/api/questionlist/${bookId}?chapter=${searchChapter}&bookPage=${searchPage}`
+  //       );
+  //       if (response.status === 200) {
+  //         setFilterPost(response.data.questionList);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching community posts:", error);
+  //     }
+  //   };
 
-    fetchCommunityPosts();
-  }, [bookId, searchChapter, searchPage]);
+  //   fetchCommunityPosts();
+  // }, [bookId, searchChapter, searchPage]);
 
   useEffect(() => {
     if (selectedQuestionId !== null) {
@@ -82,22 +82,42 @@ const CommunityTab = ({ bookId }) => {
     setCreatePostBtn(false);
   };
 
-  const handleSearch = () => {
-    const fetchCommunityPosts = async () => {
-      try {
-        const response = await API.get(
-          `${BASE_URL}/api/questionlist/${bookId}?chapter=${searchChapter}&bookPage=${searchPage}`
-        );
-        if (response.status === 200) {
-          setFilterPost(response.data.questionList);
-        }
-      } catch (error) {
-        console.error("Error fetching community posts:", error);
-      }
-    };
+  // const handleSearch = () => {
+  //   const fetchCommunityPosts = async () => {
+  //     try {
+  //       const response = await API.get(
+  //         `${BASE_URL}/api/questionlist/${bookId}?chapter=${searchChapter}&bookPage=${searchPage}`
+  //       );
+  //       if (response.status === 200) {
+  //         setFilterPost(response.data.questionList);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching community posts:", error);
+  //     }
+  //   };
 
-    fetchCommunityPosts();
+  //   fetchCommunityPosts();
+  // };
+  const handleSearch = () => {
+    const filtered = questionDetail.questionList.filter((post) => {
+      const matchTitle =
+        searchTitle === "" ||
+        post.title.toLowerCase().includes(searchTitle.toLowerCase());
+      const matchChapter =
+        searchChapter === "" ||
+        post.chapter.toLowerCase() === searchChapter.toLowerCase();
+      const matchPage =
+        searchPage === "" ||
+        post.content.toLowerCase().includes(searchPage.toLowerCase());
+      return matchTitle && matchChapter && matchPage;
+    });
+
+    setFilterPost(filtered.length > 0 ? filtered : questionDetail.questionList);
   };
+
+  const selectedPost = filterPost.find(
+    (post) => post.questionId === selectedQuestionId
+  );
 
   return (
     <div className="fixed top-0 right-0 z-50">

@@ -24,8 +24,10 @@ const MyPage = () => {
 
   const navigate = useNavigate();
 
-  const handleClickSubscribeBtn = () => {
-    navigate("/subscribe");
+  const handleRedirect = () => {
+    // 외부 URL로 리다이렉트
+    const baseurl = "https://example.com";
+    window.location.href = `${baseurl}/payments`;
   };
 
   const handleImgClick = (bookId: number) => {
@@ -62,33 +64,32 @@ const MyPage = () => {
   }, []);
 
   return (
-    <div className='w-screen h-[130vh] bg-customColor bg-opacity-20'>
+    <div className="w-screen h-[130vh] bg-customColor bg-opacity-20">
       <Sidebanner />
-      <div className='flex flex-col justify-center items-center'>
-        <img src={profile} className='w-[10vw] mt-[5vw]' alt='Profile' />
-        <p className='text-[1.2vw] mt-[2vw] text-center'>
-          <span className='text-sky-600 font-bold'>
+      <div className="flex flex-col justify-center items-center">
+        <img src={profile} className="w-[10vw] mt-[5vw]" alt="Profile" />
+        <p className="text-[1.2vw] mt-[2vw] text-center">
+          <span className="text-sky-600 font-bold">
             {localStorage.getItem("name")}
           </span>
-          <span className='font-bold'>님, 안녕하세요:)</span>
+          <span className="font-bold">님, 안녕하세요:)</span>
           <br />
           {isSubscribed ? (
             <>
               구독 만료일은
-              <span className='text-red-400 font-bold mx-2'>{expiredAt}</span>
+              <span className="text-red-400 font-bold mx-2">{expiredAt}</span>
               입니다.
             </>
           ) : (
-            <span className='text-gray-400'>구독되어 있지 않습니다.</span>
+            <span className="text-gray-400">구독되어 있지 않습니다.</span>
           )}
         </p>
 
-        <SubscribeBtn onClick={handleClickSubscribeBtn}>
+        <SubscribeBtn onClick={handleRedirect}>
           {isSubscribed ? "구독 연장하기" : "구독하기"}
         </SubscribeBtn>
 
         <BooksContainer>
-        
           {loading ? (
             <p>Loading...</p>
           ) : (
@@ -96,10 +97,10 @@ const MyPage = () => {
               {books.map((book) => (
                 <BookCard
                   key={book.bookId}
-                  cover={book.bookImage} 
+                  cover={book.bookImage}
                   title={book.title}
                   isMarked={book.isMarked}
-                  onClick={() => handleImgClick(book.bookId)} 
+                  onClick={() => handleImgClick(book.bookId)}
                 />
               ))}
             </div>
@@ -110,8 +111,6 @@ const MyPage = () => {
   );
 };
 
-
-
 const BgContainer = styled.div`
   background-image: url(${bg});
   background-size: 100% auto;
@@ -120,11 +119,11 @@ const BgContainer = styled.div`
   margin-top: 2vw;
 `;
 const BooksContainer = styled.div`
-margin-top: 70px;
-margin-bottom: 100px;
+  margin-top: 70px;
+  margin-bottom: 100px;
   display: flex;
   justify-content: center;
-`
+`;
 const SubscribeBtn = styled.button`
   background: linear-gradient(
     90deg,
