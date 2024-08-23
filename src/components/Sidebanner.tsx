@@ -9,7 +9,7 @@ import book from "../images/banner/book.png";
 import bookmark from "../images/banner/bookmark.png";
 import query from "../images/banner/query.png";
 import logout from "../images/adminBanner/logout.png";
-
+import API from "../api/axios";
 const Sidebanner = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -41,6 +41,20 @@ const Sidebanner = () => {
     navigate(path);
   };
 
+  const handleLogout = async (): Promise<void> => {
+    try {
+      // API 호출
+      const response = await API.get("/api/logout");
+      alert("로그아웃되었습니다.");
+      navigate("/");
+
+      // 응답 로깅
+      console.log("Logout successful:", response.data);
+    } catch (error) {
+      // 오류 처리
+      console.error("Logout failed:", error);
+    }
+  };
   return (
     <div className="fixed top-0 right-0 z-50">
       {!isClicked ? (
@@ -89,7 +103,7 @@ const Sidebanner = () => {
               text="로그아웃"
               icon={logout}
               isActive={activeBtn === "logout"}
-              onClick={() => handleNavigate("/", "landing")}
+              onClick={() => handleLogout()}
             />
           </BtnComponent>
         </div>

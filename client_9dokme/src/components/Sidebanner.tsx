@@ -9,7 +9,7 @@ import bookmark from "../images/banner/bookmark.png";
 import query from "../images/banner/query.png";
 import { Typography } from "antd";
 import logout from "../images/adminBanner/logout.png";
-
+import API from "../api/axios";
 const Sidebanner = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -23,6 +23,20 @@ const Sidebanner = () => {
 
   const handleBannerClickOff = () => {
     setIsClicked(false);
+  };
+
+  const handleLogout = async (): Promise<void> => {
+    try {
+      // API 호출
+      const response = await API.get("/api/logout");
+      navigate("/");
+
+      // 응답 로깅
+      console.log("Logout successful:", response.data);
+    } catch (error) {
+      // 오류 처리
+      console.error("Logout failed:", error);
+    }
   };
 
   useEffect(() => {
@@ -58,14 +72,13 @@ const Sidebanner = () => {
           }}
         >
           <MenuContainer>
-          <MenuTypo>Menu</MenuTypo>
-          <div
-            onClick={handleBannerClickOff}
-            className="text-right font-bold cursor-pointer"
-          >
-            x
-          </div>
-
+            <MenuTypo>Menu</MenuTypo>
+            <div
+              onClick={handleBannerClickOff}
+              className="text-right font-bold cursor-pointer"
+            >
+              x
+            </div>
           </MenuContainer>
           <BtnComponent>
             <NavBarBtn
@@ -198,15 +211,15 @@ const BtnComponent = styled.div`
 `;
 
 const MenuContainer = styled.div`
-padding: 2vw;
-display: flex;
-    flex-direction: row;
-justify-content: space-between;
-`
+  padding: 2vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
 
 const MenuTypo = styled(Typography)`
-margin-left: 0.4vw;
+  margin-left: 0.4vw;
   font-size: 1.7vw;
   font-weight: bold;
-`
+`;
 export default Sidebanner;

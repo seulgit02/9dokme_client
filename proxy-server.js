@@ -18,7 +18,7 @@ module.exports = function (app) {
   app.use(
     "/api",
     createProxyMiddleware({
-      target: "http://localhost:8080",
+      target: "https://www.9dokme.p-e.kr/api/view?bookId=1?memberId=4",
       changeOrigin: true,
       withCredentials: true,
     })
@@ -26,7 +26,7 @@ module.exports = function (app) {
   app.use(
     "/ws",
     createProxyMiddleware({
-      target: "http://localhost:8080",
+      target: "https://www.9dokme.p-e.kr/api/view?bookId=1?memberId=4",
       ws: true,
     })
   );

@@ -89,7 +89,7 @@ const MyPage = () => {
           입니다.
         </p>
 
-        <SubscribeBtn onClick={handleLogout}>로그아웃하기</SubscribeBtn>
+        <SubscribeBtn onClick={handleLogout}>구독 연장하기</SubscribeBtn>
         <BgContainer>
           {loading ? (
             <p>Loading...</p>

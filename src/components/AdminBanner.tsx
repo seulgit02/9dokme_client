@@ -33,17 +33,18 @@ const AdminBanner = () => {
     setActiveBtn(btnKey);
     navigate(path);
   };
-  const onLogoutClick = async () => {
+  const handleLogout = async (): Promise<void> => {
     try {
-      const response = await API.get("/api/user/logout");
-      if (response.status === 200) {
-        alert("성공적으로 로그아웃되었습니다.");
-      } else {
-        alert("로그아웃에 실패했습니다.");
-      }
+      // API 호출
+      const response = await API.get("/api/logout");
+      alert("로그아웃되었습니다.");
+      navigate("/");
+
+      // 응답 로깅
+      console.log("Logout successful:", response.data);
     } catch (error) {
-      console.log("로그아웃 오류: ", error);
-      alert("오류가 발생했습니다. 나중에 다시 시도해주세요.");
+      // 오류 처리
+      console.error("Logout failed:", error);
     }
   };
   return (
@@ -92,7 +93,7 @@ const AdminBanner = () => {
               text="로그아웃 (관리자)"
               icon={logout}
               isActive={activeBtn === "logout"}
-              onClick={onLogoutClick}
+              onClick={handleLogout}
             />
           </BtnComponent>
         </div>
