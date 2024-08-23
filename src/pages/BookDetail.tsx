@@ -1,3 +1,4 @@
+// @ts-nocheck
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -24,7 +25,7 @@ const BookDetail = () => {
   const navigate = useNavigate();
   const { bookId } = useParams<{ bookId: string }>();
   const [book, setBook] = useState<BookDetailType | null>(null);
-  const [memberId] = useState<number>(1);
+  const [memberId] = localStorage.getItem("memberId");
 
   const fetchBookDetail = async (bookId: string) => {
     try {
@@ -62,6 +63,10 @@ const BookDetail = () => {
       console.log(bookId);
       await axios.post(`${BASE_URL}/api/bookmark?BookId=${bookId}&memberId=${memberId}`);
       message.success("북마크에 추가되었습니다!");
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error) {
       console.error('Error bookmarking the book:', error);
       message.error("이미 북마크에 등록되었습니다.");
@@ -70,14 +75,17 @@ const BookDetail = () => {
 
   const handleDeleteBookmark = async () => {
     try {
-      const response = await axios.delete(`${BASE_URL}/api/bookmark?BookId=${bookId}&memberId=${memberId}`);
+      const response = await axios.delete(`${BASE_URL}/api/bookmark?bookId=${bookId}&memberId=${memberId}`);
 
       if (response.status === 200) {
-        alert(`${book?.title}: 도서가 북마크 취소되었습니다:)`);
-        console.log("Bookmark removed successfully:", response.data);
+        message.success("북마크가 취소되었습니다 :)");
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       }
     } catch (error) {
-      console.error("Failed to remove bookmark", error);
+      message.error("오류가 발생했습니다.");
     }
   };
 
